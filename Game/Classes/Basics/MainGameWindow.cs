@@ -12,7 +12,7 @@ using SFML.Audio;
 /// - settingsy (hotkeye?, poziom trudnosci?, rozdzielczosci?, vsync)
 /// - sklep
 /// - maszynka do losowania
-/// - i moze cos jeszcze
+/// - i moze cos jeszcze xd
 /// </summary>
 
 namespace Game

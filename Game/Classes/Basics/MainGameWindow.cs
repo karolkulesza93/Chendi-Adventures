@@ -31,7 +31,6 @@ namespace Game
         private Sound _gameEnd;
 
         private bool isMenu;
-        private bool isBeginningScene;
         private bool isGame;
         private bool isPaused;
         private bool isHighscore;
@@ -89,7 +88,6 @@ namespace Game
         {
             this.isMenu = true;
             this.isGame = false;
-            this.isBeginningScene = false;
             this.isHighscore = false;
             this.isSettigs = false;
             this.isQuit = false;
@@ -132,7 +130,6 @@ namespace Game
             this._window.Close();
             this.isMenu = false;
             this.isGame = false;
-            this.isBeginningScene = false;
             this.isHighscore = false;
             this.isSettigs = false;
             this.isQuit = false;
@@ -373,9 +370,10 @@ namespace Game
             this._levelSummary = new TextLine("", 25, -1000, -1000, Color.White);
 
             this.SetView(new Vector2f(960f, 540f), new Vector2f(480f, 270f));
-            
+
+            if (this._level.LevelNumber == 1) this.BegginingScene();
             /// SET LEVEL FOR TESTING
-            this._level.LevelNumber = 17;
+            //this._level.LevelNumber = 17;
             ///
             
             this._level.LoadLevel(string.Format("lvl{0}", this._level.LevelNumber));
@@ -654,6 +652,13 @@ namespace Game
             if (this._background.Position.X < -32 && this._background.Position.Y < -32)
                 this._background.Position = new Vector2f(0, 0);
             else this._background.Position = new Vector2f(this._background.Position.X - 0.2f, this._background.Position.Y - 0.2f);
+        }
+        private void BegginingScene()
+        {
+            //music
+            //textures
+            //skip button
+            //clear draw display
         }
     }
 }

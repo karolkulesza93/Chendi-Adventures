@@ -1,6 +1,6 @@
 ﻿namespace Game.Classes.Special
 {
-    public enum Rewards // 257 possibilities
+    public enum Reward // 257 possibilities
     {
         Nothing,    // 10
         Coins10,    // 50

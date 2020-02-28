@@ -49,7 +49,7 @@ namespace Game
             this._TextureRectangle.Height = height;
             this.SetTexture();
         }
-        public void SetTexture()
+        private void SetTexture()
         {
             this._EntitySprite.TextureRect = this._TextureRectangle;
         }
@@ -57,7 +57,7 @@ namespace Game
         {
             try { this.LoadedTexture = texture; } //załagodwanie textury
             catch (System.Exception) { System.Console.WriteLine("Something went wrong, as always :)"); }
-            this._TextureRectangle = new IntRect(0, 0, 1, 1);
+            this._TextureRectangle = new IntRect(0, 0, 0, 0);
             this._EntitySprite = new Sprite(this.LoadedTexture, this._TextureRectangle); //przypisanie textury
             this.SetPosition(x, y);
         }

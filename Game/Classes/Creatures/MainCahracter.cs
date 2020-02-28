@@ -15,7 +15,7 @@ namespace Game
         public int ArrowAmount { get; set; }
         public int Mana { get; set; }
         public readonly Clock DefaultClock;
-        public int Lives { get; private set; }
+        public int Lives { get; set; }
         public int Score { get; set; }
         public bool IsAttacking { get; private set; }
         public bool IsShooting { get; private set; }

@@ -302,5 +302,10 @@ namespace Game
                     }
             }
         }
+        public new Vector2f Get32Position()
+        {
+            if (this.Type == TrapType.Spikes) return new Vector2f(this.X / 32, (this.Y - 32) / 32);
+            else return base.Get32Position();
+        }
     }
 }

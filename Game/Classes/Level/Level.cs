@@ -670,20 +670,20 @@ namespace Game
                         }
                     }
                 }
-
+                
                 if (monsterFlag)
                 {
                     tile++;
                     if (tile == this.LevelWidth + 1)
                     {
+                        monsterFlag = false;
                         level.Remove(level.Length - 1, 1);
-                        level.Append("\n");
+                        level.Append("\r\n");
                         tile = 0;
                         y++;
                     }
                     continue;
                 }
-                //
 
                 switch (type)
                 {
@@ -835,7 +835,6 @@ namespace Game
                         }
                     default:
                         {
-                            //level.Append(".");
                             break;
                         }
                 }
@@ -843,12 +842,11 @@ namespace Game
                 if (tile == this.LevelWidth + 1)
                 {
                     level.Remove(level.Length - 1, 1);
-                    level.Append("\n");
+                    level.Append("\r\n");
                     tile = 0;
                     y++;
                 }
             }
-            
             File.WriteAllText("levels/new.txt", level.ToString());
         }
     }

@@ -20,7 +20,8 @@ namespace Game
         private static Sound sFire = new Sound(new SoundBuffer(@"sfx/fire.wav"));
         //crusher
         public Block Holder { get; private set; }
-        public Block Line { get; private set; }
+        public Block Line1 { get; private set; }
+        public Block Line2 { get; private set; }
         public bool JustCrushed { get; private set; }
         private static Sound sCrush = new Sound(new SoundBuffer(@"sfx/crusher.wav"));
         private static Sound sGear = new Sound(new SoundBuffer(@"sfx/gear.wav")); 
@@ -91,8 +92,9 @@ namespace Game
                     {
                         this.SetTextureRectanlge(0, 0, 32, 32);
                         this.Holder = new Block(this.X, this.Y, TrapsTexture); this.Holder.SetTextureRectanlge(32, 0, 32, 32);
-                        this.Line = new Block(this.X, this.Y, TrapsTexture); this.Line.SetTextureRectanlge(64, 0, 32, 32);
-                        this.SpeedY = 6f;
+                        this.Line1 = new Block(this.X, this.Y, TrapsTexture); this.Line1.SetTextureRectanlge(64, 0, 32, 32);
+                        this.Line2 = new Block(this.X, this.Y, TrapsTexture); this.Line2.SetTextureRectanlge(64, 0, 32, 32);
+                        this.SpeedY = 9f;
                         this.JustCrushed = false;
                         sGear.Volume = 50;
                         break;
@@ -160,7 +162,7 @@ namespace Game
                         //moving down / crushing
                         if (!this.JustCrushed && this.DefaultTimer.ElapsedTime.AsSeconds() > 3)
                         {
-                            if (this.Y < this.Holder.Y + 64)
+                            if (this.Y < this.Holder.Y + 96)
                             {
                                 this.Y += this.SpeedY;
                             }
@@ -168,16 +170,25 @@ namespace Game
                             {
                                 sCrush.Play();
                                 this.JustCrushed = true;
-                                this.Y = this.Holder.Y + 64;
+                                this.Y = this.Holder.Y + 96;
                             }
 
-                            if (this.Line.Y < this.Holder.Y + 32)
+                            if (this.Line2.Y < this.Holder.Y + 64)
                             {
-                                this.Line.Y += this.SpeedY;
+                                this.Line2.Y += this.SpeedY;
                             }
                             else
                             {
-                                this.Line.Y = this.Holder.Y + 32;
+                                this.Line2.Y = this.Holder.Y + 64;
+                            }
+
+                            if (this.Line1.Y < this.Holder.Y + 32)
+                            {
+                                this.Line1.Y += this.SpeedY;
+                            }
+                            else
+                            {
+                                this.Line1.Y = this.Holder.Y + 32;
                             }
                         }
                         //moving up / reloading
@@ -185,15 +196,17 @@ namespace Game
                         {
                             if (this.Y > this.Holder.Y)
                             {
-                                this.Y -= this.SpeedY / 4;
+                                this.Y -= this.SpeedY / 3;
                                 if (sGear.Status != SoundStatus.Playing) sGear.Play();
-                                if (this.Line.Y > this.Holder.Y) this.Line.Y -= this.SpeedY / 4;
+                                if (this.Line1.Y > this.Holder.Y) this.Line1.Y -= this.SpeedY / 3;
+                                if (this.Line2.Y > this.Holder.Y) this.Line2.Y -= this.SpeedY / 3;
                             }
                             else
                             {
                                 this.JustCrushed = false;
                                 this.DefaultTimer.Restart();
-                                this.Line.Y = this.Holder.Y;
+                                this.Line1.Y = this.Holder.Y;
+                                this.Line2.Y = this.Holder.Y;
                                 this.Y = this.Holder.Y;
                             }
                         }
@@ -277,7 +290,8 @@ namespace Game
                 case TrapType.Crusher:
                     {
                         target.Draw(this.Holder, states);
-                        target.Draw(this.Line, states);
+                        target.Draw(this.Line1, states);
+                        target.Draw(this.Line2, states);
                         base.Draw(target, states);
                         break;
                     }

@@ -20,7 +20,7 @@ namespace Game
 {
     public sealed class MainGameWindow
     {
-        public static bool DevManipulation = false;
+        public static bool DevManipulation = true;
         //fields
         /*signleton field*/
         private static MainGameWindow _instance = null;
@@ -66,8 +66,8 @@ namespace Game
         private TextLine _quit;
 
         //window size (1920 x 1080)
-        private readonly int _windowWidth = 1920;
-        private readonly int _windowHeight = 1080;
+        private int _windowWidth = 1920;
+        private int _windowHeight = 1080;
         private Styles _windowStyle = Styles.Fullscreen;
         private View _view;
         //properties
@@ -804,7 +804,14 @@ namespace Game
 
                 Console.Write("Play on fullscreen? (y/n)\n>"); answer = Console.ReadLine();
                 if (answer == "y") this._windowStyle = Styles.Fullscreen;
-                else this._windowStyle = Styles.Resize;
+                else
+                { 
+                    this._windowStyle = Styles.Resize;
+                    //this._windowHeight = 960;
+                    //this._windowWidth = 540;
+                }
+
+
 
                 //Console.Write("Choose level\n> "); answer = Console.ReadLine();
             }

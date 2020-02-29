@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using SFML.Graphics;
 using SFML.Window;
@@ -681,10 +682,11 @@ namespace Game
             cover.FillColor = Color.Black;
             cover.Position = new Vector2f(-201, -501);
 
-            TextLine warning = new TextLine("TRAPS AND MONSTERS CAN ONLY BE ADDED MANUALLY USING TEXT EDITOR", 10, 0, -20, Color.Magenta);
             TextLine position = new TextLine("", 10, 0, 0, Color.Yellow);
+            TextLine instructions = new TextLine(File.ReadAllText(@"levels/instructions.dat"), 10, -300, 0, Color.White);
 
             this._chendi.SetPosition(-100, -100);
+            this._chendi.IsDead = true;
             this._chendiUI.ResetPositions();
 
             this._window.SetKeyRepeatEnabled(false);
@@ -697,6 +699,7 @@ namespace Game
             bool view = true;
 
             BlockType type = 0;
+            BlockType type_m = 0;
 
             Random rnd = new Random();
 
@@ -715,7 +718,7 @@ namespace Game
 
                 type = this._level.GetObstacle(x, y).Type;
 
-                //changes
+                //changes - tiles (edit+, edit-, edit_remembered, delete)
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.X))
                 { 
                     flag = true; 
@@ -723,6 +726,8 @@ namespace Game
 
                     type++;
                     if (type == (BlockType)29) type = 0;
+
+                    type_m = type;
 
                     if ((type >= (BlockType)0 && type <= (BlockType)12))
                     { this._level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture; this._level.GetObstacle(x, y).UseTexture(); }
@@ -742,6 +747,8 @@ namespace Game
                     if (type > 0) type--;
                     else type = (BlockType)28;
 
+                    type_m = type;
+
                     if ((type >= (BlockType)0 && type <= (BlockType)12))
                     { this._level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture; this._level.GetObstacle(x, y).UseTexture(); }
                     else if (type >= (BlockType)13 && type <= (BlockType)22)
@@ -752,8 +759,110 @@ namespace Game
                     this._level.GetObstacle(x, y).Type = type;
                     this._level.GetObstacle(x, y).SetBlock(type);
                 }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.C))
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
 
-                //viem manip
+
+                    if ((type_m >= (BlockType)0 && type_m <= (BlockType)12))
+                    { this._level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture; this._level.GetObstacle(x, y).UseTexture(); }
+                    else if (type_m >= (BlockType)13 && type_m <= (BlockType)22)
+                    { this._level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture; this._level.GetObstacle(x, y).UseTexture(); }
+                    else
+                    { this._level.GetObstacle(x, y).LoadedTexture = Entity.DetailsTexture; this._level.GetObstacle(x, y).UseTexture(); }
+
+                    this._level.GetObstacle(x, y).Type = type_m;
+                    this._level.GetObstacle(x, y).SetBlock(type_m);
+                }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.D))
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+
+                    type = BlockType.None;
+
+                    this._level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture; 
+                    this._level.GetObstacle(x, y).UseTexture();
+
+                    this._level.GetObstacle(x, y).Type = type;
+                    this._level.GetObstacle(x, y).SetBlock(type);
+                }
+                //changes - monsters
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num1))
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+
+                    this._level.Monsters.Add(new Monster(x*32 , y *32, Entity.KnightTexture));
+                }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num2))
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+
+                    this._level.Archers.Add(new Archer(x*32, y*32, Entity.ArcherTexture, Movement.Left));
+                }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num3))
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+
+                    this._level.Archers.Add(new Archer(x * 32, y * 32, Entity.ArcherTexture, Movement.Right));
+                }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num4))
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+
+                    this._level.Ghosts.Add(new Ghost(x*32,y*32,Entity.GhostTexture));
+                }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num5))
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+
+                    this._level.Wizards.Add(new Wizard(x*32, y*32, Entity.WizardTexture));
+                }
+                //clear mosters
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F1)) { flag = true; Creature.sKill.Play(); this._level.Monsters.Clear(); }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F2)) { flag = true; Creature.sKill.Play(); this._level.Archers.Clear(); }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F4)) { flag = true; Creature.sKill.Play(); this._level.Ghosts.Clear(); }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F5)) { flag = true; Creature.sKill.Play(); this._level.Wizards.Clear(); }
+
+                //changes - traps
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num7))
+                { 
+                    flag = true; 
+                    this._chendi.sCoin.Play();
+
+                    this._level.Traps.Add(new Trap(x * 32, y * 32, Entity.TrapsTexture, TrapType.Crusher));
+                }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num8))
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+
+                    this._level.Traps.Add(new Trap(x * 32, y * 32, Entity.TrapsTexture, TrapType.Spikes));
+                }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num9))
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+
+                    this._level.Traps.Add(new Trap(x * 32, y * 32, Entity.TrapsTexture, TrapType.BlowTorchLeft));
+                }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num0))
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+
+                    this._level.Traps.Add(new Trap(x * 32, y * 32, Entity.TrapsTexture, TrapType.BlowTorchRight));
+                }
+                //clear traps
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F7)) { flag = true; Creature.sKill.Play(); this._level.Traps.Clear(); }
+
+                //viem manip (+/-)
                 if (view && !flag && Keyboard.IsKeyPressed(Keyboard.Key.A)) 
                 {
                     flag = true;
@@ -766,6 +875,13 @@ namespace Game
                     this._chendi.sCoin.Play();
                     view = true;
                 }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.I))
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+                    x = 1; y = 1;
+                }
+
 
                 choice.Position = new Vector2f(x * 32, y * 32);
                 position.MoveText(choice.Position.X + 34, choice.Position.Y - 12);
@@ -786,7 +902,7 @@ namespace Game
                 this._window.Draw(choice);
                 this._window.Draw(position);
                 this._window.Draw(cover);
-                this._window.Draw(warning);
+                this._window.Draw(instructions);
                 this._window.Display();
                 //exit
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape)) { this.DrawLoadingScreen(); this._level.SaveLevel(); break; } 
@@ -807,12 +923,9 @@ namespace Game
                 else
                 { 
                     this._windowStyle = Styles.Resize;
-                    //this._windowHeight = 960;
-                    //this._windowWidth = 540;
+                    this._windowHeight = 540;
+                    this._windowWidth = 960;
                 }
-
-
-
                 //Console.Write("Choose level\n> "); answer = Console.ReadLine();
             }
         }

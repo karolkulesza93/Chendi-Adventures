@@ -7,7 +7,7 @@ namespace Game
     {
         public Clock DefaultClock { get; set; }
         public EnemyArrow Arrow { get; set; }
-        private Movement _direction;
+        public Movement Direction { get; set; }
         public bool isDrawing { get; private set; }
         public Archer(float x, float y, Texture texture, Movement dir) : base(x,y,texture)
         {
@@ -15,12 +15,12 @@ namespace Game
 
             this.SpeedX = 13f;
             this.Arrow = new EnemyArrow(-100, -100, ArrowTexture, dir);
-            this._direction = dir;
+            this.Direction = dir;
             this.isDrawing = false;
 
             this.IsDead = false;
 
-            switch (this._direction)
+            switch (this.Direction)
             {
                 case Movement.Left:
                 {
@@ -47,7 +47,7 @@ namespace Game
             {
                 this.isDrawing = true;
                 Projectile.sDraw.Play();
-                switch (this._direction)
+                switch (this.Direction)
                 {
                     case Movement.Left:
                     {
@@ -68,7 +68,7 @@ namespace Game
                 Projectile.sShoot.Play();
                 this.Arrow.SetPosition(this.X, this.Y + 12);
 
-                switch (this._direction)
+                switch (this.Direction)
                 {
                     case Movement.Left:
                         {

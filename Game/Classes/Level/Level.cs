@@ -371,7 +371,7 @@ namespace Game
             if (this.UnableToPassl.Contains(type)) return true;
             return false;
         }
-        public void LevelUpdate()
+        public void LevelUpdate(bool IsLevelEditor = false)
         {
 
             foreach (Block obstacle in this.LevelObstacles)
@@ -395,31 +395,34 @@ namespace Game
                         obstacle.SetTextureRectanlge(64, 32, 32, 32);
             }
 
-            foreach (Trap trap in this.Traps)
+            if (!IsLevelEditor && !this._mainCharacter.IsDead)
             {
-                trap.TrapUpdate();
-            }
+                foreach (Trap trap in this.Traps)
+                {
+                    trap.TrapUpdate();
+                }
 
-            foreach (ParticleEffect effect in this.Particles)
-            {
-                effect.MakeParticles();
-            }
+                foreach (ParticleEffect effect in this.Particles)
+                {
+                    effect.MakeParticles();
+                }
 
-            foreach (Monster Monster in this.Monsters)
-            {
-                Monster.MonsterUpdate();
-            }
-            foreach (Archer archer in this.Archers)
-            {
-                archer.UpdateArcher(this);
-            }
-            foreach (Ghost ghost in this.Ghosts)
-            {
-                ghost.UpdateGhost(this, this._mainCharacter);
-            }
-            foreach (Wizard wizard in this.Wizards)
-            {
-                wizard.WizardUpdate(this._mainCharacter);
+                foreach (Monster Monster in this.Monsters)
+                {
+                    Monster.MonsterUpdate();
+                }
+                foreach (Archer archer in this.Archers)
+                {
+                    archer.UpdateArcher(this);
+                }
+                foreach (Ghost ghost in this.Ghosts)
+                {
+                    ghost.UpdateGhost(this, this._mainCharacter);
+                }
+                foreach (Wizard wizard in this.Wizards)
+                {
+                    wizard.WizardUpdate(this._mainCharacter);
+                } 
             }
 
             //details
@@ -622,11 +625,65 @@ namespace Game
         {
             BlockType type;
             StringBuilder level = new StringBuilder();
-            int tile = 0;
+            int tile = 0; //x
+            int y = 0;
+            bool monsterFlag = false;
+
 
             foreach (Block obstacle in this.LevelObstacles)
             {
                 type = obstacle.Type;
+                monsterFlag = false;
+
+                //monsters
+                foreach (var i in this.Monsters)
+                {
+                    if (i.Get32Position().X == tile && i.Get32Position().Y == y) { level.Append("@"); monsterFlag = true; }
+                }
+                foreach (var i in this.Archers)
+                {
+                    if (i.Get32Position().X == tile && i.Get32Position().Y == y)
+                    { 
+                        if (i.Direction == Movement.Left) { level.Append("<"); monsterFlag = true; }
+                        else { level.Append(">"); monsterFlag = true; }
+                    }
+                }
+                foreach (var i in this.Ghosts)
+                {
+                    if (i.Get32Position().X == tile && i.Get32Position().Y == y) { level.Append("f"); monsterFlag = true; }
+                }
+                foreach (var i in this.Wizards)
+                {
+                    if (i.Get32Position().X == tile && i.Get32Position().Y == y) { level.Append("%"); monsterFlag = true; }
+                }
+                //traps
+                foreach (var i in this.Traps)
+                {
+                    if (i.Get32Position().X == tile && i.Get32Position().Y == y)
+                    {
+                        switch (i.Type)
+                        {
+                            case TrapType.Crusher: { level.Append("H"); monsterFlag = true; break; }
+                            case TrapType.Spikes: { level.Append("_"); monsterFlag = true; break; }
+                            case TrapType.BlowTorchLeft: { level.Append("["); monsterFlag = true; break; }
+                            case TrapType.BlowTorchRight: { level.Append("]"); monsterFlag = true; break; }
+                        }
+                    }
+                }
+
+                if (monsterFlag)
+                {
+                    tile++;
+                    if (tile == this.LevelWidth + 1)
+                    {
+                        level.Remove(level.Length - 1, 1);
+                        level.Append("\n");
+                        tile = 0;
+                        y++;
+                    }
+                    continue;
+                }
+                //
 
                 switch (type)
                 {
@@ -788,6 +845,7 @@ namespace Game
                     level.Remove(level.Length - 1, 1);
                     level.Append("\n");
                     tile = 0;
+                    y++;
                 }
             }
             

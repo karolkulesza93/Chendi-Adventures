@@ -27,6 +27,8 @@ namespace Game
 
             this.DefaultClock = new Clock();
 
+            this.IsDead = false;
+            this.SetTextureRectanlge(0, 0, 32, 32);
             this.sGhost = new Sound(new SoundBuffer(@"sfx/ghost.wav"));
             this.sGhost.Volume = 40;
         }

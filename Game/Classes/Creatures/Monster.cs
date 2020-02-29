@@ -24,6 +24,8 @@ namespace Game
                 new Vector2i(0,32),
                 new Vector2i(32,32)
                 );
+
+            this.SetTextureRectanlge(0, 0, 32, 32);
             this.IsDead = false;
         }
         public override void UpdateTextures()

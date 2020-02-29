@@ -6,6 +6,7 @@
         {
             MainGameWindow GameWindow = new MainGameWindow("Chendi Adventures");
             GameWindow.GameStart();
+            return;
         }
     }
 }

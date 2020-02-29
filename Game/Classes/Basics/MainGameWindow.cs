@@ -7,6 +7,7 @@ using SFML.Audio;
 
 /// <summary>
 /// do zrobienia:
+/// - poprawa crushera
 /// - levele
 /// - scenka na poczatek
 /// - settingsy (hotkeye?, poziom trudnosci?, rozdzielczosci?, vsync)
@@ -19,10 +20,12 @@ namespace Game
 {
     public sealed class MainGameWindow
     {
-        public static bool DevManipulation = true;
+        public static bool DevManipulation = false;
         //fields
-        /*signleton field*/ private static MainGameWindow _instance = null;
-        /*signleton field*/ private static readonly object _padlock = new object();
+        /*signleton field*/
+        private static MainGameWindow _instance = null;
+        /*signleton field*/
+        private static readonly object _padlock = new object();
         private RenderWindow _window;
 
         private Music _mainTheme;
@@ -65,7 +68,7 @@ namespace Game
         //window size (1920 x 1080)
         private readonly int _windowWidth = 1920;
         private readonly int _windowHeight = 1080;
-        private readonly Styles _windowStyle = Styles.Fullscreen;
+        private Styles _windowStyle = Styles.Fullscreen;
         private View _view;
         //properties
         /*signleton property*/
@@ -95,7 +98,8 @@ namespace Game
         }
         public MainGameWindow(string title) : this()
         {
-            // 34 x 60 tiles >> 17 x 30? 
+            this.DevManip();
+
             this.Title = title;
             this._window = new RenderWindow(new VideoMode((uint)this._windowWidth, (uint)this._windowHeight), this.Title, this._windowStyle);
             this._window.SetFramerateLimit(60);
@@ -136,6 +140,10 @@ namespace Game
         }
         private void LoadContents()
         {
+            this._menuTheme = new Music("sfx/menutheme.wav");
+            this._menuTheme.Loop = true;
+            this._menuTheme.Volume = 40;
+
             this._mainTheme = new Music("sfx/main theme.wav");
             this._mainTheme.Loop = true;
             this._mainTheme.Volume = 30;
@@ -226,9 +234,9 @@ namespace Game
                 if (choice == 5) choice = 1;
 
                 Resolution.ChangeColor(Color.White);
-                Vsync.ChangeColor(Color.White); 
+                Vsync.ChangeColor(Color.White);
                 Difficulty.ChangeColor(Color.White);
-                KeyBindings.ChangeColor(Color.White); 
+                KeyBindings.ChangeColor(Color.White);
 
                 switch (choice)
                 {
@@ -306,10 +314,6 @@ namespace Game
         }
         private void MainMenuLoop()
         {
-            this._menuTheme = new Music("sfx/menutheme.wav");
-            this._menuTheme.Loop = true;
-            this._menuTheme.Volume = 40;
-
             this._start = new TextLine("NEW GAME", 50, 50, 790, Color.Green);
             this._highscores = new TextLine("HIGHSCORES", 50, 50, 850, Color.White);
             this._settings = new TextLine("SETTINGS", 50, 50, 910, Color.White);
@@ -325,6 +329,11 @@ namespace Game
             while (this._window.IsOpen && this.isMenu)
             {
                 this.ResetWindow();
+
+                //secret keys to enter level editor
+                if (Keyboard.IsKeyPressed(Keyboard.Key.LShift) && Keyboard.IsKeyPressed(Keyboard.Key.LAlt) && Keyboard.IsKeyPressed(Keyboard.Key.L))
+                    this.LevelEditor();
+                //
 
                 this._start.ChangeColor(Color.White);
                 this._highscores.ChangeColor(Color.White);
@@ -352,7 +361,7 @@ namespace Game
                 if (choice == 0) choice = 4;
                 if (choice == 5) choice = 1;
 
-                switch(choice)
+                switch (choice)
                 {
                     case 1: { this._start.ChangeColor(Color.Green); break; }
                     case 2: { this._highscores.ChangeColor(Color.Green); break; }
@@ -375,7 +384,7 @@ namespace Game
             /// SET LEVEL FOR TESTING
             //this._level.LevelNumber = 17;
             ///
-            
+
             this._level.LoadLevel(string.Format("lvl{0}", this._level.LevelNumber));
 
             this._chendi.SetStartingPosition(this._level);
@@ -425,9 +434,9 @@ namespace Game
                         if (flag == true) delay++;
                         if (delay > 10) { delay = 0; flag = false; }
 
-                        if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Up) || Keyboard.IsKeyPressed(Keyboard.Key.Down))) 
-                        { 
-                            this._chendi.sAtk.Play(); 
+                        if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Up) || Keyboard.IsKeyPressed(Keyboard.Key.Down)))
+                        {
+                            this._chendi.sAtk.Play();
                             flag = true; choice = !choice;
                             if (choice)
                             {
@@ -444,7 +453,7 @@ namespace Game
                         {
                             flag = true;
                             this._chendi.sCoin.Play();
-                            
+
                             if (choice)
                             {
                                 this.isGame = false;
@@ -472,7 +481,7 @@ namespace Game
                 if (this.isPaused) PauseLoop();
             }
             this._mainTheme.Stop();
-            
+
             if (!this._chendi.OutOfLives && this._chendi.IsDead) //death
             {
                 this.DrawLoadingScreen();
@@ -522,9 +531,9 @@ namespace Game
 
                 //draw summary
                 this._chendi.SetTextureRectanlge(96, 96, 32, 32);
-                
+
             }
-            
+
             Clock timer = new Clock();
             timer.Restart();
             this._chendi.sImmortality.Stop();
@@ -573,7 +582,7 @@ namespace Game
             this.SetView(new Vector2f(this._windowWidth, this._windowHeight), new Vector2f(this._windowWidth / 2, this._windowHeight / 2));
             this.ResetWindow();
 
-            
+
 
             this._window.Draw(this._loading);
             this._window.Display();
@@ -659,6 +668,146 @@ namespace Game
             //textures
             //skip button
             //clear draw display
+        }
+        private void LevelEditor()
+        {
+            this._menuTheme.Stop();
+            this._level.LoadLevel(string.Format("edit", this._level.LevelNumber));
+            
+            Sprite choice = new Sprite(new Texture(@"img/edit.png"));
+            choice.Position = new Vector2f(32, 32);
+            
+            RectangleShape cover = new RectangleShape(new Vector2f(1000, 500));
+            cover.FillColor = Color.Black;
+            cover.Position = new Vector2f(-201, -501);
+
+            TextLine warning = new TextLine("TRAPS AND MONSTERS CAN ONLY BE ADDED MANUALLY USING TEXT EDITOR", 10, 0, -20, Color.Magenta);
+            TextLine position = new TextLine("", 10, 0, 0, Color.Yellow);
+
+            this._chendi.SetPosition(-100, -100);
+            this._chendiUI.ResetPositions();
+
+            this._window.SetKeyRepeatEnabled(false);
+
+            int x = 1;
+            int y = 1;
+            bool flag = false;
+            int delay = 0;
+
+            bool view = true;
+
+            BlockType type = 0;
+
+            Random rnd = new Random();
+
+            while (this._window.IsOpen)
+            {
+                this.ResetWindow();
+                // moving editor
+                if (!flag && x >1 && Keyboard.IsKeyPressed(Keyboard.Key.Left))
+                { x--; flag = true; _chendi.sAtk.Play(); }
+                if (!flag && x < this._level.LevelWidth-2 && Keyboard.IsKeyPressed(Keyboard.Key.Right))
+                { x++; flag = true; _chendi.sAtk.Play(); }
+                if (!flag && y > 1 && Keyboard.IsKeyPressed(Keyboard.Key.Up))
+                { y--; flag = true; _chendi.sAtk.Play(); }
+                if (!flag && y < this._level.LevelHeight-2 && Keyboard.IsKeyPressed(Keyboard.Key.Down))
+                { y++; flag = true; _chendi.sAtk.Play(); }
+
+                type = this._level.GetObstacle(x, y).Type;
+
+                //changes
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.X))
+                { 
+                    flag = true; 
+                    this._chendi.sCoin.Play();
+
+                    type++;
+                    if (type == (BlockType)29) type = 0;
+
+                    if ((type >= (BlockType)0 && type <= (BlockType)12))
+                    { this._level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture; this._level.GetObstacle(x, y).UseTexture(); }
+                    else if (type >= (BlockType)13 && type <= (BlockType)22)
+                    { this._level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture; this._level.GetObstacle(x, y).UseTexture(); }
+                    else
+                    { this._level.GetObstacle(x, y).LoadedTexture = Entity.DetailsTexture; this._level.GetObstacle(x, y).UseTexture(); }
+
+                    this._level.GetObstacle(x, y).Type = type;
+                    this._level.GetObstacle(x, y).SetBlock(type);
+                }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Z))
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+
+                    if (type > 0) type--;
+                    else type = (BlockType)28;
+
+                    if ((type >= (BlockType)0 && type <= (BlockType)12))
+                    { this._level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture; this._level.GetObstacle(x, y).UseTexture(); }
+                    else if (type >= (BlockType)13 && type <= (BlockType)22)
+                    { this._level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture; this._level.GetObstacle(x, y).UseTexture(); }
+                    else
+                    { this._level.GetObstacle(x, y).LoadedTexture = Entity.DetailsTexture; this._level.GetObstacle(x, y).UseTexture(); }
+
+                    this._level.GetObstacle(x, y).Type = type;
+                    this._level.GetObstacle(x, y).SetBlock(type);
+                }
+
+                //viem manip
+                if (view && !flag && Keyboard.IsKeyPressed(Keyboard.Key.A)) 
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+                    view = false;
+                }
+                if (!view && !flag && Keyboard.IsKeyPressed(Keyboard.Key.S)) 
+                {
+                    flag = true;
+                    this._chendi.sCoin.Play();
+                    view = true;
+                }
+
+                choice.Position = new Vector2f(x * 32, y * 32);
+                position.MoveText(choice.Position.X + 34, choice.Position.Y - 12);
+                position.EditText(string.Format("{0},{1}", x, y));
+
+                if (view ) this.SetView(new Vector2f(this._windowWidth/2, this._windowHeight/2), new Vector2f(choice.Position.X-16, choice.Position.Y+16));
+                else this.SetView(new Vector2f(this._windowWidth, this._windowHeight), new Vector2f(choice.Position.X + 16, choice.Position.Y + 16));
+
+                choice.Color = new Color((byte)rnd.Next(100,255), (byte)rnd.Next(100, 255), (byte)rnd.Next(100, 255));
+                //
+
+                if (flag) delay++;
+                if (flag && delay > 9) { flag = false; delay = 0; }
+
+                this._level.LevelUpdate();
+
+                this.DrawGame(this._chendi, false);
+                this._window.Draw(choice);
+                this._window.Draw(position);
+                this._window.Draw(cover);
+                this._window.Draw(warning);
+                this._window.Display();
+                //exit
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape)) { this.DrawLoadingScreen(); this._level.SaveLevel(); break; } 
+            }
+            this._window.SetKeyRepeatEnabled(true);
+            this.SetView(new Vector2f(this._windowWidth, this._windowHeight), new Vector2f(this._windowWidth / 2, this._windowHeight / 2));
+            this._menuTheme.Play();
+        }
+        private void DevManip()
+        {
+            string answer;
+            if (DevManipulation)
+            {
+                Console.WriteLine("Chendi Adventures Manipulation:");
+
+                Console.Write("Play on fullscreen? (y/n)\n>"); answer = Console.ReadLine();
+                if (answer == "y") this._windowStyle = Styles.Fullscreen;
+                else this._windowStyle = Styles.Resize;
+
+                //Console.Write("Choose level\n> "); answer = Console.ReadLine();
+            }
         }
     }
 }

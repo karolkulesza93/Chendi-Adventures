@@ -330,6 +330,14 @@ namespace Game
                                 obstacle.DeletePickup();
                                 break;
                             }
+                        case BlockType.TripleMana:
+                            {
+                                this.AddToScore(level, 1000, obstacle.X, obstacle.Y);
+                                this.Mana += 3;
+                                this.sCoin.Play();
+                                obstacle.DeletePickup();
+                                break;
+                            }
                         case BlockType.Score1000:
                             {
                                 this.AddToScore(level, 1000, obstacle.X, obstacle.Y);
@@ -527,13 +535,13 @@ namespace Game
             {
                 if (this._immortalityAnimationCounter > 255) this._immortalityAnimationFlag = false;
                 this._immortalityAnimationCounter += 20;
-                this.SetColor(new Color(255, 255, this._immortalityAnimationCounter));
+                this.SetColor(new Color(255, 255, 255, this._immortalityAnimationCounter));
             }
             else
             {
                 if (this._immortalityAnimationCounter < 0) this._immortalityAnimationFlag = true;
                 this._immortalityAnimationCounter -= 20;
-                this.SetColor(new Color(255, 255, this._immortalityAnimationCounter));
+                this.SetColor(new Color(255, 255, 255, this._immortalityAnimationCounter));
             }
         }
         public void Respawn(Level level)

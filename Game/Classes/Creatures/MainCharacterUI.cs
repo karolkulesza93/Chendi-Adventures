@@ -106,5 +106,20 @@ namespace Game
             target.Draw(this.ManaBottle, states);
             target.Draw(this.Coins3, states);
         }
+        public void ResetPositions()
+        {
+            this.LivesCount.MoveText(-100, -100);
+            this.Score.MoveText(-100, -100);
+            this.CurrentLevel.MoveText(-100, -100);
+            this.Arrows.MoveText(-100, -100);
+            this.Mana.MoveText(-100, -100);
+            this.Coins.MoveText(-100, -100);
+
+            this.SilverKey.Position = new Vector2f(-100, -100);
+            this.GoldenKey.Position = new Vector2f(-100, -100);
+            this.Arrow.Position = new Vector2f(-100, -100);
+            this.ManaBottle.Position = new Vector2f(-100, -100);
+            this.Coins3.Position = new Vector2f(-100, -100);
+        }
     }
 }

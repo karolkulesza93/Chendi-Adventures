@@ -22,6 +22,10 @@ namespace Game
             this.IsDestroyed = false;
             this.HintNumber = hintNumber;
 
+            SetBlock(type);
+        }
+        public void SetBlock(BlockType type)
+        {
             switch (type)
             {
                 case BlockType.Brick:
@@ -89,6 +93,19 @@ namespace Game
                             new Vector2i(32, 192)
                             );
                         this.SetTextureRectanlge(0, 128, 32, 32);
+                        break;
+                    }
+                case BlockType.TripleMana:
+                    {
+                        this.BlockAnimation = new Animation(this, 0.05f,
+                            new Vector2i(0, 288),
+                            new Vector2i(32, 288),
+                            new Vector2i(64, 288),
+                            new Vector2i(96, 288),
+                            new Vector2i(64, 288),
+                            new Vector2i(32, 288)
+                            );
+                        this.SetTextureRectanlge(0, 288, 32, 32);
                         break;
                     }
                 case BlockType.Score1000:
@@ -209,7 +226,7 @@ namespace Game
                     }
                 case BlockType.Hint:
                     {
-                        this.Hint = new TextLine("", 8, -100, -100, new SFML.Graphics.Color(255,255,255,0));
+                        this.Hint = new TextLine("", 8, -100, -100, new SFML.Graphics.Color(255, 255, 255, 0));
                         this.Hint.SetOutlineThickness(0.8f);
                         this.SetTextureRectanlge(32, 0, 32, 32);
                         break;

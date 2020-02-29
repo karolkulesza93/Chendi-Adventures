@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.IO;
 using SFML.Graphics;
@@ -31,7 +32,7 @@ namespace Game
         private MainCahracter _mainCharacter;
         public Clock LevelTime { get; set; }
         public int MonsterCount { get; set; }
-
+        public string Content { get; set; }
         public List<BlockType> UnableToPassl;
         public int LevelLenght { get; private set; }
         public int LevelWidth { get; private set; }
@@ -105,10 +106,9 @@ namespace Game
 
             int hintNumber = 0;
 
-            string content = "";
             try
             {
-                content = File.ReadAllText(@"levels/" + level + @".txt");
+                this.Content = File.ReadAllText(@"levels/" + level + @".txt");
             }
             catch (Exception)
             {
@@ -122,7 +122,7 @@ namespace Game
 
             //Console.WriteLine("Level txt loaded, generating level...");
 
-            foreach (char tile in content)
+            foreach (char tile in this.Content)
             {
                 //air and bricks
                 if (tile == '\n') { this.LevelHeight++; this.LevelLenght = X; Y++; X = 0; continue; }
@@ -252,6 +252,11 @@ namespace Game
                             this.LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Mana));
                             break;
                         }
+                    case 'M':
+                        {
+                            this.LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Mana));
+                            break;
+                        }
                     //details
                     case '!':
                         {
@@ -375,7 +380,8 @@ namespace Game
                     obstacle.Type == BlockType.GoldenKey || obstacle.Type == BlockType.Life ||
                     obstacle.Type == BlockType.Score5000 || obstacle.Type == BlockType.Arrow ||
                     obstacle.Type == BlockType.TripleArrow || obstacle.Type == BlockType.Score1000 ||
-                    obstacle.Type == BlockType.Mana || obstacle.Type == BlockType.Torch)
+                    obstacle.Type == BlockType.Mana || obstacle.Type == BlockType.Torch || 
+                    obstacle.Type == BlockType.TripleMana)
                     obstacle.BlockAnimation.Animate();
 
                 if (obstacle.Type == BlockType.Stone)
@@ -559,8 +565,8 @@ namespace Game
                                 }
                             case 2:
                                 {
-                                    this.ShowHint(obstacle, String.Format("MANA POTION CAN BE USED IN TWO WAYS:\nTO ENCHANT YOUR ARROWS BY PRESSING {0}\n" +
-                                        "OR BECOME INVINCIBLE FOR\nA COUPLE OF SECONDS BY PRESSING {1}", character.KeyTHUNDER.ToString(), character.KeyIMMORTALITY.ToString()),
+                                    this.ShowHint(obstacle, String.Format("MANA POTION CAN BE USED IN TWO WAYS:\nTO ENCHANT YOUR ARROWS BY PRESSING '{0}'\n" +
+                                        "OR BECOME INVINCIBLE FOR\nA COUPLE OF SECONDS BY PRESSING '{1}'", character.KeyTHUNDER.ToString(), character.KeyIMMORTALITY.ToString()),
                                         -60, -44);
                                     break;
                                 }
@@ -611,6 +617,181 @@ namespace Game
         public void AddParticleEffect(ParticleEffect effect)
         {
             this.Particles.Add(effect);
+        }
+        public void SaveLevel()
+        {
+            BlockType type;
+            StringBuilder level = new StringBuilder();
+            int tile = 0;
+
+            foreach (Block obstacle in this.LevelObstacles)
+            {
+                type = obstacle.Type;
+
+                switch (type)
+                {
+                    case BlockType.Brick:
+                        {
+                            level.Append("W");
+                            break;
+                        }
+                    case BlockType.Spike:
+                        {
+                            level.Append("#");
+                            break;
+                        }
+                    case BlockType.Enterance:
+                        {
+                            level.Append("v");
+                            break;
+                        }
+                    case BlockType.Coin:
+                        {
+                            level.Append("o");
+                            break;
+                        }
+                    case BlockType.Life:
+                        {
+                            level.Append("L");
+                            break;
+                        }
+                    case BlockType.Arrow:
+                        {
+                            level.Append("a");
+                            break;
+                        }
+                    case BlockType.TripleArrow:
+                        {
+                            level.Append("A");
+                            break;
+                        }
+                    case BlockType.TripleMana:
+                        {
+                            level.Append("M");
+                            break;
+                        }
+                    case BlockType.Score1000:
+                        {
+                            level.Append("0");
+                            break;
+                        }
+                    case BlockType.Mana:
+                        {
+                            level.Append("m");
+                            break;
+                        }
+                    case BlockType.Score5000:
+                        {
+                            level.Append("5");
+                            break;
+                        }
+                    case BlockType.Stone:
+                        {
+                            level.Append("X");
+                            break;
+                        }
+                    case BlockType.Illusion:
+                        {
+                            level.Append("=");
+                            break;
+                        }
+                    case BlockType.Wood:
+                        {
+                            level.Append("R");
+                            break;
+                        }
+                    case BlockType.Trampoline:
+                        {
+                            level.Append("T");
+                            break;
+                        }
+                    case BlockType.Exit:
+                        {
+                            level.Append("^");
+                            break;
+                        }
+                    case BlockType.SilverDoor:
+                        {
+                            level.Append("S");
+                            break;
+                        }
+                    case BlockType.SilverKey:
+                        {
+                            level.Append("s");
+                            break;
+                        }
+                    case BlockType.GoldDoor:
+                        {
+                            level.Append("G");
+                            break;
+                        }
+                    case BlockType.GoldenKey:
+                        {
+                            level.Append("g");
+                            break;
+                        }
+                    //teleports
+                    case BlockType.Teleport1:
+                        {
+                            level.Append("1");
+                            break;
+                        }
+                    case BlockType.Teleport2:
+                        {
+                            level.Append("2");
+                            break;
+                        }
+                    case BlockType.Warning:
+                        {
+                            level.Append("!");
+                            break;
+                        }
+                    case BlockType.Hint:
+                        {
+                            level.Append("?");
+                            break;
+                        }
+                    case BlockType.LSpiderweb:
+                        {
+                            level.Append("/");
+                            break;
+                        }
+                    case BlockType.RSpiderweb:
+                        {
+                            level.Append("\\");
+                            break;
+                        }
+                    case BlockType.Torch:
+                        {
+                            level.Append("*");
+                            break;
+                        }
+                    case BlockType.EvilEyes:
+                        {
+                            level.Append(",");
+                            break;
+                        }
+                    case BlockType.None:
+                        {
+                            level.Append(".");
+                            break;
+                        }
+                    default:
+                        {
+                            //level.Append(".");
+                            break;
+                        }
+                }
+                tile++;
+                if (tile == this.LevelWidth + 1)
+                {
+                    level.Remove(level.Length - 1, 1);
+                    level.Append("\n");
+                    tile = 0;
+                }
+            }
+            
+            File.WriteAllText("levels/new.txt", level.ToString());
         }
     }
 }

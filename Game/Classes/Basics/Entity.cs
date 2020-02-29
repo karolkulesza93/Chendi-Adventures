@@ -53,6 +53,10 @@ namespace Game
         {
             this._EntitySprite.TextureRect = this._TextureRectangle;
         }
+        public void UseTexture()
+        {
+            this._EntitySprite.Texture = LoadedTexture;
+        }
         public Entity(float x = 0, float y = 0, Texture texture = null)
         {
             try { this.LoadedTexture = texture; } //załagodwanie textury

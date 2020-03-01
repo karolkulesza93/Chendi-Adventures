@@ -725,13 +725,13 @@ namespace Game
                     this._chendi.sCoin.Play();
 
                     type++;
-                    if (type == (BlockType)29) type = 0;
+                    if (type == (BlockType)30) type = 0;
 
                     type_m = type;
 
                     if ((type >= (BlockType)0 && type <= (BlockType)12))
                     { this._level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture; this._level.GetObstacle(x, y).UseTexture(); }
-                    else if (type >= (BlockType)13 && type <= (BlockType)22)
+                    else if (type >= (BlockType)13 && type <= (BlockType)23)
                     { this._level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture; this._level.GetObstacle(x, y).UseTexture(); }
                     else
                     { this._level.GetObstacle(x, y).LoadedTexture = Entity.DetailsTexture; this._level.GetObstacle(x, y).UseTexture(); }
@@ -745,13 +745,13 @@ namespace Game
                     this._chendi.sCoin.Play();
 
                     if (type > 0) type--;
-                    else type = (BlockType)28;
+                    else type = (BlockType)29;
 
                     type_m = type;
 
                     if ((type >= (BlockType)0 && type <= (BlockType)12))
                     { this._level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture; this._level.GetObstacle(x, y).UseTexture(); }
-                    else if (type >= (BlockType)13 && type <= (BlockType)22)
+                    else if (type >= (BlockType)13 && type <= (BlockType)23)
                     { this._level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture; this._level.GetObstacle(x, y).UseTexture(); }
                     else
                     { this._level.GetObstacle(x, y).LoadedTexture = Entity.DetailsTexture; this._level.GetObstacle(x, y).UseTexture(); }
@@ -767,7 +767,7 @@ namespace Game
 
                     if ((type_m >= (BlockType)0 && type_m <= (BlockType)12))
                     { this._level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture; this._level.GetObstacle(x, y).UseTexture(); }
-                    else if (type_m >= (BlockType)13 && type_m <= (BlockType)22)
+                    else if (type_m >= (BlockType)13 && type_m <= (BlockType)23)
                     { this._level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture; this._level.GetObstacle(x, y).UseTexture(); }
                     else
                     { this._level.GetObstacle(x, y).LoadedTexture = Entity.DetailsTexture; this._level.GetObstacle(x, y).UseTexture(); }
@@ -896,7 +896,7 @@ namespace Game
                 if (flag) delay++;
                 if (flag && delay > 9) { flag = false; delay = 0; }
 
-                this._level.LevelUpdate();
+                this._level.LevelUpdate(true);
 
                 this.DrawGame(this._chendi, false);
                 this._window.Draw(choice);

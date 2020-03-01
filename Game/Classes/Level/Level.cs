@@ -218,6 +218,11 @@ namespace Game
                             this.LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Coin));
                             break;
                         }
+                    case '$':
+                        {
+                            this.LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.SackOfGold));
+                            break;
+                        }
                     // life
                     case 'L':
                         {
@@ -381,7 +386,7 @@ namespace Game
                     obstacle.Type == BlockType.Score5000 || obstacle.Type == BlockType.Arrow ||
                     obstacle.Type == BlockType.TripleArrow || obstacle.Type == BlockType.Score1000 ||
                     obstacle.Type == BlockType.Mana || obstacle.Type == BlockType.Torch || 
-                    obstacle.Type == BlockType.TripleMana)
+                    obstacle.Type == BlockType.TripleMana || obstacle.Type == BlockType.SackOfGold)
                     obstacle.BlockAnimation.Animate();
 
                 if (obstacle.Type == BlockType.Stone)
@@ -395,7 +400,7 @@ namespace Game
                         obstacle.SetTextureRectanlge(64, 32, 32, 32);
             }
 
-            if (!IsLevelEditor && !this._mainCharacter.IsDead)
+            if (IsLevelEditor == false)
             {
                 foreach (Trap trap in this.Traps)
                 {
@@ -785,6 +790,11 @@ namespace Game
                     case BlockType.GoldenKey:
                         {
                             level.Append("g");
+                            break;
+                        }
+                    case BlockType.SackOfGold:
+                        {
+                            level.Append("$");
                             break;
                         }
                     //teleports

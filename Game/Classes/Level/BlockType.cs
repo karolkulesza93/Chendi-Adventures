@@ -27,12 +27,13 @@
         TripleArrow = 20,
         SilverKey = 21,
         GoldenKey = 22,
+        SackOfGold = 23,
         //details
-        Warning = 23,
-        Hint = 24,
-        Torch = 25,
-        LSpiderweb = 26,
-        RSpiderweb = 27,
-        EvilEyes = 28,
+        Warning = 24,
+        Hint = 25,
+        Torch = 26,
+        LSpiderweb = 27,
+        RSpiderweb = 28,
+        EvilEyes = 29,
     }
 }

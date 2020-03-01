@@ -56,6 +56,17 @@ namespace Game
                         this.SetTextureRectanlge(0, 0, 32, 32);
                         break;
                     }
+                case BlockType.SackOfGold:
+                    {
+                        this.BlockAnimation = new Animation(this, 0.05f,
+                            new Vector2i(0, 320),
+                            new Vector2i(32, 320),
+                            new Vector2i(64, 320),
+                            new Vector2i(96, 320)
+                            );
+                        this.SetTextureRectanlge(0, 320, 32, 32);
+                        break;
+                    }
                 case BlockType.Life:
                     {
                         this.BlockAnimation = new Animation(this, 0.05f,
@@ -79,7 +90,7 @@ namespace Game
                             new Vector2i(64, 160),
                             new Vector2i(32, 160)
                             );
-                        this.SetTextureRectanlge(0, 128, 32, 32);
+                        this.SetTextureRectanlge(0, 160, 32, 32);
                         break;
                     }
                 case BlockType.TripleArrow:
@@ -92,7 +103,7 @@ namespace Game
                             new Vector2i(64, 192),
                             new Vector2i(32, 192)
                             );
-                        this.SetTextureRectanlge(0, 128, 32, 32);
+                        this.SetTextureRectanlge(0, 192, 32, 32);
                         break;
                     }
                 case BlockType.TripleMana:
@@ -118,7 +129,7 @@ namespace Game
                             new Vector2i(64, 224),
                             new Vector2i(32, 224)
                             );
-                        this.SetTextureRectanlge(0, 128, 32, 32);
+                        this.SetTextureRectanlge(0, 244, 32, 32);
                         break;
                     }
                 case BlockType.Mana:

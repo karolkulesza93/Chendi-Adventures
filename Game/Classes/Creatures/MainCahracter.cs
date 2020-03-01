@@ -314,6 +314,14 @@ namespace Game
                                 obstacle.DeletePickup();
                                 break;
                             }
+                        case BlockType.SackOfGold:
+                            {
+                                this.AddToScore(level, 1000, obstacle.X, obstacle.Y);
+                                this.sCoin.Play();
+                                this.Coins += 10;
+                                obstacle.DeletePickup();
+                                break;
+                            }
                         case BlockType.Life:
                             {
                                 this.AddToScore(level, 500, obstacle.X, obstacle.Y);

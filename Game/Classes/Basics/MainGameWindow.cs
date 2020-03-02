@@ -22,7 +22,7 @@ namespace Game
 {
     public sealed class MainGameWindow
     {
-        public static bool DevManipulation = true;
+        public static bool DevManipulation = false;
         //fields
         /*signleton field*/
         private static MainGameWindow _instance = null;
@@ -681,7 +681,7 @@ namespace Game
             
             RectangleShape cover = new RectangleShape(new Vector2f(1000, 500));
             cover.FillColor = Color.Black;
-            cover.Position = new Vector2f(-201, -501);
+            cover.Position = new Vector2f(-201, -520);
 
             TextLine position = new TextLine("", 10, 0, 0, Color.Yellow);
             TextLine instructions = new TextLine(File.ReadAllText(@"levels/instructions.dat"), 10, -300, 0, Color.White);
@@ -862,6 +862,28 @@ namespace Game
                 //clear traps
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F7)) { flag = true; Creature.sKill.Play(); this._level.Traps.Clear(); }
 
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F12))
+                {
+                    flag = true;
+                    Creature.sKill.Play();
+
+                    for (x = 1; x < this._level.LevelWidth - 2; x++)
+                    {
+                        for (y=1; y < this._level.LevelHeight - 2; y++)
+                        {
+                            type = BlockType.None;
+
+                            this._level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture;
+                            this._level.GetObstacle(x, y).UseTexture();
+
+                            this._level.GetObstacle(x, y).Type = type;
+                            this._level.GetObstacle(x, y).SetBlock(type);
+                        }
+                    }
+
+                    x = 1; y = 1;
+                }
+
                 //viem manip (+/-)
                 if (view && !flag && Keyboard.IsKeyPressed(Keyboard.Key.A)) 
                 {
@@ -883,13 +905,13 @@ namespace Game
                 }
 
                 choice.Position = new Vector2f(x * 32, y * 32);
-                position.MoveText(choice.Position.X + 34, choice.Position.Y - 24);
-                position.EditText(string.Format("{0}\n{1},{2}", this._level.GetObstacle(x, y).Type.ToString().ToUpper(), x, y));
+                position.MoveText(choice.Position.X + 34, choice.Position.Y - 36);
+                position.EditText(string.Format("{0}\nX:{1}:{2}\nY:{3}:{4}", this._level.GetObstacle(x, y).Type.ToString().ToUpper(), x, this._level.LevelWidth -2 ,y,this._level.LevelHeight - 2));
 
                 if (view ) this.SetView(new Vector2f(this._windowWidth/2, this._windowHeight/2), new Vector2f(choice.Position.X-16, choice.Position.Y+16));
                 else this.SetView(new Vector2f(this._windowWidth, this._windowHeight), new Vector2f(choice.Position.X + 16, choice.Position.Y + 16));
 
-                choice.Color = new Color((byte)rnd.Next(100,255), (byte)rnd.Next(100, 255), (byte)rnd.Next(100, 255));
+                //choice.Color = new Color((byte)rnd.Next(100,255), (byte)rnd.Next(100, 255), (byte)rnd.Next(100, 255));
                 //
 
                 if (flag) delay++;

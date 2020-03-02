@@ -38,15 +38,12 @@ namespace Game
         public int LevelWidth { get; private set; }
         public int LevelHeight { get; private set; }
         public int LevelNumber { get; set; }
-        public int LastLevelNumber { get; private set; }
         public int StartScore { get; set; }
         public int StartCoins { get; set; }
         public int StartArrows { get; set; }
         public int StartMana { get; set; }
         public Level(MainCahracter character)
         {
-            this.LastLevelNumber = 9;
-
             this._mainCharacter = character;
 
             this.ScoreAdditionEffects = new List<ScoreAdditionEffect>();
@@ -97,7 +94,7 @@ namespace Game
 
             this.UnableToPassl = new List<BlockType>() { BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor };
 
-            //Console.WriteLine("Entuty lists cleared");
+            //Console.WriteLine("Entity lists cleared");
 
             this.LevelHeight = 0;
             this.LevelLenght = 0;
@@ -858,6 +855,8 @@ namespace Game
                 }
             }
             File.WriteAllText("levels/edit.txt", level.ToString());
+            File.WriteAllText("levels/lvl0.txt", level.ToString());
+            this.LevelNumber = 0;
         }
     }
 }

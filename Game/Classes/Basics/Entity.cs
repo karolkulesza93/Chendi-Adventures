@@ -1,12 +1,11 @@
-﻿using SFML.Graphics;
+﻿using System;
+using SFML.Graphics;
 using SFML.System;
 
 namespace Game
 {
     public abstract class Entity : Drawable
     {
-        private Sprite _EntitySprite; //głowny obiekt na ekranie
-
         //textyres
         public static Texture ArcherTexture = new Texture(@"img/archer.png");
         public static Texture ArrowTexture = new Texture(@"img/arrow.png");
@@ -19,67 +18,100 @@ namespace Game
         public static Texture TilesTexture = new Texture(@"img/tiles.png");
         public static Texture TrapsTexture = new Texture(@"img/traps.png");
         public static Texture WizardTexture = new Texture(@"img/wizard.png");
-           
+        private readonly Sprite _EntitySprite; //głowny obiekt na ekranie
+
         private IntRect _TextureRectangle;
-        public Texture LoadedTexture { get; set; } //tekstura ladowana z pliku
-        public float X //pozycja X
-        {
-            get { return this._EntitySprite.Position.X; }
-            set { this._EntitySprite.Position = new Vector2f(value, this._EntitySprite.Position.Y); }
-        }
-        public float Y //pozycja Y
-        {
-            get { return this._EntitySprite.Position.Y; }
-            set { this._EntitySprite.Position = new Vector2f(this._EntitySprite.Position.X, value); }
-        }
-        public float Left { get { return this.X; } }
-        public float Right { get { return this.X + this.Width; } }
-        public float Top { get { return this.Y; } }
-        public float Bottom { get { return this.Y + this.Height; } }
-        public float Width { get { return this._EntitySprite.TextureRect.Width; } } //szerokość
-        public float Height { get { return this._EntitySprite.TextureRect.Height; } } //wysokość
-        public virtual void Draw(RenderTarget target, RenderStates states) { target.Draw(this._EntitySprite, states); } //implementacja interfejsu drawable
-        public virtual void SetPosition(float x, float y) { this.X = x; this.Y = y; } //ustawienie pozycji
-        public FloatRect GetBoundingBox() { return this._EntitySprite.GetGlobalBounds(); }
-        public void SetTextureRectanlge(int x, int y, int width, int height)
-        {
-            this._TextureRectangle.Left = x;
-            this._TextureRectangle.Top = y;
-            this._TextureRectangle.Width = width;
-            this._TextureRectangle.Height = height;
-            this.SetTexture();
-        }
-        private void SetTexture()
-        {
-            this._EntitySprite.TextureRect = this._TextureRectangle;
-        }
-        public void UseTexture()
-        {
-            this._EntitySprite.Texture = LoadedTexture;
-        }
+
         public Entity(float x = 0, float y = 0, Texture texture = null)
         {
-            try { this.LoadedTexture = texture; } //załagodwanie textury
-            catch (System.Exception) { System.Console.WriteLine("Something went wrong, as always :)"); }
-            this._TextureRectangle = new IntRect(0, 0, 0, 0);
-            this._EntitySprite = new Sprite(this.LoadedTexture, this._TextureRectangle); //przypisanie textury
-            this.SetPosition(x, y);
+            try
+            {
+                LoadedTexture = texture;
+            } //załagodwanie textury
+            catch (Exception)
+            {
+                Console.WriteLine("Something went wrong, as always :)");
+            }
+
+            _TextureRectangle = new IntRect(0, 0, 0, 0);
+            _EntitySprite = new Sprite(LoadedTexture, _TextureRectangle); //przypisanie textury
+            SetPosition(x, y);
         }
+
+        public Texture LoadedTexture { get; set; } //tekstura ladowana z pliku
+
+        public float X //pozycja X
+        {
+            get => _EntitySprite.Position.X;
+            set => _EntitySprite.Position = new Vector2f(value, _EntitySprite.Position.Y);
+        }
+
+        public float Y //pozycja Y
+        {
+            get => _EntitySprite.Position.Y;
+            set => _EntitySprite.Position = new Vector2f(_EntitySprite.Position.X, value);
+        }
+
+        public float Left => X;
+        public float Right => X + Width;
+        public float Top => Y;
+        public float Bottom => Y + Height;
+        public float Width => _EntitySprite.TextureRect.Width; //szerokość
+        public float Height => _EntitySprite.TextureRect.Height; //wysokość
+
+        public virtual void Draw(RenderTarget target, RenderStates states)
+        {
+            target.Draw(_EntitySprite, states);
+        } //implementacja interfejsu drawable
+
+        public virtual void SetPosition(float x, float y)
+        {
+            X = x;
+            Y = y;
+        } //ustawienie pozycji
+
+        public FloatRect GetBoundingBox()
+        {
+            return _EntitySprite.GetGlobalBounds();
+        }
+
+        public void SetTextureRectanlge(int x, int y, int width, int height)
+        {
+            _TextureRectangle.Left = x;
+            _TextureRectangle.Top = y;
+            _TextureRectangle.Width = width;
+            _TextureRectangle.Height = height;
+            SetTexture();
+        }
+
+        private void SetTexture()
+        {
+            _EntitySprite.TextureRect = _TextureRectangle;
+        }
+
+        public void UseTexture()
+        {
+            _EntitySprite.Texture = LoadedTexture;
+        }
+
         public Vector2f Get32Position()
         {
-            return new Vector2f((float)this.X/32, (float)this.Y/32);
+            return new Vector2f(X / 32, Y / 32);
         }
+
         public void Set32Position(float x, float y)
         {
-            this.SetPosition(32 * x, 32 * y);
+            SetPosition(32 * x, 32 * y);
         }
+
         public Vector2f GetCenterPosition()
         {
-            return new Vector2f(this.X + (float)0.5 * this.Width, this.Y + (float)0.5 * this.Height);
+            return new Vector2f(X + (float) 0.5 * Width, Y + (float) 0.5 * Height);
         }
+
         public void SetColor(Color color)
         {
-            this._EntitySprite.Color = color;
+            _EntitySprite.Color = color;
         }
     }
 }

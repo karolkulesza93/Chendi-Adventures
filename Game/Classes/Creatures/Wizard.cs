@@ -1,74 +1,78 @@
-﻿
+﻿using SFML.Graphics;
 using SFML.System;
-using SFML.Graphics;
 
 namespace Game
 {
     public class Wizard : Creature
     {
-        private Clock _defaultClock;
-        public EnergyBall EnergyBall { get; private set; }
+        private readonly Clock _defaultClock;
         public float XMaxPos;
         public float XMinPos;
-        public Wizard(float x, float y, Texture texture) : base(x,y,texture)
+
+        public Wizard(float x, float y, Texture texture) : base(x, y, texture)
         {
-            this._defaultClock = new Clock();
-            this.EnergyBall = new EnergyBall(-100, -100, WizardTexture);
+            _defaultClock = new Clock();
+            EnergyBall = new EnergyBall(-100, -100, WizardTexture);
 
-            this.XMinPos = x - 100;
-            this.XMaxPos = x + 100;
+            XMinPos = x - 100;
+            XMaxPos = x + 100;
 
-            this.SpeedX = 1f;
-            this.SpeedY = 0f;
+            SpeedX = 1f;
+            SpeedY = 0f;
 
-            this._animLeft = new Animation(this, 0.1f,
+            _animLeft = new Animation(this, 0.1f,
                 new Vector2i(0, 0),
                 new Vector2i(32, 0)
-                );
-            this._animRight = new Animation(this, 0.1f,
+            );
+            _animRight = new Animation(this, 0.1f,
                 new Vector2i(0, 32),
                 new Vector2i(32, 32)
-                );
+            );
 
-            this.SetTextureRectanlge(0, 0, 32, 32);
-            this.IsDead = false;
+            SetTextureRectanlge(0, 0, 32, 32);
+            IsDead = false;
         }
+
+        public EnergyBall EnergyBall { get; }
+
         public override void UpdateTextures()
         {
-            if (this.SpeedX > 0) this._animRight.Animate();
-            else this._animLeft.Animate();
+            if (SpeedX > 0) _animRight.Animate();
+            else _animLeft.Animate();
         }
-        public void WizardUpdate(MainCahracter character)
-        {
-            if (!this.IsDead)
-            {
-                this.X += this.SpeedX;
-                if (this.Left < this.XMinPos || this.Right > this.XMaxPos) this.SpeedX *= -1;
 
-                if (this._defaultClock.ElapsedTime.AsSeconds() > 10)
+        public void WizardUpdate(MainCharacter character)
+        {
+            if (!IsDead)
+            {
+                X += SpeedX;
+                if (Left < XMinPos || Right > XMaxPos) SpeedX *= -1;
+
+                if (_defaultClock.ElapsedTime.AsSeconds() > 10)
                 {
-                    this.EnergyBall.Attack(this.X + 8, this.Y + 8);
-                    this._defaultClock.Restart();
+                    EnergyBall.Attack(X + 8, Y + 8);
+                    _defaultClock.Restart();
                 }
             }
 
-            this.EnergyBall.UpdateEnergyBall(character);
+            EnergyBall.UpdateEnergyBall(character);
 
-            this.UpdateTextures();
+            UpdateTextures();
         }
+
         public void Die(Level level)
         {
             sKill.Play();
-            level.Particles.Add(new ParticleEffect(this.X, this.Y, Color.Red));
-            this.SetPosition(400, -100);
-            this.IsDead = true;
-            this._defaultClock.Dispose();
+            level.Particles.Add(new ParticleEffect(X, Y, Color.Red));
+            SetPosition(400, -100);
+            IsDead = true;
+            _defaultClock.Dispose();
         }
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
             base.Draw(target, states);
-            target.Draw(this.EnergyBall, states);
+            target.Draw(EnergyBall, states);
         }
     }
 }

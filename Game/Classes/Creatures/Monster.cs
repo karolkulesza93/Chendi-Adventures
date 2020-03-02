@@ -1,5 +1,5 @@
-﻿using SFML.System;
-using SFML.Graphics;
+﻿using SFML.Graphics;
+using SFML.System;
 
 namespace Game
 {
@@ -7,45 +7,48 @@ namespace Game
     {
         public float XMaxPos;
         public float XMinPos;
-        
+
         public Monster(float x, float y, Texture texture) : base(x, y, texture)
         {
-            this.XMinPos = x - 100;
-            this.XMaxPos = x + 100;
+            XMinPos = x - 100;
+            XMaxPos = x + 100;
 
-            this.SpeedX = 2f;
-            this.SpeedY = 0f;
+            SpeedX = 2f;
+            SpeedY = 0f;
 
-            this._animLeft = new Animation(this, 0.05f,
-                new Vector2i(0,0),
-                new Vector2i(32,0)
-                );
-            this._animRight = new Animation(this, 0.05f,
-                new Vector2i(0,32),
-                new Vector2i(32,32)
-                );
+            _animLeft = new Animation(this, 0.05f,
+                new Vector2i(0, 0),
+                new Vector2i(32, 0)
+            );
+            _animRight = new Animation(this, 0.05f,
+                new Vector2i(0, 32),
+                new Vector2i(32, 32)
+            );
 
-            this.SetTextureRectanlge(0, 0, 32, 32);
-            this.IsDead = false;
+            SetTextureRectanlge(0, 0, 32, 32);
+            IsDead = false;
         }
+
         public override void UpdateTextures()
         {
-            if (this.SpeedX > 0) this._animRight.Animate();
-            else this._animLeft.Animate();
+            if (SpeedX > 0) _animRight.Animate();
+            else _animLeft.Animate();
         }
+
         public void MonsterUpdate()
         {
-            this.X += this.SpeedX;
-            if (this.Left < this.XMinPos || this.Right > this.XMaxPos) this.SpeedX *= -1;
-            this.UpdateTextures();
+            X += SpeedX;
+            if (Left < XMinPos || Right > XMaxPos) SpeedX *= -1;
+            UpdateTextures();
         }
+
         public void Die(Level level)
         {
             sKill.Play();
-            level.Particles.Add(new ParticleEffect(this.X, this.Y, Color.Red));
+            level.Particles.Add(new ParticleEffect(X, Y, Color.Red));
 
-            this.SetPosition(400, -100);
-            this.IsDead = true;
+            SetPosition(400, -100);
+            IsDead = true;
         }
     }
 }

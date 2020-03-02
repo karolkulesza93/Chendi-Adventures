@@ -1,311 +1,320 @@
-﻿using SFML.System;
+﻿using SFML.Audio;
 using SFML.Graphics;
-using SFML.Audio;
+using SFML.System;
 
 namespace Game
 {
     public class Trap : Entity
     {
-        public float SpeedY { get; private set; }
-        public TrapType Type { get; private set; }
-        public Clock DefaultTimer { get; private set; }
+        private static readonly Sound sFire = new Sound(new SoundBuffer(@"sfx/fire.wav"));
+        private static readonly Sound sCrush = new Sound(new SoundBuffer(@"sfx/crusher.wav"));
+        private static readonly Sound sGear = new Sound(new SoundBuffer(@"sfx/gear.wav"));
+        private static readonly Sound sSpikes = new Sound(new SoundBuffer(@"sfx/spike.wav"));
+        private readonly Animation AnimFire1;
+        private readonly Animation AnimFire2;
+
+        public bool IsUp;
+
+        //spikes
+        private readonly float startY;
+
+        public Trap(float x, float y, Texture texture, TrapType type) : base(x, y, texture)
+        {
+            Type = type;
+            DefaultTimer = new Clock();
+
+            switch (Type)
+            {
+                case TrapType.BlowTorchLeft:
+                {
+                    SetTextureRectanlge(32, 32, 32, 32);
+                    Fire1 = new Block(X, Y, TrapsTexture);
+                    Fire2 = new Block(X - 32, Y, TrapsTexture);
+
+                    Fire1.SetTextureRectanlge(128, 0, 32, 32);
+                    Fire2.SetTextureRectanlge(128, 0, 32, 32);
+
+                    AnimFire1 = new Animation(Fire1, 0.03f,
+                        new Vector2i(32, 96),
+                        new Vector2i(96, 96),
+                        new Vector2i(160, 96)
+                    );
+                    AnimFire2 = new Animation(Fire2, 0.03f,
+                        new Vector2i(0, 96),
+                        new Vector2i(64, 96),
+                        new Vector2i(128, 96)
+                    );
+
+                    IsBlowing = false;
+                    DefaultTimer.Restart();
+                    sFire.Volume = 80;
+                    break;
+                }
+                case TrapType.BlowTorchRight:
+                {
+                    SetTextureRectanlge(0, 32, 32, 32);
+                    Fire1 = new Block(X, Y, TrapsTexture);
+                    Fire2 = new Block(X + 32, Y, TrapsTexture);
+
+                    Fire1.SetTextureRectanlge(128, 0, 32, 32);
+                    Fire2.SetTextureRectanlge(128, 0, 32, 32);
+
+                    AnimFire1 = new Animation(Fire1, 0.03f,
+                        new Vector2i(0, 64),
+                        new Vector2i(64, 64),
+                        new Vector2i(128, 64)
+                    );
+
+                    AnimFire2 = new Animation(Fire2, 0.03f,
+                        new Vector2i(32, 64),
+                        new Vector2i(96, 64),
+                        new Vector2i(160, 64)
+                    );
+
+                    IsBlowing = false;
+                    DefaultTimer.Restart();
+                    sFire.Volume = 80;
+                    break;
+                }
+                case TrapType.Crusher:
+                {
+                    SetTextureRectanlge(0, 0, 32, 32);
+                    Holder = new Block(X, Y, TrapsTexture);
+                    Holder.SetTextureRectanlge(32, 0, 32, 32);
+                    Line1 = new Block(X, Y, TrapsTexture);
+                    Line1.SetTextureRectanlge(64, 0, 32, 32);
+                    Line2 = new Block(X, Y, TrapsTexture);
+                    Line2.SetTextureRectanlge(64, 0, 32, 32);
+                    SpeedY = 9f;
+                    JustCrushed = false;
+                    sGear.Volume = 50;
+                    break;
+                }
+                case TrapType.Spikes:
+                {
+                    SetTextureRectanlge(96, 0, 32, 32);
+                    startY = Y;
+                    Y += 32;
+                    SpeedY = 1f;
+                    IsUp = false;
+                    sSpikes.Volume = 50;
+                    break;
+                }
+            }
+        }
+
+        public float SpeedY { get; }
+        public TrapType Type { get; }
+
+        public Clock DefaultTimer { get; }
+
         //blowtorch
         public Projectile FlameLeft { get; private set; }
         public Projectile FlameRight { get; private set; }
-        public Block Fire1 { get; private set; }
-        public Block Fire2 { get; private set; }
-        private Animation AnimFire1;
-        private Animation AnimFire2;
+        public Block Fire1 { get; }
+        public Block Fire2 { get; }
+
         public bool IsBlowing { get; private set; }
-        private static Sound sFire = new Sound(new SoundBuffer(@"sfx/fire.wav"));
+
         //crusher
-        public Block Holder { get; private set; }
-        public Block Line1 { get; private set; }
-        public Block Line2 { get; private set; }
+        public Block Holder { get; }
+        public Block Line1 { get; }
+        public Block Line2 { get; }
         public bool JustCrushed { get; private set; }
-        private static Sound sCrush = new Sound(new SoundBuffer(@"sfx/crusher.wav"));
-        private static Sound sGear = new Sound(new SoundBuffer(@"sfx/gear.wav")); 
-        //spikes
-        private float startY;
-        public bool IsUp;
-        private static Sound sSpikes = new Sound(new SoundBuffer(@"sfx/spike.wav")); 
-        
-        public Trap(float x, float y, Texture texture, TrapType type) : base(x,y,texture)
-        {
-            this.Type = type;
-            this.DefaultTimer = new Clock();
 
-            switch (this.Type)
-            {
-                case TrapType.BlowTorchLeft:
-                    {
-                        this.SetTextureRectanlge(32, 32, 32, 32);
-                        this.Fire1 = new Block(this.X, this.Y, TrapsTexture);
-                        this.Fire2 = new Block(this.X - 32, this.Y, TrapsTexture);
-
-                        this.Fire1.SetTextureRectanlge(128, 0, 32, 32);
-                        this.Fire2.SetTextureRectanlge(128, 0, 32, 32);
-
-                        this.AnimFire1 = new Animation(this.Fire1, 0.03f,
-                            new Vector2i(32, 96),
-                            new Vector2i(96,96),
-                            new Vector2i(160,96)
-                            );
-                        this.AnimFire2 = new Animation(this.Fire2, 0.03f,
-                            new Vector2i(0, 96),
-                            new Vector2i(64, 96),
-                            new Vector2i(128, 96)
-                            ) ;
-
-                        this.IsBlowing = false;
-                        this.DefaultTimer.Restart();
-                        sFire.Volume = 80;
-                        break;
-                    }
-                case TrapType.BlowTorchRight:
-                    {
-                        this.SetTextureRectanlge(0, 32, 32, 32);
-                        this.Fire1 = new Block(this.X, this.Y, TrapsTexture);
-                        this.Fire2 = new Block(this.X+32, this.Y, TrapsTexture);
-
-                        this.Fire1.SetTextureRectanlge(128, 0, 32, 32);
-                        this.Fire2.SetTextureRectanlge(128, 0, 32, 32);
-
-                        this.AnimFire1 = new Animation(this.Fire1, 0.03f,
-                            new Vector2i(0,64),
-                            new Vector2i(64,64),
-                            new Vector2i(128,64)
-                            );
-
-                        this.AnimFire2 = new Animation(this.Fire2, 0.03f,
-                            new Vector2i(32,64),
-                            new Vector2i(96,64),
-                            new Vector2i(160,64)
-                            );
-
-                        this.IsBlowing = false;
-                        this.DefaultTimer.Restart();
-                        sFire.Volume = 80;
-                        break;
-                    }
-                case TrapType.Crusher:
-                    {
-                        this.SetTextureRectanlge(0, 0, 32, 32);
-                        this.Holder = new Block(this.X, this.Y, TrapsTexture); this.Holder.SetTextureRectanlge(32, 0, 32, 32);
-                        this.Line1 = new Block(this.X, this.Y, TrapsTexture); this.Line1.SetTextureRectanlge(64, 0, 32, 32);
-                        this.Line2 = new Block(this.X, this.Y, TrapsTexture); this.Line2.SetTextureRectanlge(64, 0, 32, 32);
-                        this.SpeedY = 9f;
-                        this.JustCrushed = false;
-                        sGear.Volume = 50;
-                        break;
-                    }
-                case TrapType.Spikes:
-                    {
-                        this.SetTextureRectanlge(96, 0, 32, 32);
-                        this.startY = this.Y;
-                        this.Y += 32;
-                        this.SpeedY = 1f;
-                        this.IsUp = false;
-                        sSpikes.Volume = 50;
-                        break;
-                    }
-            }
-        }
         public void TrapUpdate()
         {
-            switch (this.Type)
+            switch (Type)
             {
                 case TrapType.BlowTorchLeft:
+                {
+                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > 3) SetTextureRectanlge(96, 32, 32, 32);
+                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > 5) IsBlowing = true;
+                    if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() < 7)
                     {
-                        if (!this.IsBlowing && this.DefaultTimer.ElapsedTime.AsSeconds() > 3) this.SetTextureRectanlge(96, 32, 32, 32);
-                        if (!this.IsBlowing && this.DefaultTimer.ElapsedTime.AsSeconds() > 5) this.IsBlowing = true;
-                        if (this.IsBlowing && this.DefaultTimer.ElapsedTime.AsSeconds() < 7)
-                        {
-                            this.AnimFire1.Animate();
-                            this.AnimFire2.Animate();
-                            if (sFire.Status != SoundStatus.Playing) sFire.Play();
-                        }
-                        if (this.IsBlowing && this.DefaultTimer.ElapsedTime.AsSeconds() >= 7)
-                        {
-                            this.IsBlowing = false;
-                            this.DefaultTimer.Restart();
-                            this.SetTextureRectanlge(32, 32, 32, 32);
-                            this.Fire1.SetTextureRectanlge(128, 0, 32, 32);
-                            this.Fire2.SetTextureRectanlge(128, 0, 32, 32);
-                        }
-                        break;
+                        AnimFire1.Animate();
+                        AnimFire2.Animate();
+                        if (sFire.Status != SoundStatus.Playing) sFire.Play();
                     }
+
+                    if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() >= 7)
+                    {
+                        IsBlowing = false;
+                        DefaultTimer.Restart();
+                        SetTextureRectanlge(32, 32, 32, 32);
+                        Fire1.SetTextureRectanlge(128, 0, 32, 32);
+                        Fire2.SetTextureRectanlge(128, 0, 32, 32);
+                    }
+
+                    break;
+                }
                 case TrapType.BlowTorchRight:
+                {
+                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > 3) SetTextureRectanlge(64, 32, 32, 32);
+                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > 5) IsBlowing = true;
+                    if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() < 7)
                     {
-                        if (!this.IsBlowing && this.DefaultTimer.ElapsedTime.AsSeconds() > 3) this.SetTextureRectanlge(64, 32, 32, 32);
-                        if (!this.IsBlowing && this.DefaultTimer.ElapsedTime.AsSeconds() > 5) this.IsBlowing = true;
-                        if (this.IsBlowing && this.DefaultTimer.ElapsedTime.AsSeconds() < 7)
-                        {
-                            this.AnimFire1.Animate();
-                            this.AnimFire2.Animate();
-                            if (sFire.Status != SoundStatus.Playing) sFire.Play();
-                        }
-                        if (this.IsBlowing && this.DefaultTimer.ElapsedTime.AsSeconds() >= 7)
-                        {
-                            this.IsBlowing = false;
-                            this.DefaultTimer.Restart();
-                            this.SetTextureRectanlge(0, 32, 32, 32);
-                            this.Fire1.SetTextureRectanlge(128, 0, 32, 32);
-                            this.Fire2.SetTextureRectanlge(128, 0, 32, 32);
-                        }
-                        break;
-
-                        break;
+                        AnimFire1.Animate();
+                        AnimFire2.Animate();
+                        if (sFire.Status != SoundStatus.Playing) sFire.Play();
                     }
+
+                    if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() >= 7)
+                    {
+                        IsBlowing = false;
+                        DefaultTimer.Restart();
+                        SetTextureRectanlge(0, 32, 32, 32);
+                        Fire1.SetTextureRectanlge(128, 0, 32, 32);
+                        Fire2.SetTextureRectanlge(128, 0, 32, 32);
+                    }
+
+                    break;
+                }
                 case TrapType.Crusher:
+                {
+                    //moving down / crushing
+                    if (!JustCrushed && DefaultTimer.ElapsedTime.AsSeconds() > 3)
                     {
-                        //moving down / crushing
-                        if (!this.JustCrushed && this.DefaultTimer.ElapsedTime.AsSeconds() > 3)
+                        if (Y < Holder.Y + 96)
                         {
-                            if (this.Y < this.Holder.Y + 96)
-                            {
-                                this.Y += this.SpeedY;
-                            }
-                            else
-                            {
-                                sCrush.Play();
-                                this.JustCrushed = true;
-                                this.Y = this.Holder.Y + 96;
-                            }
-
-                            if (this.Line2.Y < this.Holder.Y + 64)
-                            {
-                                this.Line2.Y += this.SpeedY;
-                            }
-                            else
-                            {
-                                this.Line2.Y = this.Holder.Y + 64;
-                            }
-
-                            if (this.Line1.Y < this.Holder.Y + 32)
-                            {
-                                this.Line1.Y += this.SpeedY;
-                            }
-                            else
-                            {
-                                this.Line1.Y = this.Holder.Y + 32;
-                            }
+                            Y += SpeedY;
                         }
-                        //moving up / reloading
-                        if (this.JustCrushed && this.DefaultTimer.ElapsedTime.AsSeconds() > 5)
+                        else
                         {
-                            if (this.Y > this.Holder.Y)
-                            {
-                                this.Y -= this.SpeedY / 3;
-                                if (sGear.Status != SoundStatus.Playing) sGear.Play();
-                                if (this.Line1.Y > this.Holder.Y) this.Line1.Y -= this.SpeedY / 3;
-                                if (this.Line2.Y > this.Holder.Y) this.Line2.Y -= this.SpeedY / 3;
-                            }
-                            else
-                            {
-                                this.JustCrushed = false;
-                                this.DefaultTimer.Restart();
-                                this.Line1.Y = this.Holder.Y;
-                                this.Line2.Y = this.Holder.Y;
-                                this.Y = this.Holder.Y;
-                            }
+                            sCrush.Play();
+                            JustCrushed = true;
+                            Y = Holder.Y + 96;
                         }
 
+                        if (Line2.Y < Holder.Y + 64)
+                            Line2.Y += SpeedY;
+                        else
+                            Line2.Y = Holder.Y + 64;
 
-                        break;
+                        if (Line1.Y < Holder.Y + 32)
+                            Line1.Y += SpeedY;
+                        else
+                            Line1.Y = Holder.Y + 32;
                     }
+
+                    //moving up / reloading
+                    if (JustCrushed && DefaultTimer.ElapsedTime.AsSeconds() > 5)
+                    {
+                        if (Y > Holder.Y)
+                        {
+                            Y -= SpeedY / 3;
+                            if (sGear.Status != SoundStatus.Playing) sGear.Play();
+                            if (Line1.Y > Holder.Y) Line1.Y -= SpeedY / 3;
+                            if (Line2.Y > Holder.Y) Line2.Y -= SpeedY / 3;
+                        }
+                        else
+                        {
+                            JustCrushed = false;
+                            DefaultTimer.Restart();
+                            Line1.Y = Holder.Y;
+                            Line2.Y = Holder.Y;
+                            Y = Holder.Y;
+                        }
+                    }
+
+
+                    break;
+                }
                 case TrapType.Spikes:
+                {
+                    if (!IsUp) //upwards
                     {
-                        if (!this.IsUp) //upwards
+                        Y -= SpeedY;
+                        if (sSpikes.Status != SoundStatus.Playing) sSpikes.Play();
+                        if (Y < startY)
                         {
-                            this.Y -= this.SpeedY;
-                            if (sSpikes.Status != SoundStatus.Playing) sSpikes.Play();
-                            if (this.Y < this.startY)
-                            {
-                                this.IsUp = true;
-                                this.Y = this.startY;
-                            }
+                            IsUp = true;
+                            Y = startY;
                         }
-                        else //downwards
-                        {
-                            this.Y += this.SpeedY;
-                            if (this.Y > this.startY + 32)
-                            {
-                                if (this.DefaultTimer.ElapsedTime.AsSeconds() > 3)
-                                { 
-                                    this.IsUp = false;
-                                    this.DefaultTimer.Restart();
-                                }
-                                this.Y = this.startY + 32;
-                            }
-                        }
-
-
-                        break;
                     }
+                    else //downwards
+                    {
+                        Y += SpeedY;
+                        if (Y > startY + 32)
+                        {
+                            if (DefaultTimer.ElapsedTime.AsSeconds() > 3)
+                            {
+                                IsUp = false;
+                                DefaultTimer.Restart();
+                            }
+
+                            Y = startY + 32;
+                        }
+                    }
+
+
+                    break;
+                }
             }
         }
+
         public new FloatRect GetBoundingBox()
         {
-
-            switch (this.Type)
+            switch (Type)
             {
                 case TrapType.BlowTorchLeft:
-                    {
-                        return new FloatRect(this.X - 32, this.Y, 64, 32);
-                    }
+                {
+                    return new FloatRect(X - 32, Y, 64, 32);
+                }
                 case TrapType.BlowTorchRight:
-                    {
-                        return new FloatRect(this.X + 32, this.Y, 64, 32);
-                    }
+                {
+                    return new FloatRect(X + 32, Y, 64, 32);
+                }
                 case TrapType.Crusher:
-                    {
-                        return new FloatRect(this.X, this.Top + 17, 32, 15);
-                    }
+                {
+                    return new FloatRect(X, Top + 17, 32, 15);
+                }
                 case TrapType.Spikes:
-                    {
-                        return new FloatRect(this.X + 2, this.Top + 17, 28, 1);
-                    }
-                default: return this.GetBoundingBox();
+                {
+                    return new FloatRect(X + 2, Top + 17, 28, 1);
+                }
+                default: return GetBoundingBox();
             }
         }
+
         public override void Draw(RenderTarget target, RenderStates states)
         {
-            switch (this.Type)
+            switch (Type)
             {
                 case TrapType.BlowTorchLeft:
-                    {
-                        base.Draw(target, states);
-                        target.Draw(this.Fire1, states);
-                        target.Draw(this.Fire2, states);
-                        break;
-                    }
+                {
+                    base.Draw(target, states);
+                    target.Draw(Fire1, states);
+                    target.Draw(Fire2, states);
+                    break;
+                }
                 case TrapType.BlowTorchRight:
-                    {
-                        base.Draw(target, states);
-                        target.Draw(this.Fire1, states);
-                        target.Draw(this.Fire2, states);
-                        break;
-                    }
+                {
+                    base.Draw(target, states);
+                    target.Draw(Fire1, states);
+                    target.Draw(Fire2, states);
+                    break;
+                }
                 case TrapType.Crusher:
-                    {
-                        target.Draw(this.Holder, states);
-                        target.Draw(this.Line1, states);
-                        target.Draw(this.Line2, states);
-                        base.Draw(target, states);
-                        break;
-                    }
+                {
+                    target.Draw(Holder, states);
+                    target.Draw(Line1, states);
+                    target.Draw(Line2, states);
+                    base.Draw(target, states);
+                    break;
+                }
                 case TrapType.Spikes:
-                    {
-                        base.Draw(target, states);
-                        break;
-                    }
+                {
+                    base.Draw(target, states);
+                    break;
+                }
             }
         }
+
         public new Vector2f Get32Position()
         {
-            if (this.Type == TrapType.Spikes) return new Vector2f(this.X / 32, (this.Y - 32) / 32);
-            else return base.Get32Position();
+            if (Type == TrapType.Spikes) return new Vector2f(X / 32, (Y - 32) / 32);
+            return base.Get32Position();
         }
     }
 }

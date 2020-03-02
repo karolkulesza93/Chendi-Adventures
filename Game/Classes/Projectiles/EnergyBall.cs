@@ -1,67 +1,70 @@
 ﻿using SFML.Audio;
-using SFML.System;
 using SFML.Graphics;
+using SFML.System;
 
 namespace Game
 {
     public class EnergyBall : Projectile
     {
-        private Animation _anim;
-        private Sound sAtk;
+        private readonly Animation _anim;
         public Clock DefaultTimer;
-        public float Speed { get; private set; }
-        public float SpeedX { get; private set; }
-        public float SpeedY { get; private set; }
-        public bool isAttacking { get; private set; }
-        public EnergyBall(float x, float y, Texture texture, Movement dir = Movement.None) : base(x,y,texture,dir)
+        private readonly Sound sAtk;
+
+        public EnergyBall(float x, float y, Texture texture, Movement dir = Movement.None) : base(x, y, texture, dir)
         {
-            this.Speed = 2f;
-            this.SpeedX = 0f;
-            this.SpeedY = 0f;
-            this.isAttacking = false;
+            Speed = 2f;
+            SpeedX = 0f;
+            SpeedY = 0f;
+            isAttacking = false;
 
-            this.DefaultTimer = new Clock();
+            DefaultTimer = new Clock();
 
-            this._anim = new Animation(this, 0.1f,
+            _anim = new Animation(this, 0.1f,
                 new Vector2i(0, 64),
                 new Vector2i(16, 64),
                 new Vector2i(32, 64),
                 new Vector2i(48, 64),
                 new Vector2i(32, 64),
                 new Vector2i(16, 64)
-                );
+            );
 
-            this.sAtk = new Sound(new SoundBuffer("sfx/spell.wav"));
+            sAtk = new Sound(new SoundBuffer("sfx/spell.wav"));
         }
 
-        public void UpdateEnergyBall(MainCahracter character)
+        public float Speed { get; }
+        public float SpeedX { get; private set; }
+        public float SpeedY { get; private set; }
+        public bool isAttacking { get; private set; }
+
+        public void UpdateEnergyBall(MainCharacter character)
         {
-            if (this.isAttacking)
+            if (isAttacking)
             {
-                if (this.GetCenterPosition().X > character.GetCenterPosition().X) this.SpeedX = -1 * this.Speed;
-                else this.SpeedX = this.Speed;
+                if (GetCenterPosition().X > character.GetCenterPosition().X) SpeedX = -1 * Speed;
+                else SpeedX = Speed;
 
-                if (this.GetCenterPosition().Y > character.GetCenterPosition().Y) this.SpeedY = -1 * this.Speed;
-                else this.SpeedY = this.Speed;
+                if (GetCenterPosition().Y > character.GetCenterPosition().Y) SpeedY = -1 * Speed;
+                else SpeedY = Speed;
 
-                this.X += this.SpeedX;
-                this.Y += this.SpeedY;
+                X += SpeedX;
+                Y += SpeedY;
 
-                if (this.DefaultTimer.ElapsedTime.AsSeconds() > 8)
+                if (DefaultTimer.ElapsedTime.AsSeconds() > 8)
                 {
-                    this.isAttacking = false;
-                    this.SetPosition(-100, -100);
+                    isAttacking = false;
+                    SetPosition(-100, -100);
                 }
 
-                this._anim.Animate(16); 
+                _anim.Animate(16);
             }
         }
+
         public void Attack(float x, float y)
         {
-            this.sAtk.Play();
-            this.isAttacking = true;
-            this.DefaultTimer.Restart();
-            this.SetPosition(x, y);
+            sAtk.Play();
+            isAttacking = true;
+            DefaultTimer.Restart();
+            SetPosition(x, y);
         }
     }
 }

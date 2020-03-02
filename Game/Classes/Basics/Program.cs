@@ -1,12 +1,11 @@
 ﻿namespace Game
 {
-    partial class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            MainGameWindow GameWindow = new MainGameWindow("Chendi Adventures");
+            var GameWindow = new MainGameWindow("Chendi Adventures");
             GameWindow.GameStart();
-            return;
         }
     }
 }

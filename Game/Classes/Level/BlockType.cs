@@ -3,6 +3,7 @@
     public enum BlockType
     {
         None = 0,
+
         //blocks 
         Brick = 1,
         Spike = 2,
@@ -16,6 +17,7 @@
         GoldDoor = 10,
         Enterance = 11,
         Exit = 12,
+
         //pickups
         Coin = 13,
         Life = 14,
@@ -28,12 +30,13 @@
         SilverKey = 21,
         GoldenKey = 22,
         SackOfGold = 23,
+
         //details
         Warning = 24,
         Hint = 25,
         Torch = 26,
         LSpiderweb = 27,
         RSpiderweb = 28,
-        EvilEyes = 29,
+        EvilEyes = 29
     }
 }

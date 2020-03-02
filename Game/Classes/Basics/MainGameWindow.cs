@@ -829,7 +829,6 @@ namespace Game
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F2)) { flag = true; Creature.sKill.Play(); this._level.Archers.Clear(); }
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F4)) { flag = true; Creature.sKill.Play(); this._level.Ghosts.Clear(); }
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F5)) { flag = true; Creature.sKill.Play(); this._level.Wizards.Clear(); }
-
                 //changes - traps
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num7))
                 { 
@@ -882,10 +881,9 @@ namespace Game
                     x = 1; y = 1;
                 }
 
-
                 choice.Position = new Vector2f(x * 32, y * 32);
-                position.MoveText(choice.Position.X + 34, choice.Position.Y - 12);
-                position.EditText(string.Format("{0},{1}", x, y));
+                position.MoveText(choice.Position.X + 34, choice.Position.Y - 24);
+                position.EditText(string.Format("{0}\n{1},{2}", this._level.GetObstacle(x, y).Type.ToString().ToUpper(), x, y));
 
                 if (view ) this.SetView(new Vector2f(this._windowWidth/2, this._windowHeight/2), new Vector2f(choice.Position.X-16, choice.Position.Y+16));
                 else this.SetView(new Vector2f(this._windowWidth, this._windowHeight), new Vector2f(choice.Position.X + 16, choice.Position.Y + 16));
@@ -905,7 +903,12 @@ namespace Game
                 this._window.Draw(instructions);
                 this._window.Display();
                 //exit
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape)) { this.DrawLoadingScreen(); this._level.SaveLevel(); break; } 
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape)) 
+                {
+                    this.DrawLoadingScreen(); 
+                    this._level.SaveLevel(); 
+                    break; 
+                } 
             }
             this._window.SetKeyRepeatEnabled(true);
             this.SetView(new Vector2f(this._windowWidth, this._windowHeight), new Vector2f(this._windowWidth / 2, this._windowHeight / 2));

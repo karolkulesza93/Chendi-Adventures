@@ -857,7 +857,7 @@ namespace Game
                     y++;
                 }
             }
-            File.WriteAllText("levels/new.txt", level.ToString());
+            File.WriteAllText("levels/edit.txt", level.ToString());
         }
     }
 }

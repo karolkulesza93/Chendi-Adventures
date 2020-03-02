@@ -10,6 +10,7 @@ using SFML.Audio;
 /// do zrobienia:
 /// - poprawa crushera
 /// - levele
+/// - moze bossy?
 /// - scenka na poczatek
 /// - settingsy (hotkeye?, poziom trudnosci?, rozdzielczosci?, vsync)
 /// - sklep

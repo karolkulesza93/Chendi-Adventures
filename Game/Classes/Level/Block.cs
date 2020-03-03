@@ -47,6 +47,11 @@ namespace Game
                     SetTextureRectanlge(32, 64, 32, 32);
                     break;
                 }
+                case BlockType.Shop:
+                {
+                    SetTextureRectanlge(32, 32, 32, 32);
+                    break;
+                }
                 case BlockType.Coin:
                 {
                     BlockAnimation = new Animation(this, 0.05f,

@@ -1,22 +1,22 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using Game.Classes.Special;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-/// <summary>
-/// do zrobienia:
-/// - poprawa crushera
-/// - levele
-/// - moze bossy?
-/// - scenka na poczatek
-/// - settingsy (hotkeye?, poziom trudnosci?, rozdzielczosci?, vsync)
-/// - sklep
-/// - maszynka do losowania
-/// - i moze cos jeszcze xd
-/// </summary>
+/*
+do zrobienia:
+- nerf rewardow z loterri
+- zmiana formatu leveli z txt na cos mniej dostepnego dla casuala
+- levele
+- moze bossy
+- scenka na poczatek
+- settingsy (hotkeye, poziom trudnosci, rozdzielczosci, vsync)
+- sklep
+*/
 
 namespace Game
 {
@@ -30,12 +30,11 @@ namespace Game
 
         /*signleton field*/
         private static readonly object _padlock = new object();
+
         private readonly View _view;
         private readonly RenderWindow _window;
-
+        private readonly Random _randomizer;
         private Sprite _background;
-
-        //game window
         private MainCharacter _chendi;
         private MainCharacterUI _chendiUI;
         private Sound _gameEnd;
@@ -46,36 +45,25 @@ namespace Game
         private Level _level;
         private TextLine _levelSummary;
         private TextLine _loading;
-
         private Music _mainTheme;
         private Music _menuTheme;
         private TextLine _no;
-
-        //loading, summary, highscores
+        private TextLine _yes;
+        private TextLine _continue;
         private TextLine _pause;
-
         private TextLine _quit;
-
-        //quit game play
         private TextLine _quitQestion;
         private TextLine _settings;
-
-        //main manu
         private TextLine _start;
         private Sound _victory;
         private int _windowHeight = 1080;
         private Styles _windowStyle = Styles.Fullscreen;
-
-        //window size (1920 x 1080)
         private int _windowWidth = 1920;
-        private TextLine _yes;
         private bool isGame;
         private bool isHighscore;
-
         private bool isMenu;
         private bool isPaused;
         private bool isQuit;
-
         private bool isSettigs;
 
         //contructors
@@ -87,6 +75,7 @@ namespace Game
             isSettigs = false;
             isQuit = false;
             isPaused = false;
+            _randomizer = new Random();
         }
 
         public MainGameWindow(string title) : this()
@@ -174,16 +163,20 @@ namespace Game
             _victory.Volume = 50;
             _gameEnd = new Sound(new SoundBuffer(@"sfx/gameover.wav"));
             _gameEnd.Volume = 50;
+            
 
             _gameOver = new TextLine("GAME OVER", 100, 500, 470, Color.Red);
             _gameOver.SetOutlineThickness(3f);
             _pause = new TextLine("PAUSE", 50, 0, 0, Color.Yellow);
+            _continue = new TextLine("CONTINUE?", 50, 650, 590, Color.Yellow);
+            _continue.SetOutlineThickness(3f);
 
             _chendi = new MainCharacter(-100, -100, Entity.MainCharacterTexture);
             _level = new Level(_chendi);
             _chendiUI = new MainCharacterUI(_chendi, _view, _level);
 
             _highscoreValues = new Highscores();
+
         }
 
         private void MainLoop()
@@ -299,6 +292,7 @@ namespace Game
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 {
+                    _chendi.sCoin.Play();
                     isSettigs = false;
                     isMenu = true;
                 }
@@ -351,6 +345,7 @@ namespace Game
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 {
+                    _chendi.sCoin.Play();
                     isHighscore = false;
                     isMenu = true;
                 }
@@ -414,6 +409,7 @@ namespace Game
                 }
                 else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Space))
                 {
+                    DrawLoadingScreen();
                     flag = true;
                     _chendi.sCoin.Play();
                     switch (choice)
@@ -422,6 +418,11 @@ namespace Game
                         {
                             isMenu = false;
                             isGame = true;
+                            if (_level.LevelNumber != 0)
+                            {
+                                _level.LevelNumber = 1;
+                            }
+                            _chendi.ResetMainCharacter();
                             _menuTheme.Stop();
                             break;
                         }
@@ -473,17 +474,17 @@ namespace Game
                     }
                 }
 
-                DrawMainMenu();
+                if (isMenu) DrawMainMenu();
             }
         }
 
         private void GameLoop()
         {
-            DrawLoadingScreen();
+            //DrawLoadingScreen();
 
             _levelSummary = new TextLine("", 25, -1000, -1000, Color.White);
 
-            SetView(new Vector2f(960f, 540f), new Vector2f(480f, 270f));
+            SetView(new Vector2f(960f, 540f), _view.Center);
 
             if (_level.LevelNumber == 1) BegginingScene();
             /// SET LEVEL FOR TESTING
@@ -532,6 +533,9 @@ namespace Game
                     _yes.MoveText(_view.Center.X - 65, _view.Center.Y + 20);
                     _no.MoveText(_view.Center.X - 40, _view.Center.Y + 90);
 
+                    _yes.ChangeColor(Color.White);
+                    _no.ChangeColor(Color.Green);
+
                     while (_window.IsOpen && isGame)
                     {
                         ResetWindow();
@@ -569,6 +573,7 @@ namespace Game
                             {
                                 isGame = false;
                                 isMenu = true;
+                                flag = false;
                                 _level.LevelNumber = 1;
                                 _chendi.ResetMainCharacter();
                                 Thread.Sleep(500);
@@ -593,7 +598,7 @@ namespace Game
 
             if (!_chendi.OutOfLives && _chendi.IsDead) //death
             {
-                DrawLoadingScreen();
+                //DrawLoadingScreen();
                 _chendi.Score = _level.StartScore;
                 _chendi.ArrowAmount = _level.StartArrows;
                 _chendi.Mana = _level.StartMana;
@@ -607,10 +612,8 @@ namespace Game
                 _highscoreValues.AddNewRecord(new HighscoreRecord(_chendi.Score, _level.LevelNumber));
 
                 _gameEnd.Play();
+                
                 DrawGameOver();
-                _level.LevelNumber = 1;
-                isGame = false;
-                isMenu = true;
                 _chendi.ResetMainCharacter();
                 DrawLoadingScreen();
             }
@@ -661,6 +664,7 @@ namespace Game
                     _level.LevelNumber++;
                     _chendi.GotExit = false;
                     DrawLoadingScreen();
+                    if (_level.LevelNumber < 51 && _level.LevelNumber > 0) Lottery();
                     break;
                 }
             }
@@ -703,15 +707,51 @@ namespace Game
         {
             var clock = new Clock();
             SetView(new Vector2f(_windowWidth, _windowHeight), new Vector2f(_windowWidth / 2, _windowHeight / 2));
-            while (clock.ElapsedTime.AsSeconds() < 5)
+
+            if (_chendi.Continues == 0)
             {
-                ResetWindow();
+                isGame = false;
+                isMenu = true;
+                _chendi.Continues = 2;
+                _level.LevelNumber = 1;
+                _chendi.ResetMainCharacter();
 
-                AnimateBackground();
-                _window.Draw(_background);
+                while (clock.ElapsedTime.AsSeconds() < 8f)
+                {
+                    ResetWindow();
+                    AnimateBackground();
+                    _window.Draw(_background);
 
-                _window.Draw(_gameOver);
-                _window.Display();
+                    _window.Draw(_gameOver);
+                    _window.Display();
+                }
+            }
+            else
+            {
+                while (clock.ElapsedTime.AsSeconds() < 11f)
+                {
+                    ResetWindow();
+                    AnimateBackground();
+                    _window.Draw(_background);
+
+                    _continue.EditText(string.Format("CONTINUE? {0}", 10 - (int)clock.ElapsedTime.AsSeconds()));
+
+                    if (Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                    {
+                        _chendi.sCoin.Play();
+                        _chendi.ResetMainCharacter();
+                        _chendi.Continues--;
+                        _gameEnd.Stop();
+                        DrawLoadingScreen();
+                        return;
+                    }
+
+                    _window.Draw(_gameOver);
+                    _window.Draw(_continue);
+                    _window.Display();
+                }
+                isGame = false;
+                isMenu = true;
             }
 
             clock.Dispose();
@@ -860,16 +900,16 @@ namespace Game
                     _chendi.sCoin.Play();
 
                     type++;
-                    if (type == (BlockType) 30) type = 0;
+                    if (type == (BlockType) 31) type = 0;
 
                     type_m = type;
 
-                    if (type >= 0 && type <= (BlockType) 12)
+                    if (type >= 0 && type <= (BlockType) 13)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture;
                         _level.GetObstacle(x, y).UseTexture();
                     }
-                    else if (type >= (BlockType) 13 && type <= (BlockType) 23)
+                    else if (type >= (BlockType) 14 && type <= (BlockType) 24)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture;
                         _level.GetObstacle(x, y).UseTexture();
@@ -890,16 +930,16 @@ namespace Game
                     _chendi.sCoin.Play();
 
                     if (type > 0) type--;
-                    else type = (BlockType) 29;
+                    else type = (BlockType) 30;
 
                     type_m = type;
 
-                    if (type >= 0 && type <= (BlockType) 12)
+                    if (type >= 0 && type <= (BlockType) 13)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture;
                         _level.GetObstacle(x, y).UseTexture();
                     }
-                    else if (type >= (BlockType) 13 && type <= (BlockType) 23)
+                    else if (type >= (BlockType) 14 && type <= (BlockType) 24)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture;
                         _level.GetObstacle(x, y).UseTexture();
@@ -920,12 +960,12 @@ namespace Game
                     _chendi.sCoin.Play();
 
 
-                    if (type_m >= 0 && type_m <= (BlockType) 12)
+                    if (type_m >= 0 && type_m <= (BlockType) 13)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture;
                         _level.GetObstacle(x, y).UseTexture();
                     }
-                    else if (type_m >= (BlockType) 13 && type_m <= (BlockType) 23)
+                    else if (type_m >= (BlockType) 14 && type_m <= (BlockType) 24)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture;
                         _level.GetObstacle(x, y).UseTexture();
@@ -1152,6 +1192,68 @@ namespace Game
             _window.SetKeyRepeatEnabled(true);
             SetView(new Vector2f(_windowWidth, _windowHeight), new Vector2f(_windowWidth / 2, _windowHeight / 2));
             _menuTheme.Play();
+        }
+
+        private void Lottery()
+        {
+            Clock timer = new Clock();
+            SetView(new Vector2f(480f, 270f), new Vector2f(240f, 135f));
+            GameMachine gameMachine = new GameMachine(-70, 71, Entity.GameMachineTexture);
+            bool isRolling = true;
+            bool done = false;
+            int time = 50;
+
+            if (_randomizer.Next(100) > 0)
+            {
+                while (_window.IsOpen && isGame)
+                {
+                    ResetWindow();
+
+                    AnimateBackground();
+                    _window.Draw(_background);
+
+                    if (timer.ElapsedTime.AsMilliseconds() > time && isRolling && !done)
+                    {
+                        timer.Restart();
+                        gameMachine.Roll();
+                        if (Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                        {
+                            isRolling = false;
+                        }
+                    }
+
+                    if (timer.ElapsedTime.AsMilliseconds() > time && !isRolling && !done)
+                    {
+                        timer.Restart();
+                        gameMachine.Roll();
+                        if (Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                        {
+                            Creature.sKill.Play();
+                            isRolling = false;
+                        }
+
+                        time += 20;
+                        if (time > 500)
+                        {
+                            done = true;
+                            _chendi.sCoin.Play();
+                            gameMachine.GrantReward(_chendi);
+                        }
+                    }
+
+                    if (done && timer.ElapsedTime.AsSeconds() > 3)
+                    {
+                        DrawLoadingScreen();
+                        timer.Dispose();
+                        return;
+                    }
+
+                    gameMachine.GameMachineUpdate();
+
+                    _window.Draw(gameMachine);
+                    _window.Display();
+                }
+            }
         }
 
         private void DevManip()

@@ -5,12 +5,11 @@ namespace Game
 {
     public class TextLine : Drawable
     {
-        private readonly Font _font;
+        private static readonly Font _font = new Font("font.ttf");
         private readonly Text _text;
 
         public TextLine(string line, int size, float x, float y, Color color)
         {
-            _font = new Font("font.ttf");
             _text = new Text(line, _font, (uint) size);
             _text.Color = color;
             _text.Position = new Vector2f(x, y);
@@ -34,6 +33,11 @@ namespace Game
         {
             get => _text.Color.A;
             set => _text.Color = new Color(255, 255, 255, value);
+        }
+
+        public float Width
+        {
+            get => (float)_text.DisplayedString.Length * _text.CharacterSize * 0.8f;
         }
 
         public void Draw(RenderTarget target, RenderStates states)

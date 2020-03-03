@@ -18,6 +18,8 @@ namespace Game
         public static Texture TilesTexture = new Texture(@"img/tiles.png");
         public static Texture TrapsTexture = new Texture(@"img/traps.png");
         public static Texture WizardTexture = new Texture(@"img/wizard.png");
+        public static  Texture GameMachineTexture = new Texture(@"img/machine.png");
+        public static Texture RewardsTexture = new Texture(@"img/rewards.png");
         private readonly Sprite _EntitySprite; //głowny obiekt na ekranie
 
         private IntRect _TextureRectangle;
@@ -75,7 +77,7 @@ namespace Game
             return _EntitySprite.GetGlobalBounds();
         }
 
-        public void SetTextureRectanlge(int x, int y, int width, int height)
+        public void SetTextureRectanlge(int x, int y, int width = 32, int height = 32)
         {
             _TextureRectangle.Left = x;
             _TextureRectangle.Top = y;

@@ -263,7 +263,7 @@ namespace Game
                 }
                 case TrapType.BlowTorchRight:
                 {
-                    return new FloatRect(X + 32, Y, 64, 32);
+                    return new FloatRect(X, Y, 64, 32);
                 }
                 case TrapType.Crusher:
                 {

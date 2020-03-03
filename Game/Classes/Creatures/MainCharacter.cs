@@ -20,6 +20,7 @@ namespace Game
         {
             SetTextureRectanlge(32, 64, 32, 32);
             Lives = 3;
+            Continues = 2;
             OutOfLives = false;
             DefaultClock = new Clock();
             IsStandingOnBlocks = false;
@@ -79,6 +80,7 @@ namespace Game
         public int ArrowAmount { get; set; }
         public int Mana { get; set; }
         public int Lives { get; set; }
+        public int Continues { get; set; }
         public int Score { get; set; }
         public bool IsAttacking { get; private set; }
         public bool IsShooting { get; private set; }
@@ -321,7 +323,7 @@ namespace Game
                         }
                         case BlockType.Exit:
                         {
-                            if (Keyboard.IsKeyPressed(KeyUP))
+                            if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks)
                             {
                                 SpeedX = 0;
                                 GotExit = true;
@@ -532,7 +534,7 @@ namespace Game
                 IsDead = true;
                 SpeedX = 0f;
                 SpeedY = -10f;
-                //this.Lives--;
+                this.Lives--;
 
                 HasSilverKey = false;
                 HasGoldenKey = false;

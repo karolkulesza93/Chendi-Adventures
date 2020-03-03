@@ -100,6 +100,7 @@
     <Compile Include="Classes\Projectiles\Projectile.cs" />
     <Compile Include="Classes\Settings\Resolution.cs" />
     <Compile Include="Classes\Special\GameMachine.cs" />
+    <Compile Include="Classes\Special\Merchant.cs" />
     <Compile Include="Classes\Special\Rewards.cs" />
     <Compile Include="Classes\Special\Wares.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

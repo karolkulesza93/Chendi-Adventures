@@ -17,26 +17,27 @@
         GoldDoor = 10,
         Enterance = 11,
         Exit = 12,
+        Shop = 13,
 
         //pickups
-        Coin = 13,
-        Life = 14,
-        Mana = 15,
-        TripleMana = 16,
-        Score1000 = 17,
-        Score5000 = 18,
-        Arrow = 19,
-        TripleArrow = 20,
-        SilverKey = 21,
-        GoldenKey = 22,
-        SackOfGold = 23,
+        Coin = 14,
+        Life = 15,
+        Mana = 16,
+        TripleMana = 17,
+        Score1000 = 18,
+        Score5000 = 19,
+        Arrow = 20,
+        TripleArrow = 21,
+        SilverKey = 22,
+        GoldenKey = 23,
+        SackOfGold = 24,
 
         //details
-        Warning = 24,
-        Hint = 25,
-        Torch = 26,
-        LSpiderweb = 27,
-        RSpiderweb = 28,
-        EvilEyes = 29
+        Warning = 25,
+        Hint = 26,
+        Torch = 27,
+        LSpiderweb = 28,
+        RSpiderweb = 29,
+        EvilEyes = 30
     }
 }

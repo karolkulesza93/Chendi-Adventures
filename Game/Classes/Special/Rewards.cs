@@ -14,6 +14,7 @@
         Mana25, // 10
         Life, // 3
         Score10000, // 3
-        Jackpot // 1  10000 coins
+        Jackpot, // 1  10000 coins
+        TripleLife // 1
     }
 }

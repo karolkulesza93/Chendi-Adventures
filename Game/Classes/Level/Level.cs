@@ -364,6 +364,12 @@ namespace Game
                         LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.LSpiderweb));
                         break;
                     }
+                    //shop
+                    case '+':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
+                        break;
+                    }
                     //enterance
                     case 'v':
                     {
@@ -777,6 +783,11 @@ namespace Game
                     case BlockType.Enterance:
                     {
                         level.Append("v");
+                        break;
+                    }
+                    case BlockType.Shop:
+                    {
+                        level.Append("+");
                         break;
                     }
                     case BlockType.Coin:

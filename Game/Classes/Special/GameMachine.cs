@@ -12,11 +12,12 @@ namespace Game
         private int _loss;
         private Sound _click;
         private TextLine _reward;
+        private readonly View _view;
 
-        public GameMachine(float x, float y, Texture texture) : base(x, y, texture)
+        public GameMachine(float x, float y, Texture texture, View view) : base(x, y, texture)
         {
             SetTextureRectanlge(0, 0, 64, 128);
-            Item = new Block(-100, -100, Entity.RewardsTexture);
+            Item = new Block(-100, y+16, Entity.RewardsTexture);
             Item.SetTextureRectanlge(0,0);
             _reward = new TextLine("",10,1000, 0, Color.Green);
             _reward.SetOutlineThickness(1);
@@ -25,6 +26,7 @@ namespace Game
             _click = new Sound(new SoundBuffer(@"sfx/click.wav"));
             _click.Volume = 30;
             LootedReward = Reward.Nothing;
+            this._view = view;
         }
 
         public Reward LootedReward { get; private set; }
@@ -67,7 +69,7 @@ namespace Game
 
         public void GrantReward(MainCharacter character)
         {
-            _reward.MoveText(-300, Y + 100);
+            _reward.MoveText(-300, _view.Center.Y + 180);
             _reward.EditText("");
 
             switch (LootedReward)
@@ -223,13 +225,13 @@ namespace Game
 
         public void GameMachineUpdate()
         {
-            if (X < 208)
+            if (X < _view.Center.X - 32)
             {
                 X += 10;
             }
             else
             {
-                X = 208;
+                X = _view.Center.X - 32;
                 Item.X = X + 16;
                 Item.Y = Y + 16;
             }
@@ -244,7 +246,7 @@ namespace Game
         public override void Draw(RenderTarget target, RenderStates states)
         {
             base.Draw(target, states);
-            if ((int) X == 208)
+            if (X == (int)_view.Center.X - 32)
             {
                 target.Draw(Item);
                 target.Draw(_reward);

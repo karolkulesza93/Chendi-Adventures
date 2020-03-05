@@ -1,4 +1,4 @@
-﻿namespace Game.Classes.Special
+﻿namespace Game
 {
     public enum Wares // cost
     {

@@ -402,8 +402,18 @@ namespace Game
             LevelHeight += 1;
             LevelWidth = LevelLenght - 1;
             _background.TextureRect = new IntRect(new Vector2i(0, 0), new Vector2i(LevelWidth * 32, LevelHeight * 32));
-            MonsterCount = Traps.Count * 2 + Monsters.Count * 3 + Archers.Count * 4 + Ghosts.Count * 5 +
-                           Wizards.Count * 6;
+            MonsterCount = Traps.Count * 2 + Monsters.Count * 3 + Archers.Count * 4 + Ghosts.Count * 5 + Wizards.Count * 6;
+
+            _mainCharacter.SetStartingPosition(this);
+
+            StartScore = _mainCharacter.Score;
+            StartCoins = _mainCharacter.Coins;
+            StartArrows = _mainCharacter.ArrowAmount;
+            StartMana = _mainCharacter.Mana;
+
+            _mainCharacter.HasSilverKey = false;
+            _mainCharacter.HasGoldenKey = false;
+
             //Console.WriteLine("Level {0} loaded succesfully ({1}:{2}  MC value: {3})", level, this.LevelWidth, this.LevelHeight, this.MonsterCount);
             //File.AppendAllText("log.txt", string.Format("Level {0} loaded succesfully ({1}:{2}  MC value: {3})\n", level, this.LevelWidth, this.LevelHeight, this.MonsterCount));
             LevelTime.Restart();
@@ -489,7 +499,7 @@ namespace Game
             }
         }
 
-        public int GetBonusForTime(double time) //do poprawy
+        public int GetBonusForTime(double time)
         {
             var points = (int) ((LevelWidth * LevelHeight + MonsterCount * LevelNumber) / time) * LevelNumber * 10;
             points -= points % 10;
@@ -941,6 +951,19 @@ namespace Game
             File.WriteAllText("levels/edit.txt", level.ToString());
             File.WriteAllText("levels/lvl0.txt", level.ToString());
             LevelNumber = 0;
+        }
+
+        public void ReloadLevelUponDeath()
+        {
+            if (!_mainCharacter.OutOfLives && _mainCharacter.IsDead) //death
+            {
+                _mainCharacter.Score = StartScore;
+                _mainCharacter.ArrowAmount = StartArrows;
+                _mainCharacter.Mana = StartMana;
+                _mainCharacter.Coins = StartCoins;
+                _mainCharacter.Respawn(this);
+                LoadLevel(string.Format("lvl{0}", LevelNumber));
+            }
         }
     }
 }

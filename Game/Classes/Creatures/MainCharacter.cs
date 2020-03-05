@@ -7,11 +7,6 @@ namespace Game
 {
     public sealed class MainCharacter : Creature
     {
-        /*signleton field*/
-        private static MainCharacter _instance;
-
-        /*signleton field*/
-        private static readonly object _padlock = new object();
         public readonly Clock DefaultClock;
         private byte _immortalityAnimationCounter;
         private bool _immortalityAnimationFlag;
@@ -88,7 +83,6 @@ namespace Game
         public bool HasSilverKey { get; set; }
         public bool HasGoldenKey { get; set; }
         public bool OutOfLives { get; set; }
-
         public bool GotExit { get; set; }
 
         //steering
@@ -100,7 +94,6 @@ namespace Game
         public Keyboard.Key KeyARROW { get; set; }
         public Keyboard.Key KeyTHUNDER { get; set; }
         public Keyboard.Key KeyDIE { get; set; }
-
         public Keyboard.Key KeyIMMORTALITY { get; set; }
 
         //sounds
@@ -111,24 +104,7 @@ namespace Game
         public Sound sTp { get; }
         public Sound sKey { get; }
         public Sound sLife { get; }
-
         public Sound sImmortality { get; }
-
-        /*signleton property*/
-        public static MainCharacter Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    lock (_padlock)
-                    {
-                        if (_instance == null)
-                            _instance = new MainCharacter(0, 0, null);
-                    }
-
-                return _instance;
-            }
-        }
 
         public void MainCharacterSteering(Level level)
         {

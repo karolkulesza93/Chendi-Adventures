@@ -90,7 +90,7 @@
     <Compile Include="Classes\Basics\Highscores.cs" />
     <Compile Include="Classes\Level\Level.cs" />
     <Compile Include="Classes\Creatures\MainCharacter.cs" />
-    <Compile Include="Classes\Creatures\MainCharacterUI.cs" />
+    <Compile Include="Classes\Details\MainCharacterUI.cs" />
     <Compile Include="Classes\Basics\MainGameWindow.cs" />
     <Compile Include="Classes\Creatures\Monster.cs" />
     <Compile Include="Classes\Creatures\Movement.cs" />

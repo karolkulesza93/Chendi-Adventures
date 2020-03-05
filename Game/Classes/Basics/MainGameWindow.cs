@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.SymbolStore;
 using System.IO;
 using System.Threading;
 using SFML.Audio;
@@ -9,7 +8,6 @@ using SFML.Window;
 
 /*
 do zrobienia:
-- nerf rewardow z loterri
 - zmiana formatu leveli z txt na cos mniej dostepnego dla casuala
 - levele
 - moze bossy
@@ -22,21 +20,29 @@ namespace Game
 {
     public sealed class MainGameWindow
     {
-        public static bool DevManipulation = false;
-
-        //fields
-        /*signleton field*/
         private static MainGameWindow _instance;
+        private static readonly object Padlock = new object();
+        public static MainGameWindow Instance
+        {
+            get
+            {
+                if (_instance == null)
+                    lock (Padlock)
+                    {
+                        if (_instance == null)
+                            _instance = new MainGameWindow("Chendi Adventures");
+                    }
 
-        /*signleton field*/
-        private static readonly object _padlock = new object();
+                return _instance;
+            }
+        }
 
         private readonly View _view;
         private readonly RenderWindow _window;
         private readonly Random _randomizer;
         private Sprite _background;
         private MainCharacter _chendi;
-        private MainCharacterUI _chendiUI;
+        private MainCharacterUI _chendiUi;
         private Sound _gameEnd;
         private Sprite _gameLogo;
         private TextLine _gameOver;
@@ -59,31 +65,33 @@ namespace Game
         private int _windowHeight = 1080;
         private Styles _windowStyle = Styles.Fullscreen;
         private int _windowWidth = 1920;
-        private bool isGame;
-        private bool isHighscore;
-        private bool isMenu;
-        private bool isPaused;
-        private bool isQuit;
-        private bool isSettigs;
+        private bool _isGame;
+        private bool _isHighscore;
+        private bool _isMenu;
+        private bool _isPaused;
+        private bool _isQuit;
+        private bool _isSettigs;
 
-        //contructors
-        public MainGameWindow()
+        private MainGameWindow()
         {
-            isMenu = true;
-            isGame = false;
-            isHighscore = false;
-            isSettigs = false;
-            isQuit = false;
-            isPaused = false;
+            _isMenu = true;
+            _isGame = false;
+            _isHighscore = false;
+            _isSettigs = false;
+            _isQuit = false;
+            _isPaused = false;
             _randomizer = new Random();
         }
 
-        public MainGameWindow(string title) : this()
+        private MainGameWindow(string title) : this()
         {
-            DevManip();
-
             Title = title;
-            _window = new RenderWindow(new VideoMode((uint) _windowWidth, (uint) _windowHeight), Title, _windowStyle);
+            //_window = new RenderWindow(new VideoMode((uint) _windowWidth, (uint) _windowHeight), Title, _windowStyle);
+            _window = new RenderWindow(VideoMode.DesktopMode, Title, _windowStyle);
+            _windowWidth = (int)_window.Size.X;
+            _windowHeight = (int) _window.Size.Y;
+
+
             _window.SetFramerateLimit(60);
             _window.SetVisible(true);
             _window.Closed += OnClosed;
@@ -93,26 +101,8 @@ namespace Game
             _view = new View(new FloatRect(0, 0, _windowWidth, _windowHeight));
         }
 
-        //properties
-        /*signleton property*/
-        public static MainGameWindow Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    lock (_padlock)
-                    {
-                        if (_instance == null)
-                            _instance = new MainGameWindow();
-                    }
-
-                return _instance;
-            }
-        }
-
         public string Title { get; set; }
 
-        //methods
         public void GameStart()
         {
             _loading = new TextLine("LOADING...", 50, 1390, 990, Color.White);
@@ -127,7 +117,6 @@ namespace Game
             _gameLogo.Position = new Vector2f((_windowWidth - _gameLogo.Texture.Size.X) / 2, 50);
 
             DrawLoadingScreen();
-
             LoadContents();
             MainLoop();
         }
@@ -135,11 +124,11 @@ namespace Game
         private void OnClosed(object sender, EventArgs e)
         {
             _window.Close();
-            isMenu = false;
-            isGame = false;
-            isHighscore = false;
-            isSettigs = false;
-            isQuit = false;
+            _isMenu = false;
+            _isGame = false;
+            _isHighscore = false;
+            _isSettigs = false;
+            _isQuit = false;
         }
 
         private void LoadContents()
@@ -173,7 +162,7 @@ namespace Game
 
             _chendi = new MainCharacter(-100, -100, Entity.MainCharacterTexture);
             _level = new Level(_chendi);
-            _chendiUI = new MainCharacterUI(_chendi, _view, _level);
+            _chendiUi = new MainCharacterUI(_chendi, _view, _level);
 
             _highscoreValues = new Highscores();
 
@@ -181,13 +170,13 @@ namespace Game
 
         private void MainLoop()
         {
-            while (isGame || isMenu || isHighscore || isSettigs)
+            while (_isGame || _isMenu || _isHighscore || _isSettigs)
             {
-                if (isMenu) MainMenuLoop();
-                if (isGame) GameLoop();
-                if (isHighscore) HighScoreLoop();
-                if (isSettigs) SettingsLoop();
-                if (isQuit) break;
+                if (_isMenu) MainMenuLoop();
+                if (_isGame) GameLoop();
+                if (_isHighscore) HighScoreLoop();
+                if (_isSettigs) SettingsLoop();
+                if (_isQuit) break;
             }
 
             _window.Close();
@@ -197,16 +186,16 @@ namespace Game
 
         private void SettingsLoop()
         {
-            var Resolution = new TextLine("RESOLUTION: 1920x1080", 50, 50, 790, Color.Green);
-            var Vsync = new TextLine("VSYNC: ON", 50, 50, 850, Color.White);
-            var Difficulty = new TextLine("DIFFICULTY: MEDIUM", 50, 50, 910, Color.White);
-            var KeyBindings = new TextLine("KEY BINDINGS", 50, 50, 970, Color.White);
+            var resolution = new TextLine("RESOLUTION: 1920x1080", 50, 50, 790, Color.Green);
+            var vsync = new TextLine("VSYNC: ON", 50, 50, 850, Color.White);
+            var difficulty = new TextLine("DIFFICULTY: MEDIUM", 50, 50, 910, Color.White);
+            var keyBindings = new TextLine("KEY BINDINGS", 50, 50, 970, Color.White);
 
             var choice = 1;
             var delay = 0;
             var flag = false;
 
-            while (_window.IsOpen && isSettigs)
+            while (_window.IsOpen && _isSettigs)
             {
                 ResetWindow();
 
@@ -261,31 +250,31 @@ namespace Game
                 if (choice == 0) choice = 4;
                 if (choice == 5) choice = 1;
 
-                Resolution.ChangeColor(Color.White);
-                Vsync.ChangeColor(Color.White);
-                Difficulty.ChangeColor(Color.White);
-                KeyBindings.ChangeColor(Color.White);
+                resolution.ChangeColor(Color.White);
+                vsync.ChangeColor(Color.White);
+                difficulty.ChangeColor(Color.White);
+                keyBindings.ChangeColor(Color.White);
 
                 switch (choice)
                 {
                     case 1:
                     {
-                        Resolution.ChangeColor(Color.Green);
+                        resolution.ChangeColor(Color.Green);
                         break;
                     }
                     case 2:
                     {
-                        Vsync.ChangeColor(Color.Green);
+                        vsync.ChangeColor(Color.Green);
                         break;
                     }
                     case 3:
                     {
-                        Difficulty.ChangeColor(Color.Green);
+                        difficulty.ChangeColor(Color.Green);
                         break;
                     }
                     case 4:
                     {
-                        KeyBindings.ChangeColor(Color.Green);
+                        keyBindings.ChangeColor(Color.Green);
                         break;
                     }
                 }
@@ -293,18 +282,18 @@ namespace Game
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 {
                     _chendi.sCoin.Play();
-                    isSettigs = false;
-                    isMenu = true;
+                    _isSettigs = false;
+                    _isMenu = true;
                 }
 
                 AnimateBackground();
                 _window.Draw(_background);
 
                 //draw settings
-                _window.Draw(Resolution);
-                _window.Draw(Vsync);
-                _window.Draw(Difficulty);
-                _window.Draw(KeyBindings);
+                _window.Draw(resolution);
+                _window.Draw(vsync);
+                _window.Draw(difficulty);
+                _window.Draw(keyBindings);
 
                 _window.Display();
             }
@@ -312,7 +301,7 @@ namespace Game
 
         private void KeyBindingConfig()
         {
-            while (_window.IsOpen && isSettigs)
+            while (_window.IsOpen && _isSettigs)
             {
                 ResetWindow();
                 /*
@@ -339,15 +328,15 @@ namespace Game
         private void HighScoreLoop()
         {
             var hs = new TextLine("HIGHSCORES", 50, 700, 5, Color.Green);
-            while (_window.IsOpen && isHighscore)
+            while (_window.IsOpen && _isHighscore)
             {
                 ResetWindow();
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 {
                     _chendi.sCoin.Play();
-                    isHighscore = false;
-                    isMenu = true;
+                    _isHighscore = false;
+                    _isMenu = true;
                 }
 
                 AnimateBackground();
@@ -373,7 +362,7 @@ namespace Game
             var delay = 0;
             var flag = false;
 
-            while (_window.IsOpen && isMenu)
+            while (_window.IsOpen && _isMenu)
             {
                 ResetWindow();
 
@@ -416,8 +405,8 @@ namespace Game
                     {
                         case 1:
                         {
-                            isMenu = false;
-                            isGame = true;
+                            _isMenu = false;
+                            _isGame = true;
                             if (_level.LevelNumber != 0)
                             {
                                 _level.LevelNumber = 1;
@@ -428,20 +417,20 @@ namespace Game
                         }
                         case 2:
                         {
-                            isMenu = false;
-                            isHighscore = true;
+                            _isMenu = false;
+                            _isHighscore = true;
                             break;
                         }
                         case 3:
                         {
-                            isMenu = false;
-                            isSettigs = true;
+                            _isMenu = false;
+                            _isSettigs = true;
                             break;
                         }
                         case 4:
                         {
-                            isMenu = false;
-                            isQuit = true;
+                            _isMenu = false;
+                            _isQuit = true;
                             break;
                         }
                     }
@@ -474,38 +463,27 @@ namespace Game
                     }
                 }
 
-                if (isMenu) DrawMainMenu();
+                if (_isMenu) DrawMainMenu();
             }
         }
 
         private void GameLoop()
         {
-            //DrawLoadingScreen();
-
             _levelSummary = new TextLine("", 25, -1000, -1000, Color.White);
 
-            SetView(new Vector2f(960f, 540f), _view.Center);
+            SetView(new Vector2f(_windowWidth/2, _windowHeight/2), _view.Center);
 
             if (_level.LevelNumber == 1) BegginingScene();
+
             /// SET LEVEL FOR TESTING
             //this._level.LevelNumber = 17;
             ///
 
             _level.LoadLevel(string.Format("lvl{0}", _level.LevelNumber));
 
-            _chendi.SetStartingPosition(_level);
-
-            _level.StartScore = _chendi.Score;
-            _level.StartCoins = _chendi.Coins;
-            _level.StartArrows = _chendi.ArrowAmount;
-            _level.StartMana = _chendi.Mana;
-
-            _chendi.HasSilverKey = false;
-            _chendi.HasGoldenKey = false;
-
             _mainTheme.Play();
 
-            while (_window.IsOpen && isGame)
+            while (_window.IsOpen && _isGame)
             {
                 if (CheckForGameBreak()) break;
 
@@ -515,179 +493,43 @@ namespace Game
                 _level.LevelUpdate();
 
                 ViewManipulation(_level);
-                _chendiUI.UpdateUI();
+                _chendiUi.UpdateUI();
 
                 DrawGame(_chendi, true);
 
-                if (_chendi.IsDead) _mainTheme.Stop();
-
-                //pause and exit
-                if (Keyboard.IsKeyPressed(Keyboard.Key.P)) isPaused = true;
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
-                {
-                    var choice = false;
-                    var flag = false;
-                    var delay = 0;
-
-                    _quitQestion.MoveText(_view.Center.X - 230, _view.Center.Y - 100);
-                    _yes.MoveText(_view.Center.X - 65, _view.Center.Y + 20);
-                    _no.MoveText(_view.Center.X - 40, _view.Center.Y + 90);
-
-                    _yes.ChangeColor(Color.White);
-                    _no.ChangeColor(Color.Green);
-
-                    while (_window.IsOpen && isGame)
-                    {
-                        ResetWindow();
-
-                        if (flag) delay++;
-                        if (delay > 10)
-                        {
-                            delay = 0;
-                            flag = false;
-                        }
-
-                        if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Up) ||
-                                              Keyboard.IsKeyPressed(Keyboard.Key.Down)))
-                        {
-                            _chendi.sAtk.Play();
-                            flag = true;
-                            choice = !choice;
-                            if (choice)
-                            {
-                                _yes.ChangeColor(Color.Green);
-                                _no.ChangeColor(Color.White);
-                            }
-                            else
-                            {
-                                _yes.ChangeColor(Color.White);
-                                _no.ChangeColor(Color.Green);
-                            }
-                        }
-                        else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Space))
-                        {
-                            flag = true;
-                            _chendi.sCoin.Play();
-
-                            if (choice)
-                            {
-                                isGame = false;
-                                isMenu = true;
-                                flag = false;
-                                _level.LevelNumber = 1;
-                                _chendi.ResetMainCharacter();
-                                Thread.Sleep(500);
-                            }
-
-                            break;
-                        }
-
-                        DrawGame(_chendi, false);
-
-                        _window.Draw(_quitQestion);
-                        _window.Draw(_yes);
-                        _window.Draw(_no);
-                        _window.Display();
-                    }
-                }
-
-                if (isPaused) PauseLoop();
+                ExitLoop();
             }
 
             _mainTheme.Stop();
 
-            if (!_chendi.OutOfLives && _chendi.IsDead) //death
-            {
-                //DrawLoadingScreen();
-                _chendi.Score = _level.StartScore;
-                _chendi.ArrowAmount = _level.StartArrows;
-                _chendi.Mana = _level.StartMana;
-                _chendi.Coins = _level.StartCoins;
-                _chendi.Respawn(_level);
-                _level.LoadLevel(string.Format("lvl{0}", _level.LevelNumber));
-            }
+            _level.ReloadLevelUponDeath();
 
-            if (_chendi.OutOfLives) //game over
-            {
-                _highscoreValues.AddNewRecord(new HighscoreRecord(_chendi.Score, _level.LevelNumber));
-
-                _gameEnd.Play();
-                
-                DrawGameOver();
-                _chendi.ResetMainCharacter();
-                DrawLoadingScreen();
-            }
-
-            if (_chendi.GotExit) //level complete
-            {
-                _victory.Play();
-                //set level summary
-                var time = Math.Round(_level.LevelTime.ElapsedTime.AsSeconds(), 2);
-                var bonus = _level.GetBonusForTime(time);
-
-                _chendi.Score += bonus;
-
-                _levelSummary.EditText(string.Format(
-                    "LEVEL COMPLETED!\n" +
-                    "TIME: {0}" + " SECONDS\n" +
-                    "TIME BONUS: {1}\n" +
-                    "SCORE GAINED: {2}\n" +
-                    "LIVES LEFT: {3}\n" +
-                    "OVERALL SCORE: {4}",
-                    time, bonus, _chendi.Score - _level.StartScore - bonus, _chendi.Lives, _chendi.Score));
-                _levelSummary.SetOutlineThickness(2);
-
-                //summary to the center
-                _levelSummary.X = _view.Center.X - 1000;
-                _levelSummary.Y = _view.Center.Y - 100;
-
-                //draw summary
-                _chendi.SetTextureRectanlge(96, 96, 32, 32);
-            }
-
-            var timer = new Clock();
-            timer.Restart();
-            _chendi.sImmortality.Stop();
-            while (_window.IsOpen && isGame && _chendi.GotExit) //to next level
-            {
-                ResetWindow();
-
-                if (_levelSummary.X < _view.Center.X - 250)
-                    _levelSummary.MoveText(_levelSummary.X + 35, _levelSummary.Y);
-
-                DrawGame(_chendi, false);
-                _window.Draw(_levelSummary);
-                _window.Display();
-
-                if (timer.ElapsedTime.AsSeconds() > 6)
-                {
-                    _level.LevelNumber++;
-                    _chendi.GotExit = false;
-                    DrawLoadingScreen();
-                    if (_level.LevelNumber < 51 && _level.LevelNumber > 0 && _randomizer.Next(101) > 0) Lottery();
-                    break;
-                }
-            }
-
-            timer.Dispose();
+            GameOverAndAddToHighscore();
+            
+            ProceedToNextLevel();
         }
 
         private void PauseLoop()
         {
             _pause.MoveText(_view.Center.X - 100, _view.Center.Y - 25);
 
-            while (_window.IsOpen && isPaused)
+            while (_window.IsOpen && _isPaused)
             {
                 ResetWindow();
-                //this.DrawGame(this._chendi);
+                this.DrawGame(_chendi, false);
                 _window.Draw(_pause);
                 _window.Display();
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape)) isPaused = false;
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+                {
+                    _chendi.sCoin.Play();
+                    _isPaused = false;
+                    Thread.Sleep(200);
+                }
             }
         }
 
-        public void ResetWindow()
+        private void ResetWindow()
         {
             _window.DispatchEvents();
             _window.Clear(Color.Black);
@@ -710,8 +552,8 @@ namespace Game
 
             if (_chendi.Continues == 0)
             {
-                isGame = false;
-                isMenu = true;
+                _isGame = false;
+                _isMenu = true;
                 _chendi.Continues = 2;
                 _level.LevelNumber = 1;
                 _chendi.ResetMainCharacter();
@@ -750,8 +592,8 @@ namespace Game
                     _window.Draw(_continue);
                     _window.Display();
                 }
-                isGame = false;
-                isMenu = true;
+                _isGame = false;
+                _isMenu = true;
             }
 
             clock.Dispose();
@@ -762,7 +604,7 @@ namespace Game
             _window.Draw(_level);
             _window.Draw(character);
             foreach (var entity in entities) _window.Draw(entity);
-            _window.Draw(_chendiUI);
+            _window.Draw(_chendiUi);
             if (display) _window.Display();
         }
 
@@ -806,8 +648,24 @@ namespace Game
 
         private bool CheckForGameBreak()
         {
-            if (_chendi.GotExit || _chendi.OutOfLives && !_chendi.IsDead) return true;
-            if (_chendi.IsDead && _chendi.DefaultClock.ElapsedTime.AsSeconds() > 3) return true;
+            if (Keyboard.IsKeyPressed(Keyboard.Key.P)) 
+            {
+                Creature.sKill.Play();
+                _isPaused = true;
+                return false;
+            }
+            if (_chendi.IsDead)
+            {
+                _mainTheme.Stop();
+            }
+            if (_chendi.GotExit || _chendi.OutOfLives && !_chendi.IsDead)
+            {
+                return true;
+            }
+            if (_chendi.IsDead && _chendi.DefaultClock.ElapsedTime.AsSeconds() > 3)
+            {
+                return true;
+            }
             return false;
         }
 
@@ -843,7 +701,7 @@ namespace Game
 
             _chendi.SetPosition(-100, -100);
             _chendi.IsDead = true;
-            _chendiUI.ResetPositions();
+            _chendiUi.ResetPositions();
 
             _window.SetKeyRepeatEnabled(false);
 
@@ -855,7 +713,7 @@ namespace Game
             var view = true;
 
             BlockType type = 0;
-            BlockType type_m = 0;
+            BlockType typeM = 0;
 
             var rnd = new Random();
 
@@ -902,7 +760,7 @@ namespace Game
                     type++;
                     if (type == (BlockType) 31) type = 0;
 
-                    type_m = type;
+                    typeM = type;
 
                     if (type >= 0 && type <= (BlockType) 13)
                     {
@@ -932,7 +790,7 @@ namespace Game
                     if (type > 0) type--;
                     else type = (BlockType) 30;
 
-                    type_m = type;
+                    typeM = type;
 
                     if (type >= 0 && type <= (BlockType) 13)
                     {
@@ -960,12 +818,12 @@ namespace Game
                     _chendi.sCoin.Play();
 
 
-                    if (type_m >= 0 && type_m <= (BlockType) 13)
+                    if (typeM >= 0 && typeM <= (BlockType) 13)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture;
                         _level.GetObstacle(x, y).UseTexture();
                     }
-                    else if (type_m >= (BlockType) 14 && type_m <= (BlockType) 24)
+                    else if (typeM >= (BlockType) 14 && typeM <= (BlockType) 24)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture;
                         _level.GetObstacle(x, y).UseTexture();
@@ -976,8 +834,8 @@ namespace Game
                         _level.GetObstacle(x, y).UseTexture();
                     }
 
-                    _level.GetObstacle(x, y).Type = type_m;
-                    _level.GetObstacle(x, y).SetBlock(type_m);
+                    _level.GetObstacle(x, y).Type = typeM;
+                    _level.GetObstacle(x, y).SetBlock(typeM);
                 }
 
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.D))
@@ -1162,9 +1020,6 @@ namespace Game
                     SetView(new Vector2f(_windowWidth, _windowHeight),
                         new Vector2f(choice.Position.X + 16, choice.Position.Y + 16));
 
-                //choice.Color = new Color((byte)rnd.Next(100,255), (byte)rnd.Next(100, 255), (byte)rnd.Next(100, 255));
-                //
-
                 if (flag) delay++;
                 if (flag && delay > 9)
                 {
@@ -1194,23 +1049,166 @@ namespace Game
             _menuTheme.Play();
         }
 
-        private void Lottery()
+        private void ExitLoop()
         {
-            Clock timer = new Clock();
-            SetView(new Vector2f(480f, 270f), new Vector2f(240f, 135f));
-            GameMachine gameMachine = new GameMachine(-70, 71, Entity.GameMachineTexture);
+            if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+            {
+                var choice = false;
+                var flag = false;
+                var delay = 0;
+
+                _quitQestion.MoveText(_view.Center.X - 230, _view.Center.Y - 100);
+                _yes.MoveText(_view.Center.X - 65, _view.Center.Y + 20);
+                _no.MoveText(_view.Center.X - 40, _view.Center.Y + 90);
+
+                _yes.ChangeColor(Color.White);
+                _no.ChangeColor(Color.Green);
+
+                while (_window.IsOpen && _isGame)
+                {
+                    ResetWindow();
+
+                    if (flag) delay++;
+                    if (delay > 10)
+                    {
+                        delay = 0;
+                        flag = false;
+                    }
+
+                    if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Up) ||
+                                          Keyboard.IsKeyPressed(Keyboard.Key.Down)))
+                    {
+                        _chendi.sAtk.Play();
+                        flag = true;
+                        choice = !choice;
+                        if (choice)
+                        {
+                            _yes.ChangeColor(Color.Green);
+                            _no.ChangeColor(Color.White);
+                        }
+                        else
+                        {
+                            _yes.ChangeColor(Color.White);
+                            _no.ChangeColor(Color.Green);
+                        }
+                    }
+                    else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                    {
+                        flag = true;
+                        _chendi.sCoin.Play();
+
+                        if (choice)
+                        {
+                            _isGame = false;
+                            _isMenu = true;
+                            flag = false;
+                            _level.LevelNumber = 1;
+                            _chendi.ResetMainCharacter();
+                            Thread.Sleep(500);
+                        }
+
+                        break;
+                    }
+
+                    DrawGame(_chendi, false);
+
+                    _window.Draw(_quitQestion);
+                    _window.Draw(_yes);
+                    _window.Draw(_no);
+                    _window.Display();
+                }
+            }
+
+            if (_isPaused) PauseLoop();
+        }
+
+        private void GameOverAndAddToHighscore()
+        {
+            if (_chendi.OutOfLives) //game over
+            {
+                _highscoreValues.AddNewRecord(new HighscoreRecord(_chendi.Score, _level.LevelNumber));
+
+                _gameEnd.Play();
+
+                DrawGameOver();
+                _chendi.ResetMainCharacter();
+                DrawLoadingScreen();
+            }
+        }
+
+        private void ProceedToNextLevel()
+        {
+            if (_chendi.GotExit) //level complete
+            {
+                _victory.Play();
+                //set level summary
+                var time = Math.Round(_level.LevelTime.ElapsedTime.AsSeconds(), 2);
+                var bonus = _level.GetBonusForTime(time);
+
+                _chendi.Score += bonus;
+
+                _levelSummary.EditText(string.Format(
+                    "LEVEL COMPLETED!\n" +
+                    "TIME: {0}" + " SECONDS\n" +
+                    "TIME BONUS: {1}\n" +
+                    "SCORE GAINED: {2}\n" +
+                    "LIVES LEFT: {3}\n" +
+                    "OVERALL SCORE: {4}",
+                    time, bonus, _chendi.Score - _level.StartScore - bonus, _chendi.Lives, _chendi.Score));
+                _levelSummary.SetOutlineThickness(2);
+
+                //summary to the center
+                _levelSummary.X = _view.Center.X - 1000;
+                _levelSummary.Y = _view.Center.Y - 100;
+
+                _chendi.SetTextureRectanlge(96, 96, 32, 32);
+            }
+
+            var timer = new Clock();
+            timer.Restart();
+            _chendi.sImmortality.Stop();
+            while (_window.IsOpen && _isGame && _chendi.GotExit) //to next level
+            {
+                ResetWindow();
+
+                if (_levelSummary.X < _view.Center.X - 250)
+                    _levelSummary.MoveText(_levelSummary.X + 35, _levelSummary.Y);
+
+                DrawGame(_chendi, false);
+                _window.Draw(_levelSummary);
+                _window.Display();
+
+                if (timer.ElapsedTime.AsSeconds() > 6)
+                {
+                    _level.LevelNumber++;
+                    _chendi.GotExit = false;
+                    //lottery
+                    if (_level.LevelNumber < 51 && _level.LevelNumber > 0 && _randomizer.Next(101) > 0)
+                    {
+                        LotteryLoop();
+                    }
+                    DrawLoadingScreen();
+                    break;
+                }
+            }
+
+            timer.Dispose();
+        }
+
+        private void LotteryLoop()
+        {
+            Clock clock = new Clock();
+            //SetView(new Vector2f(480f, 270f), new Vector2f(240f, 135f));
+            GameMachine gameMachine = new GameMachine(-70, _view.Center.Y + 80, Entity.GameMachineTexture, _view);
             bool isRolling = true;
             bool done = false;
             int time = 50;
 
             if (_randomizer.Next(100) > 0)
             {
-                while (_window.IsOpen && isGame)
+                while (_window.IsOpen && _isGame)
                 {
                     ResetWindow();
-
-                    AnimateBackground();
-                    _window.Draw(_background);
 
                     if (isRolling && !done && Keyboard.IsKeyPressed(Keyboard.Key.Space))
                     {
@@ -1218,15 +1216,15 @@ namespace Game
                         isRolling = false;
                     }
 
-                    if (timer.ElapsedTime.AsMilliseconds() > time && isRolling && !done)
+                    if (clock.ElapsedTime.AsMilliseconds() > time && isRolling && !done)
                     {
-                        timer.Restart();
+                        clock.Restart();
                         gameMachine.Roll();
                     }
 
-                    if (timer.ElapsedTime.AsMilliseconds() > time && !isRolling && !done)
+                    if (clock.ElapsedTime.AsMilliseconds() > time && !isRolling && !done)
                     {
-                        timer.Restart();
+                        clock.Restart();
                         gameMachine.Roll();
 
                         time += 20;
@@ -1238,42 +1236,20 @@ namespace Game
                         }
                     }
 
-                    if (done && timer.ElapsedTime.AsSeconds() > 3)
+                    if (done && clock.ElapsedTime.AsSeconds() > 3)
                     {
                         DrawLoadingScreen();
-                        timer.Dispose();
+                        clock.Dispose();
                         return;
                     }
 
                     gameMachine.GameMachineUpdate();
 
+                    DrawGame(_chendi, false);
+                    _window.Draw(_levelSummary);
                     _window.Draw(gameMachine);
                     _window.Display();
                 }
-            }
-        }
-
-        private void DevManip()
-        {
-            string answer;
-            if (DevManipulation)
-            {
-                Console.WriteLine("Chendi Adventures Manipulation:");
-
-                Console.Write("Play on fullscreen? (y/n)\n>");
-                answer = Console.ReadLine();
-                if (answer == "y")
-                {
-                    _windowStyle = Styles.Fullscreen;
-                }
-                else
-                {
-                    _windowStyle = Styles.Resize;
-                    _windowHeight = 540;
-                    _windowWidth = 960;
-                }
-
-                //Console.Write("Choose level\n> "); answer = Console.ReadLine();
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Diagnostics.SymbolStore;
 using System.IO;
 using System.Threading;
-using Game.Classes.Special;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
@@ -664,7 +664,7 @@ namespace Game
                     _level.LevelNumber++;
                     _chendi.GotExit = false;
                     DrawLoadingScreen();
-                    if (_level.LevelNumber < 51 && _level.LevelNumber > 0) Lottery();
+                    if (_level.LevelNumber < 51 && _level.LevelNumber > 0 && _randomizer.Next(101) > 0) Lottery();
                     break;
                 }
             }
@@ -1212,25 +1212,22 @@ namespace Game
                     AnimateBackground();
                     _window.Draw(_background);
 
+                    if (isRolling && !done && Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                    {
+                        Creature.sKill.Play();
+                        isRolling = false;
+                    }
+
                     if (timer.ElapsedTime.AsMilliseconds() > time && isRolling && !done)
                     {
                         timer.Restart();
                         gameMachine.Roll();
-                        if (Keyboard.IsKeyPressed(Keyboard.Key.Space))
-                        {
-                            isRolling = false;
-                        }
                     }
 
                     if (timer.ElapsedTime.AsMilliseconds() > time && !isRolling && !done)
                     {
                         timer.Restart();
                         gameMachine.Roll();
-                        if (Keyboard.IsKeyPressed(Keyboard.Key.Space))
-                        {
-                            Creature.sKill.Play();
-                            isRolling = false;
-                        }
 
                         time += 20;
                         if (time > 500)

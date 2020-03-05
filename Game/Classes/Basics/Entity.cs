@@ -6,7 +6,7 @@ namespace Game
 {
     public abstract class Entity : Drawable
     {
-        //textyres
+        //textures
         public static Texture ArcherTexture = new Texture(@"img/archer.png");
         public static Texture ArrowTexture = new Texture(@"img/arrow.png");
         public static Texture DetailsTexture = new Texture(@"img/details.png");
@@ -20,9 +20,9 @@ namespace Game
         public static Texture WizardTexture = new Texture(@"img/wizard.png");
         public static  Texture GameMachineTexture = new Texture(@"img/machine.png");
         public static Texture RewardsTexture = new Texture(@"img/rewards.png");
-        private readonly Sprite _EntitySprite; //głowny obiekt na ekranie
+        private readonly Sprite _entitySprite; //głowny obiekt na ekranie
 
-        private IntRect _TextureRectangle;
+        private IntRect _textureRectangle;
 
         public Entity(float x = 0, float y = 0, Texture texture = null)
         {
@@ -35,8 +35,8 @@ namespace Game
                 Console.WriteLine("Something went wrong, as always :)");
             }
 
-            _TextureRectangle = new IntRect(0, 0, 0, 0);
-            _EntitySprite = new Sprite(LoadedTexture, _TextureRectangle); //przypisanie textury
+            _textureRectangle = new IntRect(0, 0, 0, 0);
+            _entitySprite = new Sprite(LoadedTexture, _textureRectangle); //przypisanie textury
             SetPosition(x, y);
         }
 
@@ -44,56 +44,56 @@ namespace Game
 
         public float X //pozycja X
         {
-            get => _EntitySprite.Position.X;
-            set => _EntitySprite.Position = new Vector2f(value, _EntitySprite.Position.Y);
+            get => _entitySprite.Position.X;
+            set => _entitySprite.Position = new Vector2f(value, _entitySprite.Position.Y);
         }
 
         public float Y //pozycja Y
         {
-            get => _EntitySprite.Position.Y;
-            set => _EntitySprite.Position = new Vector2f(_EntitySprite.Position.X, value);
+            get => _entitySprite.Position.Y;
+            set => _entitySprite.Position = new Vector2f(_entitySprite.Position.X, value);
         }
 
         public float Left => X;
         public float Right => X + Width;
         public float Top => Y;
         public float Bottom => Y + Height;
-        public float Width => _EntitySprite.TextureRect.Width; //szerokość
-        public float Height => _EntitySprite.TextureRect.Height; //wysokość
+        public float Width => _entitySprite.TextureRect.Width; //szerokość
+        public float Height => _entitySprite.TextureRect.Height; //wysokość
 
         public virtual void Draw(RenderTarget target, RenderStates states)
         {
-            target.Draw(_EntitySprite, states);
-        } //implementacja interfejsu drawable
+            target.Draw(_entitySprite, states);
+        } 
 
         public virtual void SetPosition(float x, float y)
         {
             X = x;
             Y = y;
-        } //ustawienie pozycji
+        } 
 
         public FloatRect GetBoundingBox()
         {
-            return _EntitySprite.GetGlobalBounds();
+            return _entitySprite.GetGlobalBounds();
         }
 
         public void SetTextureRectanlge(int x, int y, int width = 32, int height = 32)
         {
-            _TextureRectangle.Left = x;
-            _TextureRectangle.Top = y;
-            _TextureRectangle.Width = width;
-            _TextureRectangle.Height = height;
+            _textureRectangle.Left = x;
+            _textureRectangle.Top = y;
+            _textureRectangle.Width = width;
+            _textureRectangle.Height = height;
             SetTexture();
         }
 
         private void SetTexture()
         {
-            _EntitySprite.TextureRect = _TextureRectangle;
+            _entitySprite.TextureRect = _textureRectangle;
         }
 
         public void UseTexture()
         {
-            _EntitySprite.Texture = LoadedTexture;
+            _entitySprite.Texture = LoadedTexture;
         }
 
         public Vector2f Get32Position()
@@ -113,7 +113,7 @@ namespace Game
 
         public void SetColor(Color color)
         {
-            _EntitySprite.Color = color;
+            _entitySprite.Color = color;
         }
     }
 }

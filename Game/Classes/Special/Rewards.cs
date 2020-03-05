@@ -1,4 +1,4 @@
-﻿namespace Game.Classes.Special
+﻿namespace Game
 {
     public enum Reward // 257 possibilities
     {

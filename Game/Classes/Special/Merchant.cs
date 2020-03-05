@@ -1,9 +1,8 @@
-﻿using System.CodeDom;
-using SFML.Graphics;
+﻿using SFML.Graphics;
 using SFML.Audio;
 using SFML.System;
 
-namespace Game.Classes.Special
+namespace Game
 {
     public class Merchant : Entity
     {

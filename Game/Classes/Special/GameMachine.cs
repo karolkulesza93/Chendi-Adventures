@@ -2,7 +2,7 @@
 using SFML.Audio;
 using SFML.Graphics;
 
-namespace Game.Classes.Special
+namespace Game
 {
     public class GameMachine : Entity
     {
@@ -92,7 +92,7 @@ namespace Game.Classes.Special
                 case Reward.Coins1000:
                 {
                     character.Coins += 1000;
-                    _reward.EditText("YOU HAVE WON 1000!");
+                    _reward.EditText("YOU HAVE WON 1000 COINS!");
                         break;
                 }
                 case Reward.Jackpot:
@@ -104,39 +104,39 @@ namespace Game.Classes.Special
 
                 case Reward.Arrow3:
                 {
-                    character.ArrowAmount += 3;
-                    _reward.EditText("YOU HAVE WON 3 ARROWS");
+                    character.ArrowAmount += 1;
+                    _reward.EditText("YOU HAVE WON 1 ARROW");
                         break;
                 }
                 case Reward.Arrow10:
                 {
-                    character.ArrowAmount += 10;
-                    _reward.EditText("YOU HAVE WON 10 ARROWS");
+                    character.ArrowAmount += 3;
+                    _reward.EditText("YOU HAVE WON 3 ARROWS");
                         break;
                 }
                 case Reward.Arrow25:
                 {
-                    character.ArrowAmount += 25;
-                    _reward.EditText("YOU HAVE WON 25 ARROWS");
+                    character.ArrowAmount += 5;
+                    _reward.EditText("YOU HAVE WON 5 ARROWS");
                         break;
                 }
 
                 case Reward.Mana3:
                 {
-                    character.Mana += 3;
-                    _reward.EditText("YOU HAVE WON 3 MANA POTIONS");
+                    character.Mana += 1;
+                    _reward.EditText("YOU HAVE WON 1 MANA POTION");
                         break;
                 }
                 case Reward.Mana10:
                 {
-                    character.Mana += 10;
-                    _reward.EditText("YOU HAVE WON 10 MANA POTIONS");
+                    character.Mana += 2;
+                    _reward.EditText("YOU HAVE WON 2 MANA POTIONS");
                         break;
                 }
                 case Reward.Mana25:
                 {
-                    character.Mana += 25;
-                    _reward.EditText("YOU HAVE WON 25 MANA POTIONS");
+                    character.Mana += 3;
+                    _reward.EditText("YOU HAVE WON 3 MANA POTIONS");
                         break;
                 }
 

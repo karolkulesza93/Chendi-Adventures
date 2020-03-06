@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.CodeDom;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using SFML.Graphics;
@@ -37,11 +38,18 @@ namespace Game
         private readonly int _maxAmountOfRecords;
         private readonly string _path;
 
+        public float X
+        {
+            get => _highscores.X;
+            set => _highscores.X = value;
+        }
+
         public Highscores()
         {
             _path = @"highscores.dat";
             _maxAmountOfRecords = 20;
             _highscores = new TextLine("", 50, 470, 70, Color.White);
+            _highscores.SetOutlineThickness(5);
 
             Scores = new List<HighscoreRecord>();
             Scores.Clear();

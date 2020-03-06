@@ -11,26 +11,25 @@ namespace Game
     {
         public readonly List<Archer> Archers;
         public readonly List<Ghost> Ghosts;
-
-        public readonly List<Block> LevelObstacles;
-
-        //redundacja w chuj, powinnobyc polimorficznie
+        public readonly List<Wizard> Wizards;
         public readonly List<Monster> Monsters;
+        public readonly List<Block> LevelObstacles;
         public readonly List<ParticleEffect> Particles;
-
         public readonly List<ScoreAdditionEffect> ScoreAdditionEffects;
         public readonly List<Trap> Traps;
-        public readonly List<Wizard> Wizards;
+       
         private readonly Sprite _background;
-
         private readonly MainCharacter _mainCharacter;
-
+        private readonly View _view;
         private readonly Texture _texBackground;
+        private TextLine _levelDescription;
+
         public List<BlockType> UnableToPassl;
 
-        public Level(MainCharacter character)
+        public Level(MainCharacter character, View view)
         {
             _mainCharacter = character;
+            _view = view; 
 
             ScoreAdditionEffects = new List<ScoreAdditionEffect>();
             Particles = new List<ParticleEffect>();
@@ -50,6 +49,9 @@ namespace Game
 
             _texBackground = new Texture(@"img/tiles.png", new IntRect(new Vector2i(32, 0), new Vector2i(32, 32)));
             _texBackground.Repeated = true;
+
+            _levelDescription = new TextLine("", 30, -100, -100, Color.Magenta); //color?
+            _levelDescription.SetOutlineThickness(3);
 
             _background = new Sprite(_texBackground);
 
@@ -96,6 +98,8 @@ namespace Game
             //
             foreach (var i in Particles) target.Draw(i, states);
             foreach (var i in ScoreAdditionEffects) target.Draw(i, states);
+
+            target.Draw(_levelDescription);
         }
 
         public void LoadLevel(string level)
@@ -328,7 +332,7 @@ namespace Game
                     }
                     case 'M':
                     {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Mana));
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.TripleMana));
                         break;
                     }
                     //details
@@ -414,6 +418,9 @@ namespace Game
             _mainCharacter.HasSilverKey = false;
             _mainCharacter.HasGoldenKey = false;
 
+            _levelDescription.MoveText(_view.Center.X - _view.Size.X/2 - 1000, _view.Center.Y - 100);
+            _levelDescription.EditText($"LEVEL {LevelNumber}");
+
             //Console.WriteLine("Level {0} loaded succesfully ({1}:{2}  MC value: {3})", level, this.LevelWidth, this.LevelHeight, this.MonsterCount);
             //File.AppendAllText("log.txt", string.Format("Level {0} loaded succesfully ({1}:{2}  MC value: {3})\n", level, this.LevelWidth, this.LevelHeight, this.MonsterCount));
             LevelTime.Restart();
@@ -432,7 +439,7 @@ namespace Game
             return false;
         }
 
-        public void LevelUpdate(bool IsLevelEditor = false)
+        public void LevelUpdate(bool isLevelEditor = false)
         {
             foreach (var obstacle in LevelObstacles)
             {
@@ -457,19 +464,30 @@ namespace Game
                         obstacle.SetTextureRectanlge(64, 32, 32, 32);
             }
 
-            if (IsLevelEditor == false)
+            if (isLevelEditor == false)
             {
                 foreach (var trap in Traps) trap.TrapUpdate();
 
                 foreach (var effect in Particles) effect.MakeParticles();
 
-                foreach (var Monster in Monsters) Monster.MonsterUpdate();
+                foreach (var monster in Monsters) monster.MonsterUpdate();
                 foreach (var archer in Archers) archer.UpdateArcher(this);
                 foreach (var ghost in Ghosts) ghost.UpdateGhost(this, _mainCharacter);
                 foreach (var wizard in Wizards) wizard.WizardUpdate(_mainCharacter);
             }
 
             //details
+
+            if (LevelTime.ElapsedTime.AsSeconds() < 5)
+            {
+                _levelDescription.MoveText(_levelDescription.X, _view.Center.Y - 100);
+                if (_levelDescription.X < _view.Center.X - 1.2f * _levelDescription.Width / 2 && LevelTime.ElapsedTime.AsSeconds() > 0.5f)
+                { _levelDescription.MoveText(_levelDescription.X + 50, _levelDescription.Y); }
+                if (_levelDescription.X < _view.Center.X + _view.Size.X / 2 + 500 && LevelTime.ElapsedTime.AsSeconds() > 3)
+                { _levelDescription.MoveText(_levelDescription.X + 50, _levelDescription.Y); } 
+            } 
+
+
             try
             {
                 for (var i = 0; i < Particles.Count; i++)

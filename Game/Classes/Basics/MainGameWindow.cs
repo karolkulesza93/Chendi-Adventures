@@ -7,13 +7,21 @@ using SFML.System;
 using SFML.Window;
 
 /*
+ PRACA INŻYNIERSKA - KAROL KULESZA
+ Temat: Realizacja dwuwymiarowej gry platformowej z użyciem biblioteki SFML
+ Promotor: dr Piotr Jastrzębski
+
 do zrobienia:
+- zmiany ekranu
 - zmiana formatu leveli z txt na cos mniej dostepnego dla casuala
 - levele
 - moze bossy
 - scenka na poczatek
 - settingsy (hotkeye, poziom trudnosci, rozdzielczosci, vsync)
 - sklep
+- generowanie poziomu
+- zwiekszenie mozliwosci level editora (CRUD)
+- jak sie uda to shadery ogarnac aby ladnie wygladalo
 */
 
 namespace Game
@@ -41,6 +49,7 @@ namespace Game
         private readonly RenderWindow _window;
         private readonly Random _randomizer;
         private Sprite _background;
+        private ScreenChange _screenChange;
         private MainCharacter _chendi;
         private MainCharacterUI _chendiUi;
         private Sound _gameEnd;
@@ -62,9 +71,9 @@ namespace Game
         private TextLine _settings;
         private TextLine _start;
         private Sound _victory;
-        private int _windowHeight = 1080;
+        private int _windowHeight;
         private Styles _windowStyle = Styles.Fullscreen;
-        private int _windowWidth = 1920;
+        private int _windowWidth;
         private bool _isGame;
         private bool _isHighscore;
         private bool _isMenu;
@@ -99,13 +108,14 @@ namespace Game
             _window.SetKeyRepeatEnabled(false);
             _window.SetVerticalSyncEnabled(true);
             _view = new View(new FloatRect(0, 0, _windowWidth, _windowHeight));
+            _screenChange = new ScreenChange(ref _view);
         }
 
         public string Title { get; set; }
 
         public void GameStart()
         {
-            _loading = new TextLine("LOADING...", 50, 1390, 990, Color.White);
+            _loading = new TextLine("LOADING...", 50, 1390, 990, new Color(150,150,150));
             var tmp = new Texture("img/tiles.png", new IntRect(new Vector2i(32, 0), new Vector2i(32, 32)));
             tmp.Repeated = true;
 
@@ -114,7 +124,7 @@ namespace Game
             _background.TextureRect = new IntRect(new Vector2i(0, 0), new Vector2i(1000, 600));
 
             _gameLogo = new Sprite(new Texture(@"img/logo.png"));
-            _gameLogo.Position = new Vector2f((_windowWidth - _gameLogo.Texture.Size.X) / 2, 50);
+            _gameLogo.Position = new Vector2f((_windowWidth - _gameLogo.Texture.Size.X) / 2, -300);
 
             DrawLoadingScreen();
             LoadContents();
@@ -141,27 +151,27 @@ namespace Game
             _mainTheme.Loop = true;
             _mainTheme.Volume = 30;
 
-            _quitQestion = new TextLine("QUIT GAME?", 50, 265, 230, Color.White);
-            _quitQestion.SetOutlineThickness(2f);
+            _quitQestion = new TextLine("QUIT GAME?", 50, 265, 230, new Color(150,150,150));
+            _quitQestion.SetOutlineThickness(5f);
             _yes = new TextLine("YES", 50, 435, 300, Color.White);
-            _yes.SetOutlineThickness(2f);
+            _yes.SetOutlineThickness(5f);
             _no = new TextLine("NO", 50, 460, 370, Color.Green);
-            _no.SetOutlineThickness(2f);
+            _no.SetOutlineThickness(5f);
 
             _victory = new Sound(new SoundBuffer(@"sfx/victory.wav"));
             _victory.Volume = 50;
             _gameEnd = new Sound(new SoundBuffer(@"sfx/gameover.wav"));
             _gameEnd.Volume = 50;
-            
 
             _gameOver = new TextLine("GAME OVER", 100, 500, 470, Color.Red);
             _gameOver.SetOutlineThickness(3f);
             _pause = new TextLine("PAUSE", 50, 0, 0, Color.Yellow);
+            _pause.SetOutlineThickness(5f);
             _continue = new TextLine("CONTINUE?", 50, 650, 590, Color.Yellow);
-            _continue.SetOutlineThickness(3f);
+            _continue.SetOutlineThickness(5f);
 
             _chendi = new MainCharacter(-100, -100, Entity.MainCharacterTexture);
-            _level = new Level(_chendi);
+            _level = new Level(_chendi, _view);
             _chendiUi = new MainCharacterUI(_chendi, _view, _level);
 
             _highscoreValues = new Highscores();
@@ -186,10 +196,10 @@ namespace Game
 
         private void SettingsLoop()
         {
-            var resolution = new TextLine("RESOLUTION: 1920x1080", 50, 50, 790, Color.Green);
-            var vsync = new TextLine("VSYNC: ON", 50, 50, 850, Color.White);
-            var difficulty = new TextLine("DIFFICULTY: MEDIUM", 50, 50, 910, Color.White);
-            var keyBindings = new TextLine("KEY BINDINGS", 50, 50, 970, Color.White);
+            var resolution = new TextLine("RESOLUTION: 1920x1080", 50, -1000, 790, Color.Green); resolution.SetOutlineThickness(5);
+            var vsync = new TextLine("VSYNC: ON", 50, -1100, 850, Color.White); vsync.SetOutlineThickness(5);
+            var difficulty = new TextLine("DIFFICULTY: MEDIUM", 50, -1200, 910, Color.White); difficulty.SetOutlineThickness(5);
+            var keyBindings = new TextLine("KEY BINDINGS", 50, -1300, 970, Color.White); keyBindings.SetOutlineThickness(5);
 
             var choice = 1;
             var delay = 0;
@@ -202,6 +212,12 @@ namespace Game
                 // na pewno poziom trudnosci
                 // controllsy jak sie bedzie chcialo
                 // moze pobawic sie rozdzielczoscia
+
+                //slide text effect
+                if (resolution.X < 50) { resolution.MoveText(resolution.X + 50, resolution.Y); }
+                if (vsync.X < 50) { vsync.MoveText(vsync.X + 50, vsync.Y); }
+                if (difficulty.X < 50) { difficulty.MoveText(difficulty.X + 50, difficulty.Y); }
+                if (keyBindings.X < 50) { keyBindings.MoveText(keyBindings.X + 50, keyBindings.Y);}
 
                 if (flag) delay++;
                 if (delay > 10)
@@ -234,6 +250,8 @@ namespace Game
                         }
                         case 2: //vsync
                         {
+                            vsync.EditText("VSYNC: OFF");
+                            _window.SetVerticalSyncEnabled(false);
                             break;
                         }
                         case 3: // difficulty
@@ -327,10 +345,16 @@ namespace Game
 
         private void HighScoreLoop()
         {
-            var hs = new TextLine("HIGHSCORES", 50, 700, 5, Color.Green);
+            var hs = new TextLine("HIGHSCORES", 50, 700, -300, Color.Green); hs.SetOutlineThickness(5);
+            _highscoreValues.X = -900;
+
             while (_window.IsOpen && _isHighscore)
             {
                 ResetWindow();
+
+                //slide text effect
+                if (hs.Y < 5) { hs.MoveText(hs.X, hs.Y + 10);}
+                if (_highscoreValues.X < 370) _highscoreValues.X += 25;
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 {
@@ -350,13 +374,14 @@ namespace Game
 
         private void MainMenuLoop()
         {
-            _start = new TextLine("NEW GAME", 50, 50, 790, Color.Green);
-            _highscores = new TextLine("HIGHSCORES", 50, 50, 850, Color.White);
-            _settings = new TextLine("SETTINGS", 50, 50, 910, Color.White);
-            _quit = new TextLine("EXIT", 50, 50, 970, Color.White);
+            _start = new TextLine("NEW GAME", 50, -500, 790, Color.Green); _start.SetOutlineThickness(5);
+            _highscores = new TextLine("HIGHSCORES", 50, -600, 850, Color.White); _highscores.SetOutlineThickness(5);
+            _settings = new TextLine("SETTINGS", 50, -700, 910, Color.White); _settings.SetOutlineThickness(5);
+            _quit = new TextLine("EXIT", 50, -800, 970, Color.White); _quit.SetOutlineThickness(5);
+
+            _gameLogo.Position = new Vector2f((_windowWidth - _gameLogo.Texture.Size.X) / 2, -300);
 
             if (_menuTheme.Status != SoundStatus.Playing) _menuTheme.Play();
-            DrawLoadingScreen();
 
             var choice = 1;
             var delay = 0;
@@ -365,6 +390,15 @@ namespace Game
             while (_window.IsOpen && _isMenu)
             {
                 ResetWindow();
+
+                _screenChange.AppearIn();
+
+                // slide text effect
+                if (_start.X < 50) { _start.MoveText(_start.X + 25, _start.Y); }
+                if (_highscores.X < 50) { _highscores.MoveText(_highscores.X + 25, _highscores.Y); }
+                if (_settings.X < 50) { _settings.MoveText(_settings.X + 25, _settings.Y); }
+                if (_quit.X < 50) { _quit.MoveText(_quit.X + 25, _quit.Y); }
+                if (_gameLogo.Position.Y < 50) _gameLogo.Position = new Vector2f((_windowWidth - _gameLogo.Texture.Size.X) / 2, _gameLogo.Position.Y + 25);
 
                 //secret keys to enter level editor
                 if (Keyboard.IsKeyPressed(Keyboard.Key.LShift) && Keyboard.IsKeyPressed(Keyboard.Key.LAlt) &&
@@ -398,13 +432,14 @@ namespace Game
                 }
                 else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Space))
                 {
-                    DrawLoadingScreen();
+                    
                     flag = true;
                     _chendi.sCoin.Play();
                     switch (choice)
                     {
                         case 1:
                         {
+                            DrawLoadingScreen();
                             _isMenu = false;
                             _isGame = true;
                             if (_level.LevelNumber != 0)
@@ -472,6 +507,7 @@ namespace Game
             _levelSummary = new TextLine("", 25, -1000, -1000, Color.White);
 
             SetView(new Vector2f(_windowWidth/2, _windowHeight/2), _view.Center);
+            _screenChange.Reset();
 
             if (_level.LevelNumber == 1) BegginingScene();
 
@@ -511,11 +547,16 @@ namespace Game
 
         private void PauseLoop()
         {
-            _pause.MoveText(_view.Center.X - 100, _view.Center.Y - 25);
+            _pause.MoveText(_view.Center.X - 700, _view.Center.Y - 25);
 
             while (_window.IsOpen && _isPaused)
             {
                 ResetWindow();
+
+                //slide text effect
+                if (_pause.X < _view.Center.X - 100) { _pause.MoveText(_pause.X + 30, _pause.Y);}
+
+
                 this.DrawGame(_chendi, false);
                 _window.Draw(_pause);
                 _window.Display();
@@ -557,14 +598,19 @@ namespace Game
                 _chendi.Continues = 2;
                 _level.LevelNumber = 1;
                 _chendi.ResetMainCharacter();
+                _screenChange.Reset();
 
                 while (clock.ElapsedTime.AsSeconds() < 8f)
                 {
                     ResetWindow();
                     AnimateBackground();
-                    _window.Draw(_background);
 
+                    _screenChange.AppearIn();
+
+                    _window.Draw(_background);
                     _window.Draw(_gameOver);
+                    _window.Draw(_screenChange);
+
                     _window.Display();
                 }
             }
@@ -575,6 +621,7 @@ namespace Game
                     ResetWindow();
                     AnimateBackground();
                     _window.Draw(_background);
+                    _screenChange.AppearIn();
 
                     _continue.EditText(string.Format("CONTINUE? {0}", 10 - (int)clock.ElapsedTime.AsSeconds()));
 
@@ -590,6 +637,7 @@ namespace Game
 
                     _window.Draw(_gameOver);
                     _window.Draw(_continue);
+                    _window.Draw(_screenChange);
                     _window.Display();
                 }
                 _isGame = false;
@@ -605,6 +653,7 @@ namespace Game
             _window.Draw(character);
             foreach (var entity in entities) _window.Draw(entity);
             _window.Draw(_chendiUi);
+            _window.Draw(_screenChange);
             if (display) _window.Display();
         }
 
@@ -618,6 +667,8 @@ namespace Game
             _window.Draw(_highscores);
             _window.Draw(_settings);
             _window.Draw(_quit);
+
+            _window.Draw(_screenChange);
             _window.Display();
         }
 
@@ -634,9 +685,10 @@ namespace Game
             if (y - _view.Size.Y / 2 <= 0) y = _view.Size.Y / 2;
             else if (y + _view.Size.Y / 2 >= level.LevelHeight * 32) y = level.LevelHeight * 32 - _view.Size.Y / 2;
 
-
             _view.Center = new Vector2f(x, y);
             _window.SetView(_view);
+
+            if (!_screenChange.Done) _screenChange.AppearIn();
         }
 
         private void SetView(Vector2f size, Vector2f center)
@@ -648,6 +700,8 @@ namespace Game
 
         private bool CheckForGameBreak()
         {
+            if (_chendi.IsDead && _chendi.DefaultClock.ElapsedTime.AsSeconds() > 2f) _screenChange.BlackOut();
+
             if (Keyboard.IsKeyPressed(Keyboard.Key.P)) 
             {
                 Creature.sKill.Play();
@@ -687,7 +741,7 @@ namespace Game
         private void LevelEditor()
         {
             _menuTheme.Stop();
-            _level.LoadLevel(string.Format("edit", _level.LevelNumber));
+            _level.LoadLevel("edit");
 
             var choice = new Sprite(new Texture(@"img/edit.png"));
             choice.Position = new Vector2f(32, 32);
@@ -1057,9 +1111,9 @@ namespace Game
                 var flag = false;
                 var delay = 0;
 
-                _quitQestion.MoveText(_view.Center.X - 230, _view.Center.Y - 100);
-                _yes.MoveText(_view.Center.X - 65, _view.Center.Y + 20);
-                _no.MoveText(_view.Center.X - 40, _view.Center.Y + 90);
+                _quitQestion.MoveText(_view.Center.X -800, _view.Center.Y - 100); //-230
+                _yes.MoveText(_view.Center.X -900, _view.Center.Y - 30); //-65
+                _no.MoveText(_view.Center.X -1000, _view.Center.Y + 40); //-40
 
                 _yes.ChangeColor(Color.White);
                 _no.ChangeColor(Color.Green);
@@ -1067,6 +1121,11 @@ namespace Game
                 while (_window.IsOpen && _isGame)
                 {
                     ResetWindow();
+
+                    //slide text effect
+                    if (_quitQestion.X < _view.Center.X - 230) { _quitQestion.MoveText(_quitQestion.X + 20, _quitQestion.Y);}
+                    if (_yes.X < _view.Center.X - 65) { _yes.MoveText(_yes.X + 20, _yes.Y);}
+                    if (_no.X < _view.Center.X - 40) { _no.MoveText(_no.X + 20, _no.Y);}
 
                     if (flag) delay++;
                     if (delay > 10)
@@ -1104,6 +1163,7 @@ namespace Game
                             flag = false;
                             _level.LevelNumber = 1;
                             _chendi.ResetMainCharacter();
+                            SetView(new Vector2f(_windowWidth,_windowHeight), new Vector2f(_windowWidth/2, _windowHeight/2));
                             Thread.Sleep(500);
                         }
 
@@ -1111,7 +1171,6 @@ namespace Game
                     }
 
                     DrawGame(_chendi, false);
-
                     _window.Draw(_quitQestion);
                     _window.Draw(_yes);
                     _window.Draw(_no);
@@ -1141,7 +1200,6 @@ namespace Game
             if (_chendi.GotExit) //level complete
             {
                 _victory.Play();
-                //set level summary
                 var time = Math.Round(_level.LevelTime.ElapsedTime.AsSeconds(), 2);
                 var bonus = _level.GetBonusForTime(time);
 
@@ -1167,6 +1225,16 @@ namespace Game
             var timer = new Clock();
             timer.Restart();
             _chendi.sImmortality.Stop();
+            bool isLottery;
+            if (_level.LevelNumber < 51 && _level.LevelNumber > 0 && _randomizer.Next(101) > -1)
+            {
+                isLottery = true;
+            }
+            else
+            {
+                isLottery = false;
+            }
+
             while (_window.IsOpen && _isGame && _chendi.GotExit) //to next level
             {
                 ResetWindow();
@@ -1174,8 +1242,11 @@ namespace Game
                 if (_levelSummary.X < _view.Center.X - 250)
                     _levelSummary.MoveText(_levelSummary.X + 35, _levelSummary.Y);
 
+                if (!isLottery && timer.ElapsedTime.AsSeconds() > 5) _screenChange.BlackOut();
+
                 DrawGame(_chendi, false);
                 _window.Draw(_levelSummary);
+                _window.Draw(_screenChange);
                 _window.Display();
 
                 if (timer.ElapsedTime.AsSeconds() > 6)
@@ -1183,7 +1254,7 @@ namespace Game
                     _level.LevelNumber++;
                     _chendi.GotExit = false;
                     //lottery
-                    if (_level.LevelNumber < 51 && _level.LevelNumber > 0 && _randomizer.Next(101) > 0)
+                    if (isLottery)
                     {
                         LotteryLoop();
                     }
@@ -1191,15 +1262,14 @@ namespace Game
                     break;
                 }
             }
-
+            _screenChange.Reset();
             timer.Dispose();
         }
 
         private void LotteryLoop()
         {
             Clock clock = new Clock();
-            //SetView(new Vector2f(480f, 270f), new Vector2f(240f, 135f));
-            GameMachine gameMachine = new GameMachine(-70, _view.Center.Y + 80, Entity.GameMachineTexture, _view);
+            GameMachine gameMachine = new GameMachine(_view.Center.X - _view.Size.X/2 -70, _view.Center.Y + 80, Entity.GameMachineTexture, _view);
             bool isRolling = true;
             bool done = false;
             int time = 50;
@@ -1236,6 +1306,8 @@ namespace Game
                         }
                     }
 
+                    if (done && clock.ElapsedTime.AsSeconds() > 2) _screenChange.BlackOut();
+
                     if (done && clock.ElapsedTime.AsSeconds() > 3)
                     {
                         DrawLoadingScreen();
@@ -1248,9 +1320,11 @@ namespace Game
                     DrawGame(_chendi, false);
                     _window.Draw(_levelSummary);
                     _window.Draw(gameMachine);
+                    _window.Draw(_screenChange);
                     _window.Display();
                 }
             }
         }
+
     }
 }

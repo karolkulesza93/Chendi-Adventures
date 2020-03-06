@@ -6,7 +6,6 @@ namespace Game
 {
     public class GameMachine : Entity
     {
-        public static Texture MachineTexture = new Texture(@"img/machine.png");
         private readonly Random _rnd;
         public Block Item { get; set; }
         private int _loss;
@@ -21,7 +20,7 @@ namespace Game
             Item.SetTextureRectanlge(0,0);
             _reward = new TextLine("",10,1000, 0, Color.Green);
             _reward.SetOutlineThickness(1);
-            _rnd = new Random();
+            _rnd = new Random(432);
             _loss = 0;
             _click = new Sound(new SoundBuffer(@"sfx/click.wav"));
             _click.Volume = 30;
@@ -33,8 +32,8 @@ namespace Game
 
         public void Roll()
         {
-            LootedReward = Reward.Nothing;
-            _loss = _rnd.Next(248);
+            var tmp = LootedReward;
+            _loss = _rnd.Next(300);
             _click.Play();
 
             if (_loss >= 0 && _loss <= 49)
@@ -65,11 +64,13 @@ namespace Game
                 LootedReward = Reward.TripleLife;
             else
                 LootedReward = Reward.Nothing;
+
+            if (tmp == LootedReward) Roll();
         }
 
         public void GrantReward(MainCharacter character)
         {
-            _reward.MoveText(-300, _view.Center.Y + 180);
+            _reward.MoveText( _view.Center.X - _view.Size.X/2 -300, _view.Center.Y + 180);
             _reward.EditText("");
 
             switch (LootedReward)

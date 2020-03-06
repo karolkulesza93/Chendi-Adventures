@@ -109,7 +109,7 @@ namespace Game
             );
 
             Coins.MoveText(
-                _view.Center.X + _view.Size.X / 2 - 500,
+                _view.Center.X + _view.Size.X / 2 - 520,
                 _view.Center.Y - _view.Size.Y / 2 + 7
             );
 
@@ -121,7 +121,7 @@ namespace Game
                 _view.Center.Y - _view.Size.Y / 2 + 9);
             ManaBottle.Position = new Vector2f(_view.Center.X + _view.Size.X / 2 - 430,
                 _view.Center.Y - _view.Size.Y / 2 + 3);
-            Coins3.Position = new Vector2f(_view.Center.X + _view.Size.X / 2 - 530,
+            Coins3.Position = new Vector2f(_view.Center.X + _view.Size.X / 2 - 550,
                 _view.Center.Y - _view.Size.Y / 2 + 3);
         }
 

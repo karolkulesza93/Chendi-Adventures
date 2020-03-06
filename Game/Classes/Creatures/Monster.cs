@@ -46,7 +46,6 @@ namespace Game
         {
             sKill.Play();
             level.Particles.Add(new ParticleEffect(X, Y, Color.Red));
-
             SetPosition(400, -100);
             IsDead = true;
         }

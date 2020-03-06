@@ -7,13 +7,19 @@ using SFML.System;
 using SFML.Window;
 
 /*
+
  PRACA INŻYNIERSKA - KAROL KULESZA
  Temat: Realizacja dwuwymiarowej gry platformowej z użyciem biblioteki SFML
  Promotor: dr Piotr Jastrzębski
 
-do zrobienia:
-- zmiany ekranu
+
+DO ZROBIENIA:
+
+- obsluga wyjatkow (choc nic zlego sie nei zdazylo)
+- naprawa kolizji arrow-sciana (jak leci w lewo)
+- zmiany ekranu (jeszcze blakcouty)
 - zmiana formatu leveli z txt na cos mniej dostepnego dla casuala
+- uzaleznienie lokalizacji elementow menu od widoku aby dzialalo przy roznych rozdzielczosciach
 - levele
 - moze bossy
 - scenka na poczatek
@@ -21,7 +27,8 @@ do zrobienia:
 - sklep
 - generowanie poziomu
 - zwiekszenie mozliwosci level editora (CRUD)
-- jak sie uda to shadery ogarnac aby ladnie wygladalo
+- jak sie uda to shadery/swiatlo ogarnac aby ladnie wygladalo
+
 */
 
 namespace Game
@@ -113,6 +120,16 @@ namespace Game
 
         public string Title { get; set; }
 
+        private void OnClosed(object sender, EventArgs e)
+        {
+            _window.Close();
+            _isMenu = false;
+            _isGame = false;
+            _isHighscore = false;
+            _isSettigs = false;
+            _isQuit = false;
+        }
+
         public void GameStart()
         {
             _loading = new TextLine("LOADING...", 50, 1390, 990, new Color(150,150,150));
@@ -131,14 +148,18 @@ namespace Game
             MainLoop();
         }
 
-        private void OnClosed(object sender, EventArgs e)
+        private void ProductionInfoLoop() //do poprawy/zrobienia
         {
-            _window.Close();
-            _isMenu = false;
-            _isGame = false;
-            _isHighscore = false;
-            _isSettigs = false;
-            _isQuit = false;
+            TextLine author = new TextLine("KAROL KULESZA XD PRODUCTIONS", 50, _view.Center.X - 500, _view.Center.Y - 50, Color.White);
+
+            while (_window.IsOpen)
+            {
+                ResetWindow();
+                _screenChange.AppearIn();
+
+                _window.Draw(author);
+                _window.Display();
+            }
         }
 
         private void LoadContents()
@@ -196,10 +217,10 @@ namespace Game
 
         private void SettingsLoop()
         {
-            var resolution = new TextLine("RESOLUTION: 1920x1080", 50, -1000, 790, Color.Green); resolution.SetOutlineThickness(5);
-            var vsync = new TextLine("VSYNC: ON", 50, -1100, 850, Color.White); vsync.SetOutlineThickness(5);
-            var difficulty = new TextLine("DIFFICULTY: MEDIUM", 50, -1200, 910, Color.White); difficulty.SetOutlineThickness(5);
-            var keyBindings = new TextLine("KEY BINDINGS", 50, -1300, 970, Color.White); keyBindings.SetOutlineThickness(5);
+            var resolution = new TextLine("RESOLUTION: 1920x1080", 50, -1000, _view.Center.Y + _view.Size.Y / 2 - 290, Color.Green); resolution.SetOutlineThickness(5);
+            var vsync = new TextLine("VSYNC: ON", 50, -1100, _view.Center.Y + _view.Size.Y / 2 - 230, Color.White); vsync.SetOutlineThickness(5);
+            var difficulty = new TextLine("DIFFICULTY: MEDIUM", 50, -1200, _view.Center.Y + _view.Size.Y / 2 - 170, Color.White); difficulty.SetOutlineThickness(5);
+            var keyBindings = new TextLine("KEY BINDINGS", 50, -1300, _view.Center.Y + _view.Size.Y / 2 - 110, Color.White); keyBindings.SetOutlineThickness(5);
 
             var choice = 1;
             var delay = 0;
@@ -345,7 +366,7 @@ namespace Game
 
         private void HighScoreLoop()
         {
-            var hs = new TextLine("HIGHSCORES", 50, 700, -300, Color.Green); hs.SetOutlineThickness(5);
+            var hs = new TextLine("HIGHSCORES", 50, _view.Center.X - 250, -400, Color.Green); hs.SetOutlineThickness(5);
             _highscoreValues.X = -900;
 
             while (_window.IsOpen && _isHighscore)
@@ -354,7 +375,7 @@ namespace Game
 
                 //slide text effect
                 if (hs.Y < 5) { hs.MoveText(hs.X, hs.Y + 10);}
-                if (_highscoreValues.X < 370) _highscoreValues.X += 25;
+                if (_highscoreValues.X < _view.Center.X - 550) _highscoreValues.X += 50;
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 {
@@ -374,10 +395,14 @@ namespace Game
 
         private void MainMenuLoop()
         {
-            _start = new TextLine("NEW GAME", 50, -500, 790, Color.Green); _start.SetOutlineThickness(5);
-            _highscores = new TextLine("HIGHSCORES", 50, -600, 850, Color.White); _highscores.SetOutlineThickness(5);
-            _settings = new TextLine("SETTINGS", 50, -700, 910, Color.White); _settings.SetOutlineThickness(5);
-            _quit = new TextLine("EXIT", 50, -800, 970, Color.White); _quit.SetOutlineThickness(5);
+            _start = new TextLine("NEW GAME", 50, -500, _view.Center.Y + _view.Size.Y/2 - 290, Color.Green);  //790
+            _start.SetOutlineThickness(5);
+            _highscores = new TextLine("HIGHSCORES", 50, -600, _view.Center.Y + _view.Size.Y / 2 - 230, Color.White); //850
+            _highscores.SetOutlineThickness(5);
+            _settings = new TextLine("SETTINGS", 50, -700, _view.Center.Y + _view.Size.Y / 2 - 170, Color.White); //910
+            _settings.SetOutlineThickness(5);
+            _quit = new TextLine("EXIT", 50, -800, _view.Center.Y + _view.Size.Y / 2 - 110, Color.White); //970
+            _quit.SetOutlineThickness(5);
 
             _gameLogo.Position = new Vector2f((_windowWidth - _gameLogo.Texture.Size.X) / 2, -300);
 
@@ -394,10 +419,10 @@ namespace Game
                 _screenChange.AppearIn();
 
                 // slide text effect
-                if (_start.X < 50) { _start.MoveText(_start.X + 25, _start.Y); }
-                if (_highscores.X < 50) { _highscores.MoveText(_highscores.X + 25, _highscores.Y); }
-                if (_settings.X < 50) { _settings.MoveText(_settings.X + 25, _settings.Y); }
-                if (_quit.X < 50) { _quit.MoveText(_quit.X + 25, _quit.Y); }
+                if (_start.X < 50) { _start.MoveText(_start.X + 50, _start.Y); }
+                if (_highscores.X < 50) { _highscores.MoveText(_highscores.X + 50, _highscores.Y); }
+                if (_settings.X < 50) { _settings.MoveText(_settings.X + 50, _settings.Y); }
+                if (_quit.X < 50) { _quit.MoveText(_quit.X + 50, _quit.Y); }
                 if (_gameLogo.Position.Y < 50) _gameLogo.Position = new Vector2f((_windowWidth - _gameLogo.Texture.Size.X) / 2, _gameLogo.Position.Y + 25);
 
                 //secret keys to enter level editor
@@ -581,6 +606,7 @@ namespace Game
             SetView(new Vector2f(_windowWidth, _windowHeight), new Vector2f(_windowWidth / 2, _windowHeight / 2));
             ResetWindow();
 
+            _loading.MoveText(_view.Center.X +_view.Size.X/2 - _loading.Width*1.3f, _view.Center.Y + _view.Size.Y / 2 - 70);
 
             _window.Draw(_loading);
             _window.Display();

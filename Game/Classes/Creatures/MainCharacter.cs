@@ -236,7 +236,6 @@ namespace Game
             SpeedY += GravityForce;
 
             Arrow.ArrowUpdate(this, level);
-            Arrow.ProjectileUpdate(level);
             Sword.SwordCollisionCheck(level);
 
             if (GotExit)

@@ -67,9 +67,9 @@ namespace Game
 
         public void Die(Level level)
         {
-            sKill.Play();
             level.Particles.Add(new ParticleEffect(X, Y, Color.Cyan));
             SetPosition(400, -100);
+            Arrow.sEnergyHit.Play();
             IsDead = true;
             DefaultClock.Dispose();
         }

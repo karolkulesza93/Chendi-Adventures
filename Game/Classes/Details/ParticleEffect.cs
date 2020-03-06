@@ -7,7 +7,7 @@ namespace Game
 {
     public class ParticleEffect : Drawable
     {
-        public static int ParticleCount = 15;
+        public static int ParticleCount = 30;
         public readonly List<Particle> _particles;
         private readonly Random _rnd;
         public Clock Timer;

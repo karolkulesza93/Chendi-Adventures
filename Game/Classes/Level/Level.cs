@@ -50,7 +50,7 @@ namespace Game
             _texBackground = new Texture(@"img/tiles.png", new IntRect(new Vector2i(32, 0), new Vector2i(32, 32)));
             _texBackground.Repeated = true;
 
-            _levelDescription = new TextLine("", 30, -100, -100, Color.Magenta); //color?
+            _levelDescription = new TextLine("", 30, -100, -100, Color.White);
             _levelDescription.SetOutlineThickness(3);
 
             _background = new Sprite(_texBackground);
@@ -478,13 +478,16 @@ namespace Game
 
             //details
 
-            if (LevelTime.ElapsedTime.AsSeconds() < 5)
+            //text slide effect
+            if (LevelTime.ElapsedTime.AsSeconds() < 6 && isLevelEditor == false)
             {
                 _levelDescription.MoveText(_levelDescription.X, _view.Center.Y - 100);
                 if (_levelDescription.X < _view.Center.X - 1.2f * _levelDescription.Width / 2 && LevelTime.ElapsedTime.AsSeconds() > 0.5f)
                 { _levelDescription.MoveText(_levelDescription.X + 50, _levelDescription.Y); }
-                if (_levelDescription.X < _view.Center.X + _view.Size.X / 2 + 500 && LevelTime.ElapsedTime.AsSeconds() > 3)
-                { _levelDescription.MoveText(_levelDescription.X + 50, _levelDescription.Y); } 
+                if (_levelDescription.X < _view.Center.X + _view.Size.X / 2 + 500 && LevelTime.ElapsedTime.AsSeconds() > 2.5f)
+                { _levelDescription.MoveText(_levelDescription.X + 50, _levelDescription.Y); }
+                if (LevelTime.ElapsedTime.AsSeconds() > 5)
+                { _levelDescription.MoveText(-100, -100); }
             } 
 
 
@@ -510,10 +513,14 @@ namespace Game
             catch (IndexOutOfRangeException)
             {
                 Console.WriteLine("ERROR: Textural detail list index out of range");
+                Particles.Clear();
+                ScoreAdditionEffects.Clear();
             }
             catch (Exception)
             {
                 Console.WriteLine("ERROR: Textural detail list fatal error");
+                Particles.Clear();
+                ScoreAdditionEffects.Clear();
             }
         }
 

@@ -12,7 +12,7 @@ namespace Game
 
         public EnergyBall(float x, float y, Texture texture, Movement dir = Movement.None) : base(x, y, texture, dir)
         {
-            Speed = 2f;
+            Speed = 1.5f;
             SpeedX = 0f;
             SpeedY = 0f;
             isAttacking = false;

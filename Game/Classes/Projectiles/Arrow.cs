@@ -15,6 +15,28 @@ namespace Game
 
         public void ArrowUpdate(MainCharacter character, Level level)
         {
+            switch (LastMove)
+            {
+                case Movement.Left:
+                {
+                    TipPosition = new Vector2f(X, Y + Height / 2);
+                    break;
+                }
+                case Movement.Right:
+                {
+                    TipPosition = new Vector2f(X + Width, Y + Height / 2);
+                    break;
+                }
+            }
+            Block obstacle;
+            if (TipPosition.X > 0 && TipPosition.X < level.LevelWidth * 32 &&
+                TipPosition.Y > 0 && TipPosition.Y < level.LevelHeight * 32)
+            {
+                X += SpeedX;
+                if (level.UnpassableContains(
+                    (obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32)).Type)) DeleteArrow();
+            }
+
             foreach (var Monster in level.Monsters)
                 if (GetBoundingBox().Intersects(Monster.GetBoundingBox()))
                 {

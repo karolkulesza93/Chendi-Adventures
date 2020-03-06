@@ -37,7 +37,6 @@ namespace Game
                     break;
                 }
             }
-
             Block obstacle;
             if (TipPosition.X > 0 && TipPosition.X < level.LevelWidth * 32 &&
                 TipPosition.Y > 0 && TipPosition.Y < level.LevelHeight * 32)
@@ -46,6 +45,8 @@ namespace Game
                 if (level.UnpassableContains(
                     (obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32)).Type)) DeleteArrow();
             }
+
+
         }
 
         public void DeleteArrow()

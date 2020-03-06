@@ -470,20 +470,23 @@ namespace Game
 
                 foreach (var effect in Particles) effect.MakeParticles();
 
-                foreach (var monster in Monsters) monster.MonsterUpdate();
-                foreach (var archer in Archers) archer.UpdateArcher(this);
-                foreach (var ghost in Ghosts) ghost.UpdateGhost(this, _mainCharacter);
-                foreach (var wizard in Wizards) wizard.WizardUpdate(_mainCharacter);
+                foreach (var monster in Monsters) monster.UpdateCreature();
+                foreach (var archer in Archers) archer.UpdateCreature(this);
+                foreach (var ghost in Ghosts) ghost.UpdateCreature(this, _mainCharacter);
+                foreach (var wizard in Wizards) wizard.UpdateCreature(_mainCharacter);
             }
 
             //details
 
             //text slide effect
-            if (LevelTime.ElapsedTime.AsSeconds() < 6 && isLevelEditor == false)
+            if (isLevelEditor == false)
             {
-                _levelDescription.MoveText(_levelDescription.X, _view.Center.Y - 100);
+                if (LevelTime.ElapsedTime.AsSeconds() < 0.5f)_levelDescription.MoveText(_view.Center.X - _view.Size.X/2 - 300, _view.Center.Y - 100);
                 if (_levelDescription.X < _view.Center.X - 1.2f * _levelDescription.Width / 2 && LevelTime.ElapsedTime.AsSeconds() > 0.5f)
                 { _levelDescription.MoveText(_levelDescription.X + 50, _levelDescription.Y); }
+                else if (LevelTime.ElapsedTime.AsSeconds() < 2.5f && LevelTime.ElapsedTime.AsSeconds() > 0.5f)
+                { _levelDescription.MoveText(_view.Center.X - 1.2f * _levelDescription.Width / 2, _view.Center.Y - 100); }
+
                 if (_levelDescription.X < _view.Center.X + _view.Size.X / 2 + 500 && LevelTime.ElapsedTime.AsSeconds() > 2.5f)
                 { _levelDescription.MoveText(_levelDescription.X + 50, _levelDescription.Y); }
                 if (LevelTime.ElapsedTime.AsSeconds() > 5)
@@ -526,8 +529,30 @@ namespace Game
 
         public int GetBonusForTime(double time)
         {
+            var value = 0f;
+
+            switch (MainGameWindow.GameDifficulty)
+            {
+                case Difficulty.Easy:
+                {
+                    value = 0.75f;
+                    break;
+                }
+                case Difficulty.Medium:
+                {
+                    value = 1f;
+                    break;
+                }
+                case Difficulty.Hard:
+                {
+                    value = 1.3f;
+                    break;
+                }
+            }
+
             var points = (int) ((LevelWidth * LevelHeight + MonsterCount * LevelNumber) / time) * LevelNumber * 10;
             points -= points % 10;
+            points = (int)(points * value);
             return points < 0 ? 0 : points - points % 10;
         }
 

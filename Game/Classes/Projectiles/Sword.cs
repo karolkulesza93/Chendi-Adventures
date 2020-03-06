@@ -66,7 +66,7 @@ namespace Game
                 foreach (var monster in level.Monsters)
                     if (GetBoundingBox().Intersects(monster.GetBoundingBox()))
                     {
-                        _character.AddToScore(level, 250, monster.X, monster.Y);
+                        _character.AddToScore(level, monster.Points, monster.X, monster.Y);
                         level.Particles.Add(new ParticleEffect(monster.X, monster.Y, Color.Red));
                         monster.Die(level);
                     }
@@ -74,7 +74,7 @@ namespace Game
                 foreach (var archer in level.Archers)
                     if (GetBoundingBox().Intersects(archer.GetBoundingBox()))
                     {
-                        _character.AddToScore(level, 500, archer.X, archer.Y);
+                        _character.AddToScore(level, archer.Points, archer.X, archer.Y);
                         level.Particles.Add(new ParticleEffect(archer.X, archer.Y, Color.Red));
                         archer.Die(level);
                     }
@@ -82,7 +82,7 @@ namespace Game
                 foreach (var wizard in level.Wizards)
                     if (GetBoundingBox().Intersects(wizard.GetBoundingBox()))
                     {
-                        _character.AddToScore(level, 1500, wizard.X, wizard.Y);
+                        _character.AddToScore(level, wizard.Points, wizard.X, wizard.Y);
                         level.Particles.Add(new ParticleEffect(wizard.X, wizard.Y, Color.Red));
                         wizard.Die(level);
                     }

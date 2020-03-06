@@ -16,14 +16,13 @@ using SFML.Window;
 DO ZROBIENIA:
 
 - obsluga wyjatkow (choc nic zlego sie nei zdazylo)
-- naprawa kolizji arrow-sciana (jak leci w lewo)
+- +1 zycie za kazde 100000pkt
 - zmiany ekranu (jeszcze blakcouty)
 - zmiana formatu leveli z txt na cos mniej dostepnego dla casuala
-- uzaleznienie lokalizacji elementow menu od widoku aby dzialalo przy roznych rozdzielczosciach
 - levele
-- moze bossy
+- moze bossy??
 - scenka na poczatek
-- settingsy (hotkeye, poziom trudnosci, rozdzielczosci, vsync)
+- settingsy (hotkeye zostaly)
 - sklep
 - generowanie poziomu
 - zwiekszenie mozliwosci level editora (CRUD)
@@ -88,6 +87,9 @@ namespace Game
         private bool _isQuit;
         private bool _isSettigs;
 
+        public static Difficulty GameDifficulty;
+        public static bool IsVsync;
+
         private MainGameWindow()
         {
             _isMenu = true;
@@ -102,12 +104,9 @@ namespace Game
         private MainGameWindow(string title) : this()
         {
             Title = title;
-            //_window = new RenderWindow(new VideoMode((uint) _windowWidth, (uint) _windowHeight), Title, _windowStyle);
             _window = new RenderWindow(VideoMode.DesktopMode, Title, _windowStyle);
             _windowWidth = (int)_window.Size.X;
             _windowHeight = (int) _window.Size.Y;
-
-
             _window.SetFramerateLimit(60);
             _window.SetVisible(true);
             _window.Closed += OnClosed;
@@ -196,7 +195,7 @@ namespace Game
             _chendiUi = new MainCharacterUI(_chendi, _view, _level);
 
             _highscoreValues = new Highscores();
-
+            LoadSettings();
         }
 
         private void MainLoop()
@@ -215,17 +214,64 @@ namespace Game
             Environment.Exit(0);
         }
 
+        private void LoadSettings()
+        {
+            switch (Settings.Default.Difficulty)
+            {
+                case 1: { GameDifficulty = Difficulty.Easy; break; }
+                case 2: { GameDifficulty = Difficulty.Medium; break; }
+                case 3: { GameDifficulty = Difficulty.Hard; break; }
+            }
+
+            IsVsync = Settings.Default.Vsync;
+            _window.SetVerticalSyncEnabled(IsVsync);
+
+            //key bindings
+        }
+
+        private void SaveSettings()
+        {
+            Settings.Default.Difficulty = (int)GameDifficulty;
+
+            Settings.Default.Vsync = IsVsync;
+            _window.SetVerticalSyncEnabled(IsVsync);
+
+
+            Settings.Default.Save();
+        }
+
         private void SettingsLoop()
         {
+            //resolution - auto
             var resolution = new TextLine("RESOLUTION: 1920x1080", 50, -1000, _view.Center.Y + _view.Size.Y / 2 - 290, Color.Green); resolution.SetOutlineThickness(5);
-            var vsync = new TextLine("VSYNC: ON", 50, -1100, _view.Center.Y + _view.Size.Y / 2 - 230, Color.White); vsync.SetOutlineThickness(5);
+            var vsync = new TextLine($"VSYNC: {(IsVsync ? "ON" : "OFF")}", 50, -1100, _view.Center.Y + _view.Size.Y / 2 - 230, Color.White); vsync.SetOutlineThickness(5);
             var difficulty = new TextLine("DIFFICULTY: MEDIUM", 50, -1200, _view.Center.Y + _view.Size.Y / 2 - 170, Color.White); difficulty.SetOutlineThickness(5);
+            switch (GameDifficulty)
+            {
+                case Difficulty.Easy:
+                {
+                    difficulty.EditText("DIFFICULTY: EASY");
+                    break;
+                }
+                case Difficulty.Medium:
+                {
+                    difficulty.EditText("DIFFICULTY: MEDIUM");
+                        break;
+                }
+                case Difficulty.Hard:
+                {
+                    difficulty.EditText("DIFFICULTY: HARD");
+                        break;
+                }
+            }
             var keyBindings = new TextLine("KEY BINDINGS", 50, -1300, _view.Center.Y + _view.Size.Y / 2 - 110, Color.White); keyBindings.SetOutlineThickness(5);
+
 
             var choice = 1;
             var delay = 0;
             var flag = false;
 
+            
             while (_window.IsOpen && _isSettigs)
             {
                 ResetWindow();
@@ -271,13 +317,35 @@ namespace Game
                         }
                         case 2: //vsync
                         {
-                            vsync.EditText("VSYNC: OFF");
-                            _window.SetVerticalSyncEnabled(false);
+                            IsVsync = !IsVsync;
+                            vsync.EditText($"VSYNC: {(IsVsync ? "ON" : "OFF")}");
                             break;
                         }
                         case 3: // difficulty
                         {
-                            break;
+                            GameDifficulty++;
+                            if (GameDifficulty == (Difficulty)4) GameDifficulty = (Difficulty)1;
+
+                            switch (GameDifficulty)
+                            {
+                                case Difficulty.Easy:
+                                {
+                                    difficulty.EditText("DIFFICULTY: EASY");
+                                    break;
+                                }
+                                case Difficulty.Medium:
+                                {
+                                    difficulty.EditText("DIFFICULTY: MEDIUM");
+                                    break;
+                                }
+                                case Difficulty.Hard:
+                                {
+                                    difficulty.EditText("DIFFICULTY: HARD");
+                                    break;
+                                }
+                            }
+
+                                break;
                         }
                         case 4: //key bindings
                         {
@@ -321,6 +389,7 @@ namespace Game
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 {
                     _chendi.sCoin.Play();
+                    SaveSettings();
                     _isSettigs = false;
                     _isMenu = true;
                 }
@@ -401,7 +470,7 @@ namespace Game
             _highscores.SetOutlineThickness(5);
             _settings = new TextLine("SETTINGS", 50, -700, _view.Center.Y + _view.Size.Y / 2 - 170, Color.White); //910
             _settings.SetOutlineThickness(5);
-            _quit = new TextLine("EXIT", 50, -800, _view.Center.Y + _view.Size.Y / 2 - 110, Color.White); //970
+            _quit = new TextLine("QUIT", 50, -800, _view.Center.Y + _view.Size.Y / 2 - 110, Color.White); //970
             _quit.SetOutlineThickness(5);
 
             _gameLogo.Position = new Vector2f((_windowWidth - _gameLogo.Texture.Size.X) / 2, -300);
@@ -536,11 +605,11 @@ namespace Game
 
             if (_level.LevelNumber == 1) BegginingScene();
 
-            /// SET LEVEL FOR TESTING
+            // SET LEVEL FOR TESTING
             //this._level.LevelNumber = 17;
-            ///
+            //
 
-            _level.LoadLevel(string.Format("lvl{0}", _level.LevelNumber));
+            _level.LoadLevel($"lvl{_level.LevelNumber}");
 
             _mainTheme.Play();
 
@@ -726,7 +795,7 @@ namespace Game
 
         private bool CheckForGameBreak()
         {
-            if (_chendi.IsDead && _chendi.DefaultClock.ElapsedTime.AsSeconds() > 2f) _screenChange.BlackOut();
+            if (_chendi.IsDead && _chendi.DefaultClock.ElapsedTime.AsSeconds() > 2.5f) _screenChange.BlackOut();
 
             if (Keyboard.IsKeyPressed(Keyboard.Key.P)) 
             {

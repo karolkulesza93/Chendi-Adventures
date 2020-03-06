@@ -2,14 +2,26 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Game" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Resolution" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="Vsync" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="Difficulty" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="Difficulty" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="Jump" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">A</Value>
+    </Setting>
+    <Setting Name="Attack" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">X</Value>
+    </Setting>
+    <Setting Name="Arrow" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">C</Value>
+    </Setting>
+    <Setting Name="EnergyArrow" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">D</Value>
+    </Setting>
+    <Setting Name="Immortality" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">S</Value>
     </Setting>
   </Settings>
 </SettingsFile>

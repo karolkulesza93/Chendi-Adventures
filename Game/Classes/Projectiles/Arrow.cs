@@ -37,11 +37,11 @@ namespace Game
                     (obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32)).Type)) DeleteArrow();
             }
 
-            foreach (var Monster in level.Monsters)
-                if (GetBoundingBox().Intersects(Monster.GetBoundingBox()))
+            foreach (var monster in level.Monsters)
+                if (GetBoundingBox().Intersects(monster.GetBoundingBox()))
                 {
-                    character.AddToScore(level, 300, Monster.X, Monster.Y);
-                    Monster.Die(level);
+                    character.AddToScore(level, monster.Points, monster.X, monster.Y);
+                    monster.Die(level);
                     sHit.Play();
                     if (!isEnergized) DeleteArrow();
                 }
@@ -49,7 +49,7 @@ namespace Game
             foreach (var archer in level.Archers)
                 if (GetBoundingBox().Intersects(archer.GetBoundingBox()))
                 {
-                    character.AddToScore(level, 600, archer.X, archer.Y);
+                    character.AddToScore(level, archer.Points, archer.X, archer.Y);
                     archer.Die(level);
                     sHit.Play();
                     if (!isEnergized) DeleteArrow();
@@ -58,7 +58,7 @@ namespace Game
             foreach (var wizard in level.Wizards)
                 if (GetBoundingBox().Intersects(wizard.GetBoundingBox()))
                 {
-                    character.AddToScore(level, 1800, wizard.X, wizard.Y);
+                    character.AddToScore(level, wizard.Points, wizard.X, wizard.Y);
                     wizard.Die(level);
                     sHit.Play();
                     if (!isEnergized) DeleteArrow();
@@ -68,7 +68,7 @@ namespace Game
                 foreach (var ghost in level.Ghosts)
                     if (GetBoundingBox().Intersects(ghost.GetBoundingBox()))
                     {
-                        character.AddToScore(level, 1000, ghost.X, ghost.Y);
+                        character.AddToScore(level, ghost.Points, ghost.X, ghost.Y);
                         ghost.Die(level);
                         DeleteArrow();
                     }

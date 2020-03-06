@@ -5,7 +5,7 @@ using SFML.System;
 
 namespace Game
 {
-    public class Ghost : Creature
+    public sealed class Ghost : Creature
     {
         public Ghost(float x, float y, Texture texture) : base(x, y, texture)
         {
@@ -27,22 +27,24 @@ namespace Game
             SetTextureRectanlge(0, 0, 32, 32);
             sGhost = new Sound(new SoundBuffer(@"sfx/ghost.wav"));
             sGhost.Volume = 40;
+
+            ApplyDifficulty();
         }
 
-        public float Speed { get; }
-        public float ProcsDistance { get; }
+        public float Speed { get; set; }
+        public float ProcsDistance { get; set; }
         public Sound sGhost { get; }
         public Clock DefaultClock { get; }
 
-        public void UpdateGhostTexture()
+        public override void UpdateTextures()
         {
             if (SpeedX < 0) _animLeft.Animate();
             else _animRight.Animate();
         }
 
-        public void UpdateGhost(Level level, MainCharacter character)
+        public new void UpdateCreature(Level level, MainCharacter character)
         {
-            UpdateGhostTexture();
+            UpdateTextures();
 
             if (!IsDead && (float) Math.Sqrt(Math.Pow(GetCenterPosition().X - character.GetCenterPosition().X, 2) +
                                              Math.Pow(GetCenterPosition().Y - character.GetCenterPosition().Y, 2)) <
@@ -72,6 +74,34 @@ namespace Game
             Arrow.sEnergyHit.Play();
             IsDead = true;
             DefaultClock.Dispose();
+        }
+
+        public override void ApplyDifficulty()
+        {
+            switch (MainGameWindow.GameDifficulty)
+            {
+                case Difficulty.Easy:
+                {
+                    SpeedX = 0.5f;
+                    ProcsDistance = 200f;
+                    Points = 700;
+                    break;
+                }
+                case Difficulty.Medium:
+                {
+                    Speed = 1f;
+                    ProcsDistance = 400f;
+                    Points = 1000;
+                    break;
+                }
+                case Difficulty.Hard:
+                {
+                    Speed = 1.5f;
+                    ProcsDistance = 600f;
+                    Points = 1300;
+                    break;
+                }
+            }
         }
     }
 }

@@ -227,6 +227,19 @@ namespace Game
                     if (SpeedX < 0) SpeedX = 0;
                 }
             }
+            else
+            {
+                if (SpeedX > 0)
+                {
+                    SpeedX -= dX/4;
+                    if (SpeedX < 0) SpeedX = 0f;
+                }
+                else if (SpeedX < 0f)
+                {
+                    SpeedX += dX/4;
+                    if (SpeedX > 0) SpeedX = 0f;
+                }
+            }
         }
 
         public void MainCharactereUpdate(Level level)
@@ -308,7 +321,7 @@ namespace Game
                         }
                         case BlockType.Coin:
                         {
-                            AddToScore(level, 100, obstacle.X, obstacle.Y);
+                            AddToScore(level, 30, obstacle.X, obstacle.Y);
                             sCoin.Play();
                             Coins++;
                             obstacle.DeletePickup();
@@ -316,7 +329,7 @@ namespace Game
                         }
                         case BlockType.SackOfGold:
                         {
-                            AddToScore(level, 1000, obstacle.X, obstacle.Y);
+                            AddToScore(level, 300, obstacle.X, obstacle.Y);
                             sCoin.Play();
                             Coins += 10;
                             obstacle.DeletePickup();
@@ -332,7 +345,7 @@ namespace Game
                         }
                         case BlockType.Mana:
                         {
-                            AddToScore(level, 400, obstacle.X, obstacle.Y);
+                            AddToScore(level, 300, obstacle.X, obstacle.Y);
                             Mana++;
                             sCoin.Play();
                             obstacle.DeletePickup();
@@ -340,7 +353,7 @@ namespace Game
                         }
                         case BlockType.TripleMana:
                         {
-                            AddToScore(level, 1000, obstacle.X, obstacle.Y);
+                            AddToScore(level, 900, obstacle.X, obstacle.Y);
                             Mana += 3;
                             sCoin.Play();
                             obstacle.DeletePickup();
@@ -362,7 +375,7 @@ namespace Game
                         }
                         case BlockType.Arrow:
                         {
-                            AddToScore(level, 200, obstacle.X, obstacle.Y);
+                            AddToScore(level, 100, obstacle.X, obstacle.Y);
                             ArrowAmount++;
                             sCoin.Play();
                             obstacle.DeletePickup();
@@ -370,7 +383,7 @@ namespace Game
                         }
                         case BlockType.TripleArrow:
                         {
-                            AddToScore(level, 600, obstacle.X, obstacle.Y);
+                            AddToScore(level, 300, obstacle.X, obstacle.Y);
                             ArrowAmount += 3;
                             sCoin.Play();
                             obstacle.DeletePickup();
@@ -380,7 +393,7 @@ namespace Game
                         {
                             HasSilverKey = true;
                             level.UnableToPassl.Remove(BlockType.SilverDoor);
-                            AddToScore(level, 500, obstacle.X, obstacle.Y);
+                            AddToScore(level, 250, obstacle.X, obstacle.Y);
                             sKey.Play();
                             obstacle.DeletePickup();
                             break;
@@ -389,7 +402,7 @@ namespace Game
                         {
                             HasGoldenKey = true;
                             level.UnableToPassl.Remove(BlockType.GoldDoor);
-                            AddToScore(level, 1000, obstacle.X, obstacle.Y);
+                            AddToScore(level, 500, obstacle.X, obstacle.Y);
                             sKey.Play();
                             obstacle.DeletePickup();
                             break;
@@ -507,7 +520,7 @@ namespace Game
                 Sword.Reset();
                 DefaultClock.Restart();
                 IsDead = true;
-                SpeedX = 0f;
+                SpeedX *= -1f;
                 SpeedY = -10f;
                 this.Lives--;
 

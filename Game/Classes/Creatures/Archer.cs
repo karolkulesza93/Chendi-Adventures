@@ -3,11 +3,13 @@ using SFML.System;
 
 namespace Game
 {
-    public class Archer : Creature
+    public sealed class Archer : Creature
     {
+        private int _shootInterval;
         public Archer(float x, float y, Texture texture, Movement dir) : base(x, y, texture)
         {
             DefaultClock = new Clock();
+            _shootInterval = 5;
 
             SpeedX = 13f;
             Arrow = new EnemyArrow(-100, -100, ArrowTexture, dir);
@@ -33,6 +35,8 @@ namespace Game
                     break;
                 }
             }
+
+            ApplyDifficulty();
         }
 
         public Clock DefaultClock { get; set; }
@@ -40,12 +44,12 @@ namespace Game
         public Movement Direction { get; set; }
         public bool isDrawing { get; private set; }
 
-        public void UpdateArcher(Level level)
+        public new void UpdateCreature(Level level)
         {
             //arrow
             Arrow.ProjectileUpdate(level);
             //textures
-            if (DefaultClock.ElapsedTime.AsSeconds() > 5 && !isDrawing && !IsDead)
+            if (DefaultClock.ElapsedTime.AsSeconds() > _shootInterval && !isDrawing && !IsDead)
             {
                 isDrawing = true;
                 Projectile.sDraw.Play();
@@ -63,7 +67,7 @@ namespace Game
                     }
                 }
             }
-            else if (DefaultClock.ElapsedTime.AsSeconds() > 7 && !IsDead)
+            else if (DefaultClock.ElapsedTime.AsSeconds() > _shootInterval + 2 && !IsDead)
             {
                 DefaultClock.Restart();
                 isDrawing = false;
@@ -99,6 +103,31 @@ namespace Game
             level.Particles.Add(new ParticleEffect(X, Y, Color.Red));
             Projectile.sDraw.Stop();
             SetPosition(500, -100);
+        }
+
+        public override void ApplyDifficulty()
+        {
+            switch (MainGameWindow.GameDifficulty)
+            {
+                case Difficulty.Easy:
+                {
+                    _shootInterval = 7;
+                    Points = 300;
+                    break;
+                }
+                case Difficulty.Medium:
+                {
+                    _shootInterval = 5;
+                    Points = 500;
+                    break;
+                }
+                case Difficulty.Hard:
+                {
+                    _shootInterval = 3;
+                    Points = 700;
+                    break;
+                }
+            }
         }
     }
 }

@@ -112,7 +112,6 @@
     <Compile Include="Classes\Details\ParticleEffect.cs" />
     <Compile Include="Classes\Basics\Program.cs" />
     <Compile Include="Classes\Projectiles\Projectile.cs" />
-    <Compile Include="Classes\Settings\Resolution.cs" />
     <Compile Include="Classes\Special\GameMachine.cs" />
     <Compile Include="Classes\Special\Merchant.cs" />
     <Compile Include="Classes\Special\Rewards.cs" />
@@ -129,6 +128,7 @@
     <Compile Include="Classes\Level\Trap.cs" />
     <Compile Include="Classes\Level\TrapType.cs" />
     <Compile Include="Classes\Creatures\Wizard.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -143,7 +143,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>

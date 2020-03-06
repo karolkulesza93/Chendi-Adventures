@@ -36,6 +36,7 @@ namespace Game
             ManaBottle =
                 new Sprite(new Texture(@"img/mana.png", new IntRect(new Vector2i(0, 0), new Vector2i(20, 20))));
             Coins3 = new Sprite(new Texture(@"img/coins.png"));
+            Coins3.Scale = new Vector2f(0.8f, 0.8f);
         }
 
         public TextLine LivesCount { get; }

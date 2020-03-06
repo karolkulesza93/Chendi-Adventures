@@ -33,6 +33,10 @@ namespace Game
         public void Roll()
         {
             var tmp = LootedReward;
+
+            Item.X = X + 16;
+            Item.Y = Y + 16;
+
             _loss = _rnd.Next(300);
             _click.Play();
 
@@ -229,6 +233,8 @@ namespace Game
             if (X < _view.Center.X - 32)
             {
                 X += 10;
+                Item.X = X + 16;
+                Item.Y = Y + 16;
             }
             else
             {
@@ -247,7 +253,7 @@ namespace Game
         public override void Draw(RenderTarget target, RenderStates states)
         {
             base.Draw(target, states);
-            if (X == (int)_view.Center.X - 32)
+            //if (X == (int)_view.Center.X - 32)
             {
                 target.Draw(Item);
                 target.Draw(_reward);

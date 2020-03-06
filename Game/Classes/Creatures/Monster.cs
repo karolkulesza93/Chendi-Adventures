@@ -27,6 +27,8 @@ namespace Game
 
             SetTextureRectanlge(0, 0, 32, 32);
             IsDead = false;
+
+            ApplyDifficulty();
         }
 
         public override void UpdateTextures()
@@ -35,7 +37,7 @@ namespace Game
             else _animLeft.Animate();
         }
 
-        public void MonsterUpdate()
+        public override void UpdateCreature()
         {
             X += SpeedX;
             if (Left < XMinPos || Right > XMaxPos) SpeedX *= -1;
@@ -48,6 +50,31 @@ namespace Game
             level.Particles.Add(new ParticleEffect(X, Y, Color.Red));
             SetPosition(400, -100);
             IsDead = true;
+        }
+
+        public override void ApplyDifficulty()
+        {
+            switch (MainGameWindow.GameDifficulty)
+            {
+                case Difficulty.Easy:
+                {
+                    SpeedX = 1f;
+                    Points = 250;
+                    break;
+                }
+                case Difficulty.Medium:
+                {
+                    SpeedX = 2f;
+                    Points = 350;
+                    break;
+                }
+                case Difficulty.Hard:
+                {
+                    SpeedX = 3f;
+                    Points = 500;
+                    break;
+                }
+            }
         }
     }
 }

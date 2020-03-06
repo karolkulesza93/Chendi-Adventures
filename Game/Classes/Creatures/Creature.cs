@@ -10,9 +10,10 @@ namespace Game
         public static Sound sKill = new Sound(new SoundBuffer(@"sfx/kill.wav"));
         protected Animation _animLeft;
         protected Animation _animRight;
-
+        public int Points { get; set; }
         public Creature(float x, float y, Texture texture) : base(x, y, texture)
         {
+            Points = 0;
             IsDead = false;
 
             SpeedX = 0f;
@@ -29,7 +30,6 @@ namespace Game
 
             MovementDirection = Movement.None;
         }
-
         public float SpeedX { get; set; } //szybkość po X
         public float SpeedY { get; set; } //szybkość po Y
         public float MaxSpeedX { get; }
@@ -144,6 +144,27 @@ namespace Game
 
         public virtual void UpdateCreature()
         {
+        }
+
+        public virtual void ApplyDifficulty()
+        {
+
+            switch (MainGameWindow.GameDifficulty)
+            {
+                case Difficulty.Easy:
+                {
+                    break;
+                }
+                case Difficulty.Medium:
+                {
+                    break;
+                }
+                case Difficulty.Hard:
+                {
+                    break;
+                }
+            }
+
         }
     }
 }

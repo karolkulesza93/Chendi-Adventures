@@ -4,7 +4,7 @@ using SFML.System;
 
 namespace Game
 {
-    public class Trap : Entity
+    public sealed class Trap : Entity
     {
         private static readonly Sound sFire = new Sound(new SoundBuffer(@"sfx/fire.wav"));
         private static readonly Sound sCrush = new Sound(new SoundBuffer(@"sfx/crusher.wav"));
@@ -15,9 +15,12 @@ namespace Game
 
         public bool IsUp;
 
+        private int _spikeInterval;
+        private int _crusherInterval;
+        private int _blowtorchInterval;
+
         //spikes
         private readonly float startY;
-
         public Trap(float x, float y, Texture texture, TrapType type) : base(x, y, texture)
         {
             Type = type;
@@ -101,11 +104,11 @@ namespace Game
                     break;
                 }
             }
-        }
 
+            ApplyDifficulty();
+        }
         public float SpeedY { get; }
         public TrapType Type { get; }
-
         public Clock DefaultTimer { get; }
 
         //blowtorch
@@ -128,16 +131,16 @@ namespace Game
             {
                 case TrapType.BlowTorchLeft:
                 {
-                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > 3) SetTextureRectanlge(96, 32, 32, 32);
-                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > 5) IsBlowing = true;
-                    if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() < 7)
+                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > _blowtorchInterval - 2) SetTextureRectanlge(96, 32, 32, 32);
+                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > _blowtorchInterval) IsBlowing = true;
+                    if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() < _blowtorchInterval + 2)
                     {
                         AnimFire1.Animate();
                         AnimFire2.Animate();
                         if (sFire.Status != SoundStatus.Playing) sFire.Play();
                     }
 
-                    if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() >= 7)
+                    if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() >= _blowtorchInterval + 2)
                     {
                         IsBlowing = false;
                         DefaultTimer.Restart();
@@ -150,16 +153,16 @@ namespace Game
                 }
                 case TrapType.BlowTorchRight:
                 {
-                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > 3) SetTextureRectanlge(64, 32, 32, 32);
-                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > 5) IsBlowing = true;
-                    if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() < 7)
+                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > _blowtorchInterval - 2) SetTextureRectanlge(64, 32, 32, 32);
+                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > _blowtorchInterval) IsBlowing = true;
+                    if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() < _blowtorchInterval + 2)
                     {
                         AnimFire1.Animate();
                         AnimFire2.Animate();
                         if (sFire.Status != SoundStatus.Playing) sFire.Play();
                     }
 
-                    if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() >= 7)
+                    if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() >= _blowtorchInterval + 2)
                     {
                         IsBlowing = false;
                         DefaultTimer.Restart();
@@ -173,7 +176,7 @@ namespace Game
                 case TrapType.Crusher:
                 {
                     //moving down / crushing
-                    if (!JustCrushed && DefaultTimer.ElapsedTime.AsSeconds() > 3)
+                    if (!JustCrushed && DefaultTimer.ElapsedTime.AsSeconds() > _crusherInterval)
                     {
                         if (Y < Holder.Y + 96)
                         {
@@ -198,7 +201,7 @@ namespace Game
                     }
 
                     //moving up / reloading
-                    if (JustCrushed && DefaultTimer.ElapsedTime.AsSeconds() > 5)
+                    if (JustCrushed && DefaultTimer.ElapsedTime.AsSeconds() > _crusherInterval + 2)
                     {
                         if (Y > Holder.Y)
                         {
@@ -237,7 +240,7 @@ namespace Game
                         Y += SpeedY;
                         if (Y > startY + 32)
                         {
-                            if (DefaultTimer.ElapsedTime.AsSeconds() > 3)
+                            if (DefaultTimer.ElapsedTime.AsSeconds() > _spikeInterval)
                             {
                                 IsUp = false;
                                 DefaultTimer.Restart();
@@ -259,11 +262,11 @@ namespace Game
             {
                 case TrapType.BlowTorchLeft:
                 {
-                    return new FloatRect(X - 32, Y, 64, 32);
+                    return new FloatRect(X - 32, Y + 4, 60, 24);
                 }
                 case TrapType.BlowTorchRight:
                 {
-                    return new FloatRect(X, Y, 64, 32);
+                    return new FloatRect(X, Y + 4, 60, 24);
                 }
                 case TrapType.Crusher:
                 {
@@ -315,6 +318,34 @@ namespace Game
         {
             if (Type == TrapType.Spikes) return new Vector2f(X / 32, (Y - 32) / 32);
             return base.Get32Position();
+        }
+
+        public void ApplyDifficulty()
+        {
+            switch (MainGameWindow.GameDifficulty)
+            {
+                case Difficulty.Easy:
+                {
+                    _spikeInterval = 5;
+                    _crusherInterval = 5;
+                    _blowtorchInterval = 7;
+                        break;
+                }
+                case Difficulty.Medium:
+                {
+                    _spikeInterval = 3;
+                    _crusherInterval = 3;
+                    _blowtorchInterval = 5;
+                    break;
+                }
+                case Difficulty.Hard:
+                {
+                    _spikeInterval = 2;
+                    _crusherInterval = 2;
+                    _blowtorchInterval = 3;
+                    break;
+                }
+            }
         }
     }
 }

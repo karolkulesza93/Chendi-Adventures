@@ -3,9 +3,10 @@ using SFML.System;
 
 namespace Game
 {
-    public class Wizard : Creature
+    public sealed class Wizard : Creature
     {
         private readonly Clock _defaultClock;
+        private int _shootInterval;
         public float XMaxPos;
         public float XMinPos;
 
@@ -20,6 +21,8 @@ namespace Game
             SpeedX = 1f;
             SpeedY = 0f;
 
+            _shootInterval = 10;
+
             _animLeft = new Animation(this, 0.1f,
                 new Vector2i(0, 0),
                 new Vector2i(32, 0)
@@ -31,6 +34,8 @@ namespace Game
 
             SetTextureRectanlge(0, 0, 32, 32);
             IsDead = false;
+
+            ApplyDifficulty();
         }
 
         public EnergyBall EnergyBall { get; }
@@ -41,14 +46,14 @@ namespace Game
             else _animLeft.Animate();
         }
 
-        public void WizardUpdate(MainCharacter character)
+        public new void UpdateCreature(MainCharacter character)
         {
             if (!IsDead)
             {
                 X += SpeedX;
                 if (Left < XMinPos || Right > XMaxPos) SpeedX *= -1;
 
-                if (_defaultClock.ElapsedTime.AsSeconds() > 10)
+                if (_defaultClock.ElapsedTime.AsSeconds() > _shootInterval)
                 {
                     EnergyBall.Attack(X + 8, Y + 8);
                     _defaultClock.Restart();
@@ -73,6 +78,34 @@ namespace Game
         {
             base.Draw(target, states);
             target.Draw(EnergyBall, states);
+        }
+
+        public override void ApplyDifficulty()
+        {
+            switch (MainGameWindow.GameDifficulty)
+            {
+                case Difficulty.Easy:
+                {
+                    _shootInterval = 12;
+                    SpeedX = 0.5f;
+                    Points = 1000;
+                    break;
+                }
+                case Difficulty.Medium:
+                {
+                    _shootInterval = 10;
+                    SpeedX = 1f;
+                    Points = 1300;
+                    break;
+                }
+                case Difficulty.Hard:
+                {
+                    _shootInterval = 8;
+                    SpeedX = 2f;
+                    Points = 1600;
+                    break;
+                }
+            }
         }
     }
 }

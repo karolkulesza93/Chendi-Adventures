@@ -13,7 +13,7 @@ namespace Game {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -25,19 +25,7 @@ namespace Game {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Resolution {
-            get {
-                return ((string)(this["Resolution"]));
-            }
-            set {
-                this["Resolution"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool Vsync {
             get {
                 return ((bool)(this["Vsync"]));
@@ -49,13 +37,73 @@ namespace Game {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Difficulty {
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int Difficulty {
             get {
-                return ((string)(this["Difficulty"]));
+                return ((int)(this["Difficulty"]));
             }
             set {
                 this["Difficulty"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("A")]
+        public char Jump {
+            get {
+                return ((char)(this["Jump"]));
+            }
+            set {
+                this["Jump"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("X")]
+        public char Attack {
+            get {
+                return ((char)(this["Attack"]));
+            }
+            set {
+                this["Attack"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C")]
+        public char Arrow {
+            get {
+                return ((char)(this["Arrow"]));
+            }
+            set {
+                this["Arrow"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("D")]
+        public char EnergyArrow {
+            get {
+                return ((char)(this["EnergyArrow"]));
+            }
+            set {
+                this["EnergyArrow"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("S")]
+        public char Immortality {
+            get {
+                return ((char)(this["Immortality"]));
+            }
+            set {
+                this["Immortality"] = value;
             }
         }
     }

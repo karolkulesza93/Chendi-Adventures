@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using SFML.Graphics;
 
-namespace Game
+namespace ChendiAdventures
 {
     public class HighscoreRecord
     {

@@ -1,6 +1,6 @@
 ﻿using SFML.Graphics;
 
-namespace Game
+namespace ChendiAdventures
 {
     public class EnemyArrow : Projectile
     {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Game {
+namespace ChendiAdventures {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -49,7 +49,7 @@ namespace Game {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("A")]
+        [global::System.Configuration.DefaultSettingValueAttribute("a")]
         public char Jump {
             get {
                 return ((char)(this["Jump"]));
@@ -104,6 +104,18 @@ namespace Game {
             }
             set {
                 this["Immortality"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("U")]
+        public char Kys {
+            get {
+                return ((char)(this["Kys"]));
+            }
+            set {
+                this["Kys"] = value;
             }
         }
     }

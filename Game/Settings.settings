@@ -9,7 +9,7 @@
       <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="Jump" Type="System.Char" Scope="User">
-      <Value Profile="(Default)">A</Value>
+      <Value Profile="(Default)">a</Value>
     </Setting>
     <Setting Name="Attack" Type="System.Char" Scope="User">
       <Value Profile="(Default)">X</Value>
@@ -22,6 +22,9 @@
     </Setting>
     <Setting Name="Immortality" Type="System.Char" Scope="User">
       <Value Profile="(Default)">S</Value>
+    </Setting>
+    <Setting Name="Kys" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">U</Value>
     </Setting>
   </Settings>
 </SettingsFile>

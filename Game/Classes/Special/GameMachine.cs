@@ -2,7 +2,7 @@
 using SFML.Audio;
 using SFML.Graphics;
 
-namespace Game
+namespace ChendiAdventures
 {
     public class GameMachine : Entity
     {

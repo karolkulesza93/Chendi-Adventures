@@ -1,4 +1,4 @@
-﻿namespace Game
+﻿namespace ChendiAdventures
 {
     public enum Reward // 257 possibilities
     {

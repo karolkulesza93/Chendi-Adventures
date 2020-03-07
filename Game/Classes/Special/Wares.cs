@@ -1,4 +1,4 @@
-﻿namespace Game
+﻿namespace ChendiAdventures
 {
     public enum Wares // cost
     {

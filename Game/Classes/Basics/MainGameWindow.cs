@@ -22,7 +22,7 @@ DO ZROBIENIA:
 - levele
 - moze bossy??
 - scenka na poczatek
-- settingsy (hotkeye zostaly)
+- settingsy (hotkeye zostaly, ale nie wiem czy da rade)
 - sklep
 - generowanie poziomu
 - zwiekszenie mozliwosci level editora (CRUD)
@@ -30,7 +30,7 @@ DO ZROBIENIA:
 
 */
 
-namespace Game
+namespace ChendiAdventures
 {
     public sealed class MainGameWindow
     {
@@ -87,8 +87,8 @@ namespace Game
         private bool _isQuit;
         private bool _isSettigs;
 
-        public static Difficulty GameDifficulty;
-        public static bool IsVsync;
+        public static Difficulty GameDifficulty { get; set; }
+        public static bool IsVsync { get; set; }
 
         private MainGameWindow()
         {
@@ -412,16 +412,8 @@ namespace Game
             while (_window.IsOpen && _isSettigs)
             {
                 ResetWindow();
-                /*
-                public Sound sTramp { get; private set; }
-                public Sound sAtk { get; private set; }
-                public Sound sDie { get; private set; }
-                public Sound sCoin { get; private set; }
-                public Sound sTp { get; private set; }
-                public Sound sKey { get; private set; }
-                public Sound sLife { get; private set; }
-                public Sound sImmortality { get; private set; }
-                 */
+
+
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape)) break;
                 AnimateBackground();

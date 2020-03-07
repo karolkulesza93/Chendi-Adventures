@@ -3,7 +3,7 @@ using SFML.Graphics;
 using SFML.Audio;
 using SFML.System;
 
-namespace Game
+namespace ChendiAdventures
 {
     public class Merchant : Entity
     {

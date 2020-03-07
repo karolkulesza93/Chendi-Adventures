@@ -2,7 +2,7 @@
 using SFML.Graphics;
 using SFML.System;
 
-namespace Game
+namespace ChendiAdventures
 {
     public class EnergyBall : Projectile
     {

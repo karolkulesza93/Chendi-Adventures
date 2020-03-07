@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.System;
 
-namespace Game
+namespace ChendiAdventures
 {
     public class ParticleEffect : Drawable
     {

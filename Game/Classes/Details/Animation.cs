@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SFML.System;
 
-namespace Game
+namespace ChendiAdventures
 {
     public class Animation
     {

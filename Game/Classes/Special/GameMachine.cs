@@ -70,6 +70,7 @@ namespace ChendiAdventures
                 LootedReward = Reward.Nothing;
 
             if (tmp == LootedReward) Roll();
+            TextureUpdate();
         }
 
         public void GrantReward(MainCharacter character)
@@ -81,29 +82,34 @@ namespace ChendiAdventures
             {
                 case Reward.Nothing:
                     {
+                        Creature.sKill.Play();
                         _reward.EditText("YOU HAVE NOT WON ANYTHING...");
                         break;
                     }
                 case Reward.Coins10:
                 {
+                    character.sCoin.Play();
                     character.Coins += 10;
                     _reward.EditText("YOU HAVE WON 10 COINS");
                         break;
                 }
                 case Reward.Coins100:
                 {
-                    character.Coins += 100;
+                    character.sCoin.Play();
+                        character.Coins += 100;
                     _reward.EditText("YOU HAVE WON 100 COINS");
                         break;
                 }
                 case Reward.Coins1000:
                 {
-                    character.Coins += 1000;
+                    character.sCoin.Play();
+                        character.Coins += 1000;
                     _reward.EditText("YOU HAVE WON 1000 COINS!");
                         break;
                 }
                 case Reward.Jackpot:
                 {
+                    MainGameWindow._victory.Play();
                     character.Coins += 10000;
                     _reward.EditText("JACKPOT! YOU HAVE WON 10000 COINS");
                         break;
@@ -111,64 +117,73 @@ namespace ChendiAdventures
 
                 case Reward.Arrow3:
                 {
+                    character.sPickup.Play();
                     character.ArrowAmount += 1;
                     _reward.EditText("YOU HAVE WON 1 ARROW");
                         break;
                 }
                 case Reward.Arrow10:
                 {
-                    character.ArrowAmount += 3;
+                    character.sPickup.Play();
+                        character.ArrowAmount += 3;
                     _reward.EditText("YOU HAVE WON 3 ARROWS");
                         break;
                 }
                 case Reward.Arrow25:
                 {
-                    character.ArrowAmount += 5;
+                    character.sPickup.Play();
+                        character.ArrowAmount += 5;
                     _reward.EditText("YOU HAVE WON 5 ARROWS");
                         break;
                 }
 
                 case Reward.Mana3:
                 {
-                    character.Mana += 1;
+                    character.sPickup.Play();
+                        character.Mana += 1;
                     _reward.EditText("YOU HAVE WON 1 MANA POTION");
                         break;
                 }
                 case Reward.Mana10:
                 {
-                    character.Mana += 2;
+                    character.sPickup.Play();
+                        character.Mana += 2;
                     _reward.EditText("YOU HAVE WON 2 MANA POTIONS");
                         break;
                 }
                 case Reward.Mana25:
                 {
-                    character.Mana += 3;
+                    character.sPickup.Play();
+                        character.Mana += 3;
                     _reward.EditText("YOU HAVE WON 3 MANA POTIONS");
                         break;
                 }
 
                 case Reward.Score10000:
                 {
-                    character.Score += 10000;
+                    character.sPickup.Play();
+                        character.Score += 10000;
                     _reward.EditText("YOU HAVE WON 10000 POINTS");
                     break;
                 }
                 case Reward.Life:
                 {
+                    character.sLife.Play();
                     character.Lives++; 
                     _reward.EditText("YOU HAVE WON 1 LIFE");
                         break;
                 }
                 case Reward.TripleLife:
                 {
-                    character.Lives += 3;
+                    character.sLife.Play();
+                        character.Lives += 3;
                     _reward.EditText("YOU HAVE WON 3 LIVES");
                     break;
                 }
             }
         }
 
-        public void TextureUpdate()
+        public void TextureUpdate() // tu zmienic na switch bo bez sensu to to
         {
             if (_loss >= 0 && _loss <= 49)
             {
@@ -247,7 +262,6 @@ namespace ChendiAdventures
             {
                 _reward.MoveText(_reward.X + 15, _reward.Y);
             }
-            TextureUpdate();
         }
 
         public override void Draw(RenderTarget target, RenderStates states)

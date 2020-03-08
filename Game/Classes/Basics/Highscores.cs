@@ -1,4 +1,4 @@
-﻿using System.CodeDom;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -8,14 +8,16 @@ namespace ChendiAdventures
 {
     public class HighscoreRecord
     {
-        public HighscoreRecord(int score, int level)
+        public HighscoreRecord(int score, int level, string difficulty)
         {
             Score = score;
             Level = level;
+            Difficulty = difficulty;
         }
 
         public int Score { get; set; }
         public int Level { get; set; }
+        public string Difficulty { get; set; }
 
         public override string ToString()
         {
@@ -26,7 +28,9 @@ namespace ChendiAdventures
                 str.Append(" ");
             str.Append("LEVEL ");
             str.Append(Level);
-
+            for (var i = 0; i < 4 - Level.ToString().Length; i++)
+                str.Append(" ");
+            str.Append(Difficulty);
             return str.ToString();
         }
     }
@@ -79,14 +83,24 @@ namespace ChendiAdventures
 
         public void LoadHighscores()
         {
-            var content = File.ReadAllLines(_path);
+            string[] content;
+            try
+            {
+                content = File.ReadAllLines(_path);
+            }
+            catch (Exception)
+            {
+                content = new string[0];
+            }
+
             Scores.Clear();
 
             foreach (var line in content)
             {
                 if (line == "\n" || line == "" || line == " " || line == "\r") break;
                 var tmp = line.Split(' ');
-                Scores.Add(new HighscoreRecord(int.Parse(tmp[0]), int.Parse(tmp[1])));
+
+                Scores.Add(new HighscoreRecord(int.Parse(tmp[0]), int.Parse(tmp[1]), tmp[2]));
             }
 
             _highscores.EditText(GetHighscores());
@@ -112,7 +126,7 @@ namespace ChendiAdventures
         {
             var str = new StringBuilder();
 
-            foreach (var record in Scores) str.Append(record.Score + " " + record.Level + "\n");
+            foreach (var record in Scores) str.Append(record.Score + " " + record.Level + " " + record.Difficulty + "\n");
 
             File.WriteAllText(_path, str.ToString());
         }

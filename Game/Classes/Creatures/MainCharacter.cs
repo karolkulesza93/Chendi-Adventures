@@ -1,4 +1,5 @@
-﻿using SFML.Audio;
+﻿using System.Net.Configuration;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -20,6 +21,7 @@ namespace ChendiAdventures
             DefaultClock = new Clock();
             IsStandingOnBlocks = false;
             Score = 0;
+            LivesGranted = 0;
 
             Sword = new Sword(this);
             Arrow = new Arrow(-100, -100, ArrowTexture, Movement.Right);
@@ -54,7 +56,6 @@ namespace ChendiAdventures
             KeyDIE = Keyboard.Key.U;
 
             sJump = new Sound(new SoundBuffer(@"sfx/jump.wav"));
-
             sTramp = new Sound(new SoundBuffer(@"sfx/trampoline.wav"));
             sCoin = new Sound(new SoundBuffer(@"sfx/coin.wav"));
             sCoin.Volume = 40;
@@ -64,6 +65,9 @@ namespace ChendiAdventures
             sTp = new Sound(new SoundBuffer(@"sfx/teleport.wav"));
             sKey = new Sound(new SoundBuffer(@"sfx/key.wav"));
             sLife = new Sound(new SoundBuffer(@"sfx/life.wav"));
+            sLife.Volume = 50;
+            sPickup = new Sound(new SoundBuffer(@"sfx/pickup.wav"));
+            sPickup.Volume = 40;
             sImmortality = new Sound(new SoundBuffer(@"sfx/immortality.wav"));
             sImmortality.Volume = 30;
             sImmortality.Loop = true;
@@ -84,6 +88,7 @@ namespace ChendiAdventures
         public bool HasGoldenKey { get; set; }
         public bool OutOfLives { get; set; }
         public bool GotExit { get; set; }
+        public int LivesGranted { get; set; }
 
         //steering
         public Keyboard.Key KeyUP { get; set; }
@@ -105,6 +110,7 @@ namespace ChendiAdventures
         public Sound sKey { get; }
         public Sound sLife { get; }
         public Sound sImmortality { get; }
+        public Sound sPickup { get; }
 
         public void MainCharacterSteering(Level level)
         {
@@ -258,6 +264,8 @@ namespace ChendiAdventures
                 SpeedY = 0f;
             }
 
+            GrantAdditionalLifeDependingOnScore();
+
             CollisionDependence(level);
             UpdateTextures();
         }
@@ -347,7 +355,7 @@ namespace ChendiAdventures
                         {
                             AddToScore(level, 300, obstacle.X, obstacle.Y);
                             Mana++;
-                            sCoin.Play();
+                            sPickup.Play();
                             obstacle.DeletePickup();
                             break;
                         }
@@ -355,38 +363,38 @@ namespace ChendiAdventures
                         {
                             AddToScore(level, 900, obstacle.X, obstacle.Y);
                             Mana += 3;
-                            sCoin.Play();
-                            obstacle.DeletePickup();
+                            sPickup.Play();
+                                obstacle.DeletePickup();
                             break;
                         }
                         case BlockType.Score1000:
                         {
                             AddToScore(level, 1000, obstacle.X, obstacle.Y);
-                            sCoin.Play();
-                            obstacle.DeletePickup();
+                            sPickup.Play();
+                                obstacle.DeletePickup();
                             break;
                         }
                         case BlockType.Score5000:
                         {
                             AddToScore(level, 5000, obstacle.X, obstacle.Y);
-                            sCoin.Play();
-                            obstacle.DeletePickup();
+                            sPickup.Play();
+                                obstacle.DeletePickup();
                             break;
                         }
                         case BlockType.Arrow:
                         {
                             AddToScore(level, 100, obstacle.X, obstacle.Y);
                             ArrowAmount++;
-                            sCoin.Play();
-                            obstacle.DeletePickup();
+                            sPickup.Play();
+                                obstacle.DeletePickup();
                             break;
                         }
                         case BlockType.TripleArrow:
                         {
                             AddToScore(level, 300, obstacle.X, obstacle.Y);
                             ArrowAmount += 3;
-                            sCoin.Play();
-                            obstacle.DeletePickup();
+                            sPickup.Play();
+                                obstacle.DeletePickup();
                             break;
                         }
                         case BlockType.SilverKey:
@@ -581,12 +589,23 @@ namespace ChendiAdventures
             Lives = 3;
             Mana = 0;
             Score = 0;
+            LivesGranted = 0;
 
             _immortalityAnimationCounter = 0;
             _immortalityAnimationFlag = false;
 
             HasSilverKey = false;
             HasGoldenKey = false;
+        }
+
+        public void GrantAdditionalLifeDependingOnScore()
+        {
+            if (Score / 100000 == LivesGranted + 1 && Score > 100000)
+            {
+                LivesGranted++;
+                Lives++;
+                sLife.Play();
+            }
         }
 
         public override void Draw(RenderTarget target, RenderStates states)

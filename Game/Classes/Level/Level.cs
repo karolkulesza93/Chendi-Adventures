@@ -133,7 +133,7 @@ namespace ChendiAdventures
 
             try
             {
-                Content = File.ReadAllText(@"levels/" + level + @".txt");
+                Content = File.ReadAllText(@"levels/" + level + @".dat");
             }
             catch (Exception)
             {
@@ -527,7 +527,7 @@ namespace ChendiAdventures
             }
         }
 
-        public int GetBonusForTime(double time)
+        public int GetBonusForTime(double time) // do zmiany!!!!!
         {
             var value = 0f;
 
@@ -998,8 +998,8 @@ namespace ChendiAdventures
                 }
             }
 
-            File.WriteAllText("levels/edit.txt", level.ToString());
-            File.WriteAllText("levels/lvl0.txt", level.ToString());
+            File.WriteAllText("levels/edit.dat", level.ToString());
+            File.WriteAllText("levels/lvl0.dat", level.ToString());
             LevelNumber = 0;
         }
 

@@ -34,7 +34,7 @@ namespace ChendiAdventures
         public float SpeedY { get; set; } //szybkość po Y
         public float MaxSpeedX { get; }
         public float MaxSpeedY { get; }
-        public float dX { get; }
+        public float dX { get; set; }
         public float GravityForce { get; set; } //szybkosc grawitacji
         public bool IsStandingOnBlocks { get; set; }
         public bool IsDead { get; set; }

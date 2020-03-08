@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using SFML.Audio;
 using SFML.Graphics;
@@ -13,20 +14,18 @@ using SFML.Window;
  Promotor: dr Piotr Jastrzębski
 
 
-DO ZROBIENIA:
+DO ZAPROGRAMOWANIA:
 
-- obsluga wyjatkow (choc nic zlego sie nei zdazylo)
-- +1 zycie za kazde 100000pkt
-- zmiany ekranu (jeszcze blakcouty)
-- zmiana formatu leveli z txt na cos mniej dostepnego dla casuala
-- levele
 - moze bossy??
-- scenka na poczatek
-- settingsy (hotkeye zostaly, ale nie wiem czy da rade)
 - sklep
-- generowanie poziomu
-- zwiekszenie mozliwosci level editora (CRUD)
-- jak sie uda to shadery/swiatlo ogarnac aby ladnie wygladalo
+- generowanie poziomu***
+- zwiekszenie mozliwosci level editora ? (CRUD)*
+- jak sie uda to shadery/swiatlo ogarnac aby ladnie wygladalo**
+
+DO ZROBIENIA:
+- levele
+- scenka na poczatek i koniec
+
 
 */
 
@@ -76,7 +75,7 @@ namespace ChendiAdventures
         private TextLine _quitQestion;
         private TextLine _settings;
         private TextLine _start;
-        private Sound _victory;
+        public static Sound _victory = new Sound(new SoundBuffer(@"sfx/victory.wav"));
         private int _windowHeight;
         private Styles _windowStyle = Styles.Fullscreen;
         private int _windowWidth;
@@ -178,7 +177,6 @@ namespace ChendiAdventures
             _no = new TextLine("NO", 50, 460, 370, Color.Green);
             _no.SetOutlineThickness(5f);
 
-            _victory = new Sound(new SoundBuffer(@"sfx/victory.wav"));
             _victory.Volume = 50;
             _gameEnd = new Sound(new SoundBuffer(@"sfx/gameover.wav"));
             _gameEnd.Volume = 50;
@@ -349,6 +347,7 @@ namespace ChendiAdventures
                         }
                         case 4: //key bindings
                         {
+                            KeyBindingConfig();
                             break;
                         }
                     }
@@ -357,7 +356,7 @@ namespace ChendiAdventures
                 if (choice == 0) choice = 4;
                 if (choice == 5) choice = 1;
 
-                resolution.ChangeColor(Color.White);
+                resolution.ChangeColor(new Color(150,150, 150));
                 vsync.ChangeColor(Color.White);
                 difficulty.ChangeColor(Color.White);
                 keyBindings.ChangeColor(Color.White);
@@ -409,18 +408,35 @@ namespace ChendiAdventures
 
         private void KeyBindingConfig()
         {
+            TextLine keys = new TextLine("", 50, -1000, _view.Center.Y + _windowHeight/2 - 500, new Color(150,150,150));
+            keys.SetOutlineThickness(5);
+
+            StringBuilder str = new StringBuilder();
+            str.Append($"'{_chendi.KeyLEFT.ToString().ToUpper()}' : MOVE LEFT\n");
+            str.Append($"'{_chendi.KeyRIGHT.ToString().ToUpper()}' : MOVE RIGHT\n");
+            str.Append($"'{_chendi.KeyUP.ToString().ToUpper()}' : LOOK UP\n");
+            str.Append($"'{_chendi.KeyJUMP.ToString().ToUpper()}' : JUMP\n");
+            str.Append($"'{_chendi.KeyATTACK.ToString().ToUpper()}' : SWORD ATTACK\n");
+            str.Append($"'{_chendi.KeyARROW.ToString().ToUpper()}' : SHOOT AN ARROW\n");
+            str.Append($"'{_chendi.KeyTHUNDER.ToString().ToUpper()}' : SHOOT AN ENERGIZED ARROW\n");
+            str.Append($"'{_chendi.KeyIMMORTALITY.ToString().ToUpper()}' : BECOME IMMORTAL\n");
+            str.Append($"'{_chendi.KeyDIE.ToString().ToUpper()}' : KILL YOURSELF");
+
+            keys.EditText(str.ToString());
+
             while (_window.IsOpen && _isSettigs)
             {
                 ResetWindow();
 
-
+                //slide text effect
+                if (keys.X < 50) keys.MoveText(keys.X + 50, keys.Y);
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape)) break;
                 AnimateBackground();
                 _window.Draw(_background);
 
-
                 //draw settings
+                _window.Draw(keys);
                 _window.Display();
             }
         }
@@ -436,7 +452,7 @@ namespace ChendiAdventures
 
                 //slide text effect
                 if (hs.Y < 5) { hs.MoveText(hs.X, hs.Y + 10);}
-                if (_highscoreValues.X < _view.Center.X - 550) _highscoreValues.X += 50;
+                if (_highscoreValues.X < _view.Center.X - 750) _highscoreValues.X += 50;
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 {
@@ -722,6 +738,17 @@ namespace ChendiAdventures
                         return;
                     }
 
+                    if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+                    {
+                        _chendi.sCoin.Play();
+                        _chendi.ResetMainCharacter();
+                        _gameEnd.Stop();
+                        DrawLoadingScreen();
+                        _isGame = false;
+                        _isMenu = true;
+                        return;
+                    }
+
                     _window.Draw(_gameOver);
                     _window.Draw(_continue);
                     _window.Draw(_screenChange);
@@ -838,7 +865,16 @@ namespace ChendiAdventures
             cover.Position = new Vector2f(-201, -520);
 
             var position = new TextLine("", 10, 0, 0, Color.Yellow);
-            var instructions = new TextLine(File.ReadAllText(@"levels/instructions.dat"), 10, -300, 0, Color.White);
+
+            TextLine instructions;
+            try
+            {
+                instructions = new TextLine(File.ReadAllText(@"levels/instructions.dat"), 10, -300, 0, Color.White);
+            }
+            catch (Exception)
+            {
+                instructions = new TextLine("", 10, -300, 0, Color.White);
+            }
 
             _chendi.SetPosition(-100, -100);
             _chendi.IsDead = true;
@@ -1104,6 +1140,22 @@ namespace ChendiAdventures
                     _level.Traps.Clear();
                 }
 
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F11))
+                {
+                    x = 1; y = 1;
+                    /*
+                    string level = LevelManager.Generator.GenerateLevel("GENERATED_LEVEL", _level.LevelWidth,
+                        _level.LevelHeight,
+                        _randomizer.Next(2) == 1 ? true : false, _randomizer.Next(2) == 1 ? true : false,
+                        _randomizer.Next(2) == 1 ? true : false, _randomizer.Next(2) == 1 ? true : false,
+                        _randomizer.Next(2) == 1 ? true : false, _randomizer.Next(2) == 1 ? true : false,
+                        _randomizer.Next(2) == 1 ? true : false,
+                        _randomizer.Next(2) == 1 ? true : false, _randomizer.Next(2) == 1 ? true : false,
+                        _randomizer.Next(2) == 1 ? true : false, _randomizer.Next(2) == 1 ? true : false,
+                        _randomizer.Next(2) == 1 ? true : false, _randomizer.Next(2) == 1 ? true : false);
+                    _level.LoadLevel(string.Format("GENERATED_LEVEL_{0}x{1}", _level.LevelWidth, _level.LevelHeight));*/
+                }
+
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F12))
                 {
                     flag = true;
@@ -1272,7 +1324,7 @@ namespace ChendiAdventures
         {
             if (_chendi.OutOfLives) //game over
             {
-                _highscoreValues.AddNewRecord(new HighscoreRecord(_chendi.Score, _level.LevelNumber));
+                _highscoreValues.AddNewRecord(new HighscoreRecord(_chendi.Score, _level.LevelNumber, GameDifficulty.ToString().ToUpper()));
 
                 _gameEnd.Play();
 
@@ -1331,6 +1383,8 @@ namespace ChendiAdventures
 
                 if (!isLottery && timer.ElapsedTime.AsSeconds() > 5) _screenChange.BlackOut();
 
+                if (_victory.Status != SoundStatus.Playing) _chendi.GrantAdditionalLifeDependingOnScore();
+
                 DrawGame(_chendi, false);
                 _window.Draw(_levelSummary);
                 _window.Draw(_screenChange);
@@ -1384,14 +1438,15 @@ namespace ChendiAdventures
                         clock.Restart();
                         gameMachine.Roll();
 
-                        time += 20;
+                        time += 30;
                         if (time > 500)
                         {
                             done = true;
-                            _chendi.sCoin.Play();
                             gameMachine.GrantReward(_chendi);
                         }
                     }
+
+                    if (_chendi.sPickup.Status != SoundStatus.Playing) _chendi.GrantAdditionalLifeDependingOnScore();
 
                     if (done && clock.ElapsedTime.AsSeconds() > 2) _screenChange.BlackOut();
 

@@ -16,7 +16,7 @@ using SFML.Window;
 
 DO ZAPROGRAMOWANIA:
 
-- nowe mechaniki /itemy / cos nowego ogolnie ????????
+- nowe mechaniki /itemy / cos nowego ogolnie ???????? { golem(monster)(immune to dmg?)  }
 - moze bossy??
 - generowanie poziomu***
 - zwiekszenie mozliwosci level editora ? (CRUD)*
@@ -25,7 +25,7 @@ DO ZAPROGRAMOWANIA:
 DO ZROBIENIA:
 - levele
 - scenka na poczatek i koniec
-
+- animacja teleportow
 
 */
 
@@ -44,14 +44,14 @@ namespace ChendiAdventures
             else _windowStyle = Styles.Resize;
 
             Console.Write("Select level:\n> ");
-            startingLevel = int.Parse(Console.ReadLine());
+            _startingLevel = int.Parse(Console.ReadLine());
 
             Console.WriteLine("Configuration complete.");
         }
 
-        private int startingLevel = 1;
+        private int _startingLevel = 1;
 
-        private bool isDevManip = false;
+        private bool _isDevManip = false;
         //
 
         private static MainGameWindow _instance;
@@ -73,7 +73,7 @@ namespace ChendiAdventures
 
         private readonly View _view;
         private readonly RenderWindow _window;
-        private readonly Random _randomizer;
+        public static readonly Random Randomizer = new Random();
         private Sprite _background;
         private ScreenChange _screenChange;
         private MainCharacter _chendi;
@@ -96,7 +96,7 @@ namespace ChendiAdventures
         private TextLine _quitQestion;
         private TextLine _settings;
         private TextLine _start;
-        public static Sound _victory = new Sound(new SoundBuffer(@"sfx/victory.wav"));
+        public static Sound Victory = new Sound(new SoundBuffer(@"sfx/victory.wav"));
         private int _windowHeight;
         private Styles _windowStyle = Styles.Fullscreen;
         private int _windowWidth;
@@ -118,12 +118,11 @@ namespace ChendiAdventures
             _isSettigs = false;
             _isQuit = false;
             _isPaused = false;
-            _randomizer = new Random();
         }
 
         private MainGameWindow(string title) : this()
         {
-            if (isDevManip) DevManip();
+            if (_isDevManip) DevManip();
 
             Title = title;
             _window = new RenderWindow(VideoMode.DesktopMode, Title, _windowStyle);
@@ -203,7 +202,7 @@ namespace ChendiAdventures
             _no = new TextLine("NO", 50, 460, 370, Color.Green);
             _no.SetOutlineThickness(5f);
 
-            _victory.Volume = 50;
+            Victory.Volume = 50;
             _gameEnd = new Sound(new SoundBuffer(@"sfx/gameover.wav"));
             _gameEnd.Volume = 50;
 
@@ -640,7 +639,7 @@ namespace ChendiAdventures
             if (_level.LevelNumber == 1) BegginingScene();
 
             //dev manip
-            if (isDevManip) this._level.LevelNumber = startingLevel;
+            if (_isDevManip) this._level.LevelNumber = _startingLevel;
 
             _level.LoadLevel($"lvl{_level.LevelNumber}");
 
@@ -920,6 +919,16 @@ namespace ChendiAdventures
 
             var rnd = new Random();
 
+            //tiles 
+            int t1 = 1;
+            int t2 = 16;
+            //pickups
+            int p1 = 17;
+            int p2 = 27;
+            //details
+            int d1 = 28;
+            int d2 = 34;
+
             while (_window.IsOpen)
             {
                 ResetWindow();
@@ -961,16 +970,16 @@ namespace ChendiAdventures
                     _chendi.sCoin.Play();
 
                     type++;
-                    if (type == (BlockType) 31) type = 0;
+                    if (type == (BlockType) d2+1) type = 0;
 
                     typeM = type;
 
-                    if (type >= 0 && type <= (BlockType) 13)
+                    if (type >= (BlockType)t1 && type <= (BlockType) t2)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture;
                         _level.GetObstacle(x, y).UseTexture();
                     }
-                    else if (type >= (BlockType) 14 && type <= (BlockType) 24)
+                    else if (type >= (BlockType) p1 && type <= (BlockType) p2)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture;
                         _level.GetObstacle(x, y).UseTexture();
@@ -991,16 +1000,16 @@ namespace ChendiAdventures
                     _chendi.sCoin.Play();
 
                     if (type > 0) type--;
-                    else type = (BlockType) 30;
+                    else type = (BlockType) d2;
 
                     typeM = type;
 
-                    if (type >= 0 && type <= (BlockType) 13)
+                    if (type >= (BlockType)t1 && type <= (BlockType) t2)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture;
                         _level.GetObstacle(x, y).UseTexture();
                     }
-                    else if (type >= (BlockType) 14 && type <= (BlockType) 24)
+                    else if (type >= (BlockType) p1 && type <= (BlockType) p2)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture;
                         _level.GetObstacle(x, y).UseTexture();
@@ -1021,12 +1030,12 @@ namespace ChendiAdventures
                     _chendi.sCoin.Play();
 
 
-                    if (typeM >= 0 && typeM <= (BlockType) 13)
+                    if (typeM >= (BlockType) t1 && typeM <= (BlockType) t2)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.TilesTexture;
                         _level.GetObstacle(x, y).UseTexture();
                     }
-                    else if (typeM >= (BlockType) 14 && typeM <= (BlockType) 24)
+                    else if (typeM >= (BlockType) p1 && typeM <= (BlockType) p2)
                     {
                         _level.GetObstacle(x, y).LoadedTexture = Entity.PickupsTexture;
                         _level.GetObstacle(x, y).UseTexture();
@@ -1364,7 +1373,7 @@ namespace ChendiAdventures
         {
             if (_chendi.GotExit) //level complete
             {
-                _victory.Play();
+                Victory.Play();
                 var time = Math.Round(_level.LevelTime.ElapsedTime.AsSeconds(), 2);
                 var bonus = _level.GetBonusForTime(time);
 
@@ -1393,7 +1402,7 @@ namespace ChendiAdventures
             timer.Restart();
             _chendi.sImmortality.Stop();
             bool isLottery;
-            if (_level.LevelNumber < 51 && _level.LevelNumber > 15 && _randomizer.Next(100)+1 > 75)
+            if (_level.LevelNumber < 51 && _level.LevelNumber > 15 && Randomizer.Next(100)+1 > 75)
             {
                 isLottery = true;
             }
@@ -1415,7 +1424,7 @@ namespace ChendiAdventures
 
                 if (!isLottery && timer.ElapsedTime.AsSeconds() > 5) _screenChange.BlackOut();
 
-                if (_victory.Status != SoundStatus.Playing) _chendi.GrantAdditionalLifeDependingOnScore();
+                if (Victory.Status != SoundStatus.Playing) _chendi.GrantAdditionalLifeDependingOnScore();
 
                 DrawGame(_chendi, false);
                 _window.Draw(_levelSummary);
@@ -1447,7 +1456,7 @@ namespace ChendiAdventures
             bool done = false;
             int time = 50;
 
-            if (_randomizer.Next(100) > 0)
+            if (Randomizer.Next(100) > 0)
             {
                 while (_window.IsOpen && _isGame)
                 {

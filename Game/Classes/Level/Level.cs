@@ -21,7 +21,7 @@ Mechanics introduction <level/> <new/>:
 10 :monsters (archers), arrow+, 3arrow+
 15 :silver key gates, mana, immortality
 20 :teleports, monsters (ghost)
-25 :golden key gates
+25 :golden key gates, petrifiers
 30 :monsters (wizard)
 Max 50 lvls;
 
@@ -124,6 +124,8 @@ namespace ChendiAdventures
         public Vector2f ExitPosition { get; private set; }
         public Vector2f tp1Position { get; private set; }
         public Vector2f tp2Position { get; private set; }
+        public Vector2f tp3Position { get; private set; }
+        public Vector2f tp4Position { get; private set; }
         public Clock LevelTime { get; set; }
         public int MonsterCount { get; set; }
         public string Content { get; set; }
@@ -139,19 +141,20 @@ namespace ChendiAdventures
         public void Draw(RenderTarget target, RenderStates states)
         {
             target.Draw(_background);
-            foreach (var i in Traps) target.Draw(i, states);
+            
             foreach (var i in LevelObstacles)
             {
                 target.Draw(i, states);
                 if (i.Type == BlockType.Hint) target.Draw(i.Hint, states);
             }
-
             //monsters
             foreach (var i in Monsters) target.Draw(i, states);
             foreach (var i in Archers) target.Draw(i, states);
             foreach (var i in Ghosts) target.Draw(i, states);
             foreach (var i in Wizards) target.Draw(i, states);
             //
+            foreach (var i in Traps) target.Draw(i, states);
+
             foreach (var i in Particles) target.Draw(i, states);
             foreach (var i in ScoreAdditionEffects) target.Draw(i, states);
 
@@ -252,6 +255,11 @@ namespace ChendiAdventures
                         LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Illusion));
                         break;
                     }
+                    case '|':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Petrifier));
+                        break;
+                        }
                     //traps
                     case 'H':
                     {
@@ -289,6 +297,18 @@ namespace ChendiAdventures
                     {
                         LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Teleport2));
                         tp2Position = new Vector2f(32 * X, 32 * Y);
+                        break;
+                    }
+                    case '3':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Teleport3));
+                        tp3Position = new Vector2f(32 * X, 32 * Y);
+                        break;
+                    }
+                    case '4':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Teleport4));
+                        tp4Position = new Vector2f(32 * X, 32 * Y);
                         break;
                     }
                     //drzwi i klucze
@@ -426,6 +446,11 @@ namespace ChendiAdventures
                         LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.LSpiderweb));
                         break;
                     }
+                    case '-':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Grass));
+                        break;
+                    }
                     //shop
                     case '+':
                     {
@@ -518,8 +543,12 @@ namespace ChendiAdventures
                     obstacle.Type == BlockType.Score5000 || obstacle.Type == BlockType.Arrow ||
                     obstacle.Type == BlockType.TripleArrow || obstacle.Type == BlockType.Score1000 ||
                     obstacle.Type == BlockType.Mana || obstacle.Type == BlockType.Torch ||
-                    obstacle.Type == BlockType.TripleMana || obstacle.Type == BlockType.SackOfGold)
+                    obstacle.Type == BlockType.TripleMana || obstacle.Type == BlockType.SackOfGold ||
+                    obstacle.Type == BlockType.Exit || obstacle.Type == BlockType.Teleport1 ||
+                    obstacle.Type == BlockType.Teleport2 || obstacle.Type == BlockType.Petrifier ||
+                    obstacle.Type == BlockType.Teleport3 || obstacle.Type == BlockType.Teleport4)
                     obstacle.BlockAnimation.Animate();
+
 
                 if (obstacle.Type == BlockType.Stone)
                 {
@@ -769,7 +798,19 @@ namespace ChendiAdventures
                 }
                 case 25:
                 {
-                    ShowHint(obstacle, "DIFFERENT KEYS\nDIFFERENT LOCKS...", -50, -22);
+                    switch (obstacle.HintNumber)
+                    {
+                        case 1:
+                        {
+                            ShowHint(obstacle, "DIFFERENT KEYS\nDIFFERENT LOCKS...", -50, -22);
+                            break;
+                        }
+                        case 2:
+                        {
+                            ShowHint(obstacle, "THOSE DEVICES GONNA TAKE\nEVERYTHING YOU HAVE...", -50, -22);
+                            break;
+                        }
+                    }
                     break;
                 }
                 case 30:
@@ -967,6 +1008,11 @@ namespace ChendiAdventures
                         level.Append("=");
                         break;
                     }
+                    case BlockType.Petrifier:
+                    {
+                        level.Append('|');
+                        break;
+                    }
                     case BlockType.Wood:
                     {
                         level.Append("R");
@@ -1018,6 +1064,16 @@ namespace ChendiAdventures
                         level.Append("2");
                         break;
                     }
+                    case BlockType.Teleport3:
+                    {
+                        level.Append("3");
+                        break;
+                    }
+                    case BlockType.Teleport4:
+                    {
+                        level.Append("4");
+                        break;
+                    }
                     case BlockType.Warning:
                     {
                         level.Append("!");
@@ -1036,6 +1092,11 @@ namespace ChendiAdventures
                     case BlockType.RSpiderweb:
                     {
                         level.Append("\\");
+                        break;
+                    }
+                    case BlockType.Grass:
+                    {
+                        level.Append('-');
                         break;
                     }
                     case BlockType.Torch:

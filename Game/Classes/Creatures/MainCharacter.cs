@@ -336,6 +336,18 @@ namespace ChendiAdventures
 
                             break;
                         }
+                        case BlockType.Petrifier:
+                        {
+                            if (Mana > 0 || ArrowAmount > 0 || Coins > 0)
+                            {
+                                Block.sPetrify.Play();
+                                level.AddParticleEffect(new ParticleEffect(obstacle.X, obstacle.Y, Color.Magenta));
+                                ArrowAmount = 0;
+                                Mana = 0;
+                                Coins = 0;
+                            }
+                            break;
+                        }
                         case BlockType.Coin:
                         {
                             AddToScore(level, 30, obstacle.X, obstacle.Y);
@@ -348,8 +360,7 @@ namespace ChendiAdventures
                         {
                             AddToScore(level, 300, obstacle.X, obstacle.Y);
                             sCoin.Play();
-                            var rnd = new Random();
-                            Coins += rnd.Next(30) + 10;
+                            Coins += MainGameWindow.Randomizer.Next(30) + 11;
                             obstacle.DeletePickup();
                             break;
                         }
@@ -485,6 +496,29 @@ namespace ChendiAdventures
 
                             break;
                         }
+                        //
+                        case BlockType.Teleport3:
+                        {
+                            if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1)
+                            {
+                                sTp.Play();
+                                SetPosition(level.tp4Position.X, level.tp4Position.Y);
+                                DefaultClock.Restart();
+                            }
+
+                            break;
+                        }
+                        case BlockType.Teleport4:
+                        {
+                            if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1)
+                            {
+                                sTp.Play();
+                                SetPosition(level.tp3Position.X, level.tp3Position.Y);
+                                DefaultClock.Restart();
+                            }
+
+                            break;
+                        }
                         //////////////////
                         case BlockType.Hint:
                         {
@@ -538,7 +572,6 @@ namespace ChendiAdventures
                 Sword.Reset();
                 DefaultClock.Restart();
                 IsDead = true;
-                SpeedX *= -1f;
                 SpeedY = -10f;
                 
                 //this.Lives--;

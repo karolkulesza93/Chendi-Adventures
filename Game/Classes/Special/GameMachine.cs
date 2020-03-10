@@ -109,7 +109,7 @@ namespace ChendiAdventures
                 }
                 case Reward.Jackpot:
                 {
-                    MainGameWindow._victory.Play();
+                    MainGameWindow.Victory.Play();
                     character.Coins += 10000;
                     _reward.EditText("JACKPOT! YOU HAVE WON 10000 COINS");
                         break;

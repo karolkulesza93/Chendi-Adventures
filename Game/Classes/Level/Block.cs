@@ -7,6 +7,7 @@ namespace ChendiAdventures
     public class Block : Entity
     {
         public static Sound sCrush = new Sound(new SoundBuffer(@"sfx/crush.wav"));
+        public static Sound sPetrify = new Sound(new SoundBuffer(@"sfx/petrifier.wav"));
         public Clock DefaultTimer;
 
         public Block(float x, float y, Texture texture, BlockType type = BlockType.None, int hintNumber = 0) : base(x,
@@ -52,6 +53,15 @@ namespace ChendiAdventures
                     SetTextureRectanlge(32, 32, 32, 32);
                     break;
                 }
+                case BlockType.Petrifier:
+                {
+                    BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(64, 64),
+                        new Vector2i(96, 64)
+                    );
+                    SetTextureRectanlge(64, 64, 32, 32);
+                    break;
+                    }
                 case BlockType.Coin:
                 {
                     BlockAnimation = new Animation(this, 0.05f,
@@ -191,8 +201,12 @@ namespace ChendiAdventures
                 }
                 case BlockType.Exit:
                 {
+                    BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(0, 64),
+                        new Vector2i(0, 96)
+                    );
                     SetTextureRectanlge(0, 64, 32, 32);
-                    break;
+                        break;
                 }
                 //doors
                 case BlockType.SilverDoor:
@@ -230,12 +244,54 @@ namespace ChendiAdventures
                 //teleports
                 case BlockType.Teleport1:
                 {
-                    SetTextureRectanlge(64, 64, 32, 32);
+                    BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(0, 128),
+                        new Vector2i(32, 128),
+                        new Vector2i(64, 128),
+                        new Vector2i(96, 128),
+                        new Vector2i(64, 128),
+                        new Vector2i(32, 128)
+                    );
+                        SetTextureRectanlge(0, 128, 32, 32);
                     break;
                 }
                 case BlockType.Teleport2:
                 {
-                    SetTextureRectanlge(96, 64, 32, 32);
+                    BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(0, 128),
+                        new Vector2i(32, 128),
+                        new Vector2i(64, 128),
+                        new Vector2i(96, 128),
+                        new Vector2i(64, 128),
+                        new Vector2i(32, 128)
+                    );
+                    SetTextureRectanlge(0, 128, 32, 32);
+                        break;
+                }
+                case BlockType.Teleport3:
+                {
+                    BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(0, 128),
+                        new Vector2i(32, 128),
+                        new Vector2i(64, 128),
+                        new Vector2i(96, 128),
+                        new Vector2i(64, 128),
+                        new Vector2i(32, 128)
+                    );
+                    SetTextureRectanlge(0, 128, 32, 32);
+                    break;
+                }
+                case BlockType.Teleport4:
+                {
+                    BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(0, 128),
+                        new Vector2i(32, 128),
+                        new Vector2i(64, 128),
+                        new Vector2i(96, 128),
+                        new Vector2i(64, 128),
+                        new Vector2i(32, 128)
+                    );
+                    SetTextureRectanlge(0, 128, 32, 32);
                     break;
                 }
                 ///////
@@ -277,6 +333,11 @@ namespace ChendiAdventures
                     SetTextureRectanlge(96, 32, 32, 16);
                     break;
                 }
+                case BlockType.Grass:
+                {
+                    SetTextureRectanlge(128, 32, 32, 32);
+                    break;
+                    }
                 case BlockType.None:
                 {
                     SetTextureRectanlge(32, 96, 32, 32);
@@ -300,7 +361,7 @@ namespace ChendiAdventures
 
             Type = BlockType.None;
             IsDestroyed = true;
-            SetTextureRectanlge(0, 96, 32, 32);
+            SetTextureRectanlge(32, 0, 32, 32);
         }
 
         public void DeletePickup()

@@ -17,7 +17,7 @@
         Teleport4 = 10,
         SilverDoor = 11,
         GoldDoor = 12,
-        Petrifier = 13,
+        Purifier = 13,
         Enterance = 14,
         Exit = 15,
         Shop = 16,

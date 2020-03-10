@@ -308,16 +308,39 @@ namespace ChendiAdventures
 
         public void ObstaclesCollision(Level level)
         {
-            foreach (var obstacle in level.LevelObstacles)
-                if (obstacle.GetBoundingBox().Intersects(GetBoundingBox()))
+            Block obstacle = null;
+            for (int i = 0; i < 4; i++)
+            {
+                switch (i)
                 {
-                    switch (obstacle.Type)
+                    case 0:
                     {
-                        case BlockType.Enterance:
+                        obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y);
+                        break;
+                    }
+                    case 1: 
+                    {
+                        obstacle = level.GetObstacle(Get32Position().X+1, Get32Position().Y);
+                        break;
+                    }
+                    case 2: 
+                    {
+                        obstacle = level.GetObstacle(Get32Position().X+1, Get32Position().Y+1);
+                        break;
+                    }
+                    case 3: 
+                    {
+                        obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y+1);
+                        break;
+                    }
+                }
+                switch (obstacle.Type)
+                {
+                    case BlockType.Enterance:
                         {
                             break;
                         }
-                        case BlockType.Exit:
+                    case BlockType.Exit:
                         {
                             if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks)
                             {
@@ -327,7 +350,7 @@ namespace ChendiAdventures
 
                             break;
                         }
-                        case BlockType.Shop:
+                    case BlockType.Shop:
                         {
                             if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks)
                             {
@@ -336,7 +359,7 @@ namespace ChendiAdventures
 
                             break;
                         }
-                        case BlockType.Petrifier:
+                    case BlockType.Purifier:
                         {
                             if (Mana > 0 || ArrowAmount > 0 || Coins > 0)
                             {
@@ -348,7 +371,7 @@ namespace ChendiAdventures
                             }
                             break;
                         }
-                        case BlockType.Coin:
+                    case BlockType.Coin:
                         {
                             AddToScore(level, 30, obstacle.X, obstacle.Y);
                             sCoin.Play();
@@ -356,7 +379,7 @@ namespace ChendiAdventures
                             obstacle.DeletePickup();
                             break;
                         }
-                        case BlockType.SackOfGold:
+                    case BlockType.SackOfGold:
                         {
                             AddToScore(level, 300, obstacle.X, obstacle.Y);
                             sCoin.Play();
@@ -364,7 +387,7 @@ namespace ChendiAdventures
                             obstacle.DeletePickup();
                             break;
                         }
-                        case BlockType.Life:
+                    case BlockType.Life:
                         {
                             AddToScore(level, 500, obstacle.X, obstacle.Y);
                             Lives++;
@@ -372,7 +395,7 @@ namespace ChendiAdventures
                             obstacle.DeletePickup();
                             break;
                         }
-                        case BlockType.Mana:
+                    case BlockType.Mana:
                         {
                             AddToScore(level, 300, obstacle.X, obstacle.Y);
                             Mana++;
@@ -380,45 +403,45 @@ namespace ChendiAdventures
                             obstacle.DeletePickup();
                             break;
                         }
-                        case BlockType.TripleMana:
+                    case BlockType.TripleMana:
                         {
                             AddToScore(level, 900, obstacle.X, obstacle.Y);
                             Mana += 3;
                             sPickup.Play();
-                                obstacle.DeletePickup();
+                            obstacle.DeletePickup();
                             break;
                         }
-                        case BlockType.Score1000:
+                    case BlockType.Score1000:
                         {
                             AddToScore(level, 1000, obstacle.X, obstacle.Y);
                             sPickup.Play();
-                                obstacle.DeletePickup();
+                            obstacle.DeletePickup();
                             break;
                         }
-                        case BlockType.Score5000:
+                    case BlockType.Score5000:
                         {
                             AddToScore(level, 5000, obstacle.X, obstacle.Y);
                             sPickup.Play();
-                                obstacle.DeletePickup();
+                            obstacle.DeletePickup();
                             break;
                         }
-                        case BlockType.Arrow:
+                    case BlockType.Arrow:
                         {
                             AddToScore(level, 100, obstacle.X, obstacle.Y);
                             ArrowAmount++;
                             sPickup.Play();
-                                obstacle.DeletePickup();
+                            obstacle.DeletePickup();
                             break;
                         }
-                        case BlockType.TripleArrow:
+                    case BlockType.TripleArrow:
                         {
                             AddToScore(level, 300, obstacle.X, obstacle.Y);
                             ArrowAmount += 3;
                             sPickup.Play();
-                                obstacle.DeletePickup();
+                            obstacle.DeletePickup();
                             break;
                         }
-                        case BlockType.SilverKey:
+                    case BlockType.SilverKey:
                         {
                             HasSilverKey = true;
                             level.UnableToPassl.Remove(BlockType.SilverDoor);
@@ -427,7 +450,7 @@ namespace ChendiAdventures
                             obstacle.DeletePickup();
                             break;
                         }
-                        case BlockType.GoldenKey:
+                    case BlockType.GoldenKey:
                         {
                             HasGoldenKey = true;
                             level.UnableToPassl.Remove(BlockType.GoldDoor);
@@ -436,7 +459,7 @@ namespace ChendiAdventures
                             obstacle.DeletePickup();
                             break;
                         }
-                        case BlockType.SilverDoor:
+                    case BlockType.SilverDoor:
                         {
                             if (HasSilverKey)
                             {
@@ -446,7 +469,7 @@ namespace ChendiAdventures
 
                             break;
                         }
-                        case BlockType.GoldDoor:
+                    case BlockType.GoldDoor:
                         {
                             if (HasGoldenKey)
                             {
@@ -456,12 +479,12 @@ namespace ChendiAdventures
 
                             break;
                         }
-                        case BlockType.Spike:
+                    case BlockType.Spike:
                         {
                             Die(level);
                             break;
                         }
-                        case BlockType.Trampoline:
+                    case BlockType.Trampoline:
                         {
                             if (SpeedY > 2 && !IsDead)
                             {
@@ -473,8 +496,8 @@ namespace ChendiAdventures
 
                             break;
                         }
-                        //teleports/////////////////
-                        case BlockType.Teleport1:
+                    //teleports/////////////////
+                    case BlockType.Teleport1:
                         {
                             if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1)
                             {
@@ -485,7 +508,7 @@ namespace ChendiAdventures
 
                             break;
                         }
-                        case BlockType.Teleport2:
+                    case BlockType.Teleport2:
                         {
                             if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1)
                             {
@@ -496,8 +519,8 @@ namespace ChendiAdventures
 
                             break;
                         }
-                        //
-                        case BlockType.Teleport3:
+                    //
+                    case BlockType.Teleport3:
                         {
                             if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1)
                             {
@@ -508,7 +531,7 @@ namespace ChendiAdventures
 
                             break;
                         }
-                        case BlockType.Teleport4:
+                    case BlockType.Teleport4:
                         {
                             if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1)
                             {
@@ -519,18 +542,14 @@ namespace ChendiAdventures
 
                             break;
                         }
-                        //////////////////
-                        case BlockType.Hint:
+                    //////////////////
+                    case BlockType.Hint:
                         {
                             level.SetHints(obstacle, this);
                             break;
                         }
-                    }
                 }
-                else
-                {
-                    if (obstacle.Type == BlockType.Hint) level.HideHint(obstacle);
-                }
+            }
 
             foreach (var trap in level.Traps)
                 if (GetBoundingBox().Intersects(trap.GetBoundingBox()))
@@ -539,7 +558,6 @@ namespace ChendiAdventures
                         trap.IsBlowing) Die(level);
                     else if (trap.Type == TrapType.Crusher || trap.Type == TrapType.Spikes) Die(level);
                 }
-
             foreach (var monster in level.Monsters)
                 if (GetBoundingBox().Intersects(monster.GetBoundingBox()))
                     Die(level);
@@ -552,7 +570,6 @@ namespace ChendiAdventures
                     archer.Arrow.DeleteArrow();
                 }
             }
-
             foreach (var ghost in level.Ghosts)
                 if (GetBoundingBox().Intersects(ghost.GetBoundingBox()))
                     Die(level);

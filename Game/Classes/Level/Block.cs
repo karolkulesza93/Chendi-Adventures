@@ -53,7 +53,7 @@ namespace ChendiAdventures
                     SetTextureRectanlge(32, 32, 32, 32);
                     break;
                 }
-                case BlockType.Petrifier:
+                case BlockType.Purifier:
                 {
                     BlockAnimation = new Animation(this, 0.05f,
                         new Vector2i(64, 64),

@@ -32,6 +32,7 @@ v :enterance
 ^ :exit
 + :shop
 o :coin
+| :putifier
 $ :sack of gold
 # :spikes (kills immidietly)
 R :wood (destructible)
@@ -47,6 +48,8 @@ f :ghost (killable only by energized arrow)
 % :wizard (shoots projectiles that follow You)
 1 :teleport 1 (teleports to teleport2)
 2 :teleport 2 (teleports to teleport1)
+3 :teleport 3 (teleports to teleport4)
+4 :teleport 4 (teleports to teleport3)
 s :silver key (unlocks silver lock)
 S :silver lock (unpassable)
 g :golden key (unlocks golden lock)
@@ -141,7 +144,8 @@ namespace ChendiAdventures
         public void Draw(RenderTarget target, RenderStates states)
         {
             target.Draw(_background);
-            
+            foreach (var i in Traps) target.Draw(i, states);
+
             foreach (var i in LevelObstacles)
             {
                 target.Draw(i, states);
@@ -153,7 +157,6 @@ namespace ChendiAdventures
             foreach (var i in Ghosts) target.Draw(i, states);
             foreach (var i in Wizards) target.Draw(i, states);
             //
-            foreach (var i in Traps) target.Draw(i, states);
 
             foreach (var i in Particles) target.Draw(i, states);
             foreach (var i in ScoreAdditionEffects) target.Draw(i, states);
@@ -257,9 +260,9 @@ namespace ChendiAdventures
                     }
                     case '|':
                     {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Petrifier));
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Purifier));
                         break;
-                        }
+                    }
                     //traps
                     case 'H':
                     {
@@ -545,10 +548,11 @@ namespace ChendiAdventures
                     obstacle.Type == BlockType.Mana || obstacle.Type == BlockType.Torch ||
                     obstacle.Type == BlockType.TripleMana || obstacle.Type == BlockType.SackOfGold ||
                     obstacle.Type == BlockType.Exit || obstacle.Type == BlockType.Teleport1 ||
-                    obstacle.Type == BlockType.Teleport2 || obstacle.Type == BlockType.Petrifier ||
+                    obstacle.Type == BlockType.Teleport2 || obstacle.Type == BlockType.Purifier ||
                     obstacle.Type == BlockType.Teleport3 || obstacle.Type == BlockType.Teleport4)
                     obstacle.BlockAnimation.Animate();
 
+                if (obstacle.Type == BlockType.Hint && !_mainCharacter.GetBoundingBox().Intersects(obstacle.GetBoundingBox())) HideHint(obstacle);
 
                 if (obstacle.Type == BlockType.Stone)
                 {
@@ -1008,7 +1012,7 @@ namespace ChendiAdventures
                         level.Append("=");
                         break;
                     }
-                    case BlockType.Petrifier:
+                    case BlockType.Purifier:
                     {
                         level.Append('|');
                         break;

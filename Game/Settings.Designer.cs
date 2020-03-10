@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ChendiAdventures {
+namespace Game {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

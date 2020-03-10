@@ -64,5 +64,10 @@ namespace ChendiAdventures
         {
             _text.OutlineThickness = value;
         }
+
+        public void SetOutlineColor(Color color)
+        {
+            _text.OutlineColor = color;
+        }
     }
 }

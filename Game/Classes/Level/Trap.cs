@@ -274,7 +274,7 @@ namespace ChendiAdventures
                 }
                 case TrapType.Spikes:
                 {
-                    return new FloatRect(X + 2, Top + 17, 28, 1);
+                    return new FloatRect(X + 4, Top + 17, 24, 1);
                 }
                 default: return GetBoundingBox();
             }
@@ -300,9 +300,9 @@ namespace ChendiAdventures
                 }
                 case TrapType.Crusher:
                 {
-                    target.Draw(Holder, states);
                     target.Draw(Line1, states);
                     target.Draw(Line2, states);
+                    target.Draw(Holder, states);
                     base.Draw(target, states);
                     break;
                 }

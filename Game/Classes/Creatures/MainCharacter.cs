@@ -1,4 +1,5 @@
-﻿using System.Net.Configuration;
+﻿using System;
+using System.Net.Configuration;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
@@ -67,7 +68,6 @@ namespace ChendiAdventures
             sLife = new Sound(new SoundBuffer(@"sfx/life.wav"));
             sLife.Volume = 50;
             sPickup = new Sound(new SoundBuffer(@"sfx/pickup.wav"));
-            sPickup.Volume = 40;
             sImmortality = new Sound(new SoundBuffer(@"sfx/immortality.wav"));
             sImmortality.Volume = 30;
             sImmortality.Loop = true;
@@ -327,6 +327,15 @@ namespace ChendiAdventures
 
                             break;
                         }
+                        case BlockType.Shop:
+                        {
+                            if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks)
+                            {
+                                level.isShopOpened = true;
+                            }
+
+                            break;
+                        }
                         case BlockType.Coin:
                         {
                             AddToScore(level, 30, obstacle.X, obstacle.Y);
@@ -339,7 +348,8 @@ namespace ChendiAdventures
                         {
                             AddToScore(level, 300, obstacle.X, obstacle.Y);
                             sCoin.Play();
-                            Coins += 10;
+                            var rnd = new Random();
+                            Coins += rnd.Next(30) + 10;
                             obstacle.DeletePickup();
                             break;
                         }
@@ -530,7 +540,8 @@ namespace ChendiAdventures
                 IsDead = true;
                 SpeedX *= -1f;
                 SpeedY = -10f;
-                this.Lives--;
+                
+                //this.Lives--;
 
                 HasSilverKey = false;
                 HasGoldenKey = false;
@@ -590,6 +601,7 @@ namespace ChendiAdventures
             Mana = 0;
             Score = 0;
             LivesGranted = 0;
+            Coins = 0;
 
             _immortalityAnimationCounter = 0;
             _immortalityAnimationFlag = false;

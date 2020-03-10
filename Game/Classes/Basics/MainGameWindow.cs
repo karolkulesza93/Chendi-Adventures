@@ -16,8 +16,8 @@ using SFML.Window;
 
 DO ZAPROGRAMOWANIA:
 
+- nowe mechaniki /itemy / cos nowego ogolnie ????????
 - moze bossy??
-- sklep
 - generowanie poziomu***
 - zwiekszenie mozliwosci level editora ? (CRUD)*
 - jak sie uda to shadery/swiatlo ogarnac aby ladnie wygladalo**
@@ -33,6 +33,27 @@ namespace ChendiAdventures
 {
     public sealed class MainGameWindow
     {
+        //dev manip
+        private void DevManip()
+        {
+            string answer;
+
+            Console.Write("Play on fullscreen?\n> ");
+            answer = Console.ReadLine();
+            if (answer == "Y" || answer == "y") _windowStyle = Styles.Fullscreen;
+            else _windowStyle = Styles.Resize;
+
+            Console.Write("Select level:\n> ");
+            startingLevel = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Configuration complete.");
+        }
+
+        private int startingLevel = 1;
+
+        private bool isDevManip = false;
+        //
+
         private static MainGameWindow _instance;
         private static readonly object Padlock = new object();
         public static MainGameWindow Instance
@@ -102,6 +123,8 @@ namespace ChendiAdventures
 
         private MainGameWindow(string title) : this()
         {
+            if (isDevManip) DevManip();
+
             Title = title;
             _window = new RenderWindow(VideoMode.DesktopMode, Title, _windowStyle);
             _windowWidth = (int)_window.Size.X;
@@ -130,7 +153,10 @@ namespace ChendiAdventures
 
         public void GameStart()
         {
+
             _loading = new TextLine("LOADING...", 50, 1390, 990, new Color(150,150,150));
+            _loading.SetOutlineThickness(2);
+            _loading.SetOutlineColor(new Color(50,50,50));
             var tmp = new Texture("img/tiles.png", new IntRect(new Vector2i(32, 0), new Vector2i(32, 32)));
             tmp.Repeated = true;
 
@@ -613,9 +639,8 @@ namespace ChendiAdventures
 
             if (_level.LevelNumber == 1) BegginingScene();
 
-            // SET LEVEL FOR TESTING
-            //this._level.LevelNumber = 17;
-            //
+            //dev manip
+            if (isDevManip) this._level.LevelNumber = startingLevel;
 
             _level.LoadLevel($"lvl{_level.LevelNumber}");
 
@@ -624,6 +649,7 @@ namespace ChendiAdventures
             while (_window.IsOpen && _isGame)
             {
                 if (CheckForGameBreak()) break;
+                if (_level.isShopOpened) ShopLoop();
 
                 ResetWindow();
 
@@ -1354,6 +1380,8 @@ namespace ChendiAdventures
                     time, bonus, _chendi.Score - _level.StartScore - bonus, _chendi.Lives, _chendi.Score));
                 _levelSummary.SetOutlineThickness(2);
 
+                _chendiUi.UpdateUI();
+
                 //summary to the center
                 _levelSummary.X = _view.Center.X - 1000;
                 _levelSummary.Y = _view.Center.Y - 100;
@@ -1365,7 +1393,11 @@ namespace ChendiAdventures
             timer.Restart();
             _chendi.sImmortality.Stop();
             bool isLottery;
-            if (_level.LevelNumber < 51 && _level.LevelNumber > 0 && _randomizer.Next(101) > -1)
+            if (_level.LevelNumber < 51 && _level.LevelNumber > 15 && _randomizer.Next(100)+1 > 75)
+            {
+                isLottery = true;
+            }
+            else if (_level.LevelNumber == 15)
             {
                 isLottery = true;
             }
@@ -1443,6 +1475,7 @@ namespace ChendiAdventures
                         {
                             done = true;
                             gameMachine.GrantReward(_chendi);
+                            _chendiUi.UpdateUI();
                         }
                     }
 
@@ -1465,6 +1498,72 @@ namespace ChendiAdventures
                     _window.Draw(_screenChange);
                     _window.Display();
                 }
+            }
+        }
+
+        private void ShopLoop()
+        {
+            var merchant = new Merchant(_view.Center.X - _view.Size.X / 2 - 256, _view.Center.Y - 100, Entity.ShopTexture, _chendi);
+            merchant.SetTextureRectanlge(0,0, 256,128);
+
+
+            var choice = 1;
+            var delay = 0;
+            var flag = false;
+
+            while (_window.IsOpen && _isGame)
+            {
+                ResetWindow();
+
+                if (flag) delay++;
+                if (delay > 10)
+                {
+                    delay = 0;
+                    flag = false;
+                }
+
+                
+
+                if (merchant.X < _view.Center.X - 128) merchant.X += 32;
+                if (merchant.X > _view.Center.X + _view.Size.X / 2) break;
+
+                if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Up))
+                {
+                    _chendi.sAtk.Play();
+                    flag = true;
+                    choice--;
+                }
+                else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Down))
+                {
+                    _chendi.sAtk.Play();
+                    flag = true;
+                    choice++;
+                }
+
+                if (choice == 0) choice = 4;
+                if (choice == 5) choice = 1;
+
+                if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                {
+                    merchant.SellWares(choice);
+                    flag = true;
+                }
+
+
+
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+                {
+                    _level.isShopOpened = false;
+                }
+                if (!_level.isShopOpened) merchant.X += 32;
+
+                _level.LevelUpdate();
+                _chendiUi.UpdateUI();
+                merchant.ShopUpdate(choice);
+
+                DrawGame(_chendi, false);
+                _window.Draw(merchant);
+                _window.Display();
             }
         }
 

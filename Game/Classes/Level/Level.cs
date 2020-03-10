@@ -5,6 +5,61 @@ using System.Text;
 using SFML.Graphics;
 using SFML.System;
 
+/*
+
+Level creating rules:
+- min width:	30 tiles (1920px)
+- min height:	17 tiles (1088px)
+- has to contain exactly 1 enterance and 1 exit gate
+- jump height: 4
+- trampoline jump height: 9
+- or just use level editor XD
+
+Mechanics introduction <level/> <new/>:
+1  :coins, score, life pickup and basic tiles
+5  :monsters (knight), fake bricks
+10 :monsters (archers), arrow+, 3arrow+
+15 :silver key gates, mana, immortality
+20 :teleports, monsters (ghost)
+25 :golden key gates
+30 :monsters (wizard)
+Max 50 lvls;
+
+Tiles:
+. :empty space / air (can be white space)
+W :wall / brick (unpassable)
+v :enterance
+^ :exit
++ :shop
+o :coin
+$ :sack of gold
+# :spikes (kills immidietly)
+R :wood (destructible)
+X :stones (once stomped, disappears after couple of seconds)
+L :life
+0 :+1000
+5 :+5000
+m :+1 mana potion
+@ :knight (monster moving back and forth)
+> :archer shooting right
+< :archer shooting left
+f :ghost (killable only by energized arrow)
+% :wizard (shoots projectiles that follow You)
+1 :teleport 1 (teleports to teleport2)
+2 :teleport 2 (teleports to teleport1)
+s :silver key (unlocks silver lock)
+S :silver lock (unpassable)
+g :golden key (unlocks golden lock)
+G :golden lock (unpassable)
+a :arrow +1
+A :arrow +3
+H :crusher trap
+_ :spikes trap
+] :blowtorch blowing right
+[ :blowtorch blowing left
+
+*/
+
 namespace ChendiAdventures
 {
     public class Level : Drawable
@@ -23,23 +78,23 @@ namespace ChendiAdventures
         private readonly View _view;
         private readonly Texture _texBackground;
         private TextLine _levelDescription;
+        private Random rnd;
 
         public List<BlockType> UnableToPassl;
+        public bool isShopOpened;
 
         public Level(MainCharacter character, View view)
         {
             _mainCharacter = character;
             _view = view; 
+            rnd = new Random();
 
             ScoreAdditionEffects = new List<ScoreAdditionEffect>();
             Particles = new List<ParticleEffect>();
 
-            //this.Creatures = new List<Creature>();
-            //this.Projectiles = new List<Projectile>();
             LevelObstacles = new List<Block>();
             Traps = new List<Trap>();
 
-            //do wyjebania
             Monsters = new List<Monster>();
             Archers = new List<Archer>();
             Ghosts = new List<Ghost>();
@@ -62,8 +117,9 @@ namespace ChendiAdventures
             StartArrows = 0;
             StartMana = 0;
             StartCoins = 0;
-        }
 
+            isShopOpened = false;
+        }
         public Vector2f EnterancePosition { get; private set; }
         public Vector2f ExitPosition { get; private set; }
         public Vector2f tp1Position { get; private set; }
@@ -123,6 +179,8 @@ namespace ChendiAdventures
                 {BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor};
 
             //Console.WriteLine("Entity lists cleared");
+
+            isShopOpened = false;
 
             LevelHeight = 0;
             LevelLenght = 0;
@@ -371,7 +429,20 @@ namespace ChendiAdventures
                     //shop
                     case '+':
                     {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
+                        int chance = rnd.Next(3) + 1;
+
+                        if (LevelNumber == 20)
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
+                        }
+                        else if (chance == 2)
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
+                        }
+                        else
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                        }
                         break;
                     }
                     //enterance
@@ -392,7 +463,6 @@ namespace ChendiAdventures
                     {
                         {
                             LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                            ;
                             break;
                         }
                     }
@@ -477,7 +547,6 @@ namespace ChendiAdventures
             }
 
             //details
-
             //text slide effect
             if (isLevelEditor == false)
             {
@@ -492,7 +561,6 @@ namespace ChendiAdventures
                 if (LevelTime.ElapsedTime.AsSeconds() > 5)
                 { _levelDescription.MoveText(-100, -100); }
             } 
-
 
             try
             {
@@ -530,6 +598,7 @@ namespace ChendiAdventures
         public int GetBonusForTime(double time) // do zmiany!!!!!
         {
             var value = 0f;
+            var points = (int) ((LevelWidth * LevelHeight + MonsterCount * LevelNumber) / time) * LevelNumber * 10;
 
             switch (MainGameWindow.GameDifficulty)
             {
@@ -550,8 +619,6 @@ namespace ChendiAdventures
                 }
             }
 
-            var points = (int) ((LevelWidth * LevelHeight + MonsterCount * LevelNumber) / time) * LevelNumber * 10;
-            points -= points % 10;
             points = (int)(points * value);
             return points < 0 ? 0 : points - points % 10;
         }
@@ -571,7 +638,7 @@ namespace ChendiAdventures
                         }
                         case 2:
                         {
-                            ShowHint(obstacle, "HERE'S YOUR GOAL", -40, -10);
+                            ShowHint(obstacle, "ALMOST THERE...", -40, -10);
                             break;
                         }
                         case 3:

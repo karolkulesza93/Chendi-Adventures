@@ -5,18 +5,18 @@ namespace ChendiAdventures
 {
     public sealed class Wizard : Creature
     {
-        private readonly Clock _defaultClock;
+        public readonly Clock DefaultClock;
         private int _shootInterval;
         public float XMaxPos;
         public float XMinPos;
 
         public Wizard(float x, float y, Texture texture) : base(x, y, texture)
         {
-            _defaultClock = new Clock();
+            DefaultClock = new Clock();
             EnergyBall = new EnergyBall(-100, -100, WizardTexture);
 
-            XMinPos = x - 100;
-            XMaxPos = x + 100;
+            XMinPos = x - 96;
+            XMaxPos = x + 128;
 
             SpeedX = 1f;
             SpeedY = 0f;
@@ -53,10 +53,10 @@ namespace ChendiAdventures
                 X += SpeedX;
                 if (Left < XMinPos || Right > XMaxPos) SpeedX *= -1;
 
-                if (_defaultClock.ElapsedTime.AsSeconds() > _shootInterval)
+                if (DefaultClock.ElapsedTime.AsSeconds() > _shootInterval)
                 {
                     EnergyBall.Attack(X + 8, Y + 8);
-                    _defaultClock.Restart();
+                    DefaultClock.Restart();
                 }
             }
 
@@ -71,7 +71,7 @@ namespace ChendiAdventures
             level.Particles.Add(new ParticleEffect(X, Y, Color.Red));
             SetPosition(400, -100);
             IsDead = true;
-            _defaultClock.Dispose();
+            DefaultClock.Dispose();
         }
 
         public override void Draw(RenderTarget target, RenderStates states)

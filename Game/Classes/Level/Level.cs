@@ -182,7 +182,7 @@ namespace ChendiAdventures
             Wizards.Clear();
 
             UnableToPassl = new List<BlockType>
-                {BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor};
+                {BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor, BlockType.TransparentBrick};
 
             //Console.WriteLine("Entity lists cleared");
 
@@ -261,6 +261,11 @@ namespace ChendiAdventures
                     case '|':
                     {
                         LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Purifier));
+                        break;
+                    }
+                    case 'w':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.TransparentBrick));
                         break;
                     }
                     //traps
@@ -521,6 +526,11 @@ namespace ChendiAdventures
 
             //Console.WriteLine("Level {0} loaded succesfully ({1}:{2}  MC value: {3})", level, this.LevelWidth, this.LevelHeight, this.MonsterCount);
             //File.AppendAllText("log.txt", string.Format("Level {0} loaded succesfully ({1}:{2}  MC value: {3})\n", level, this.LevelWidth, this.LevelHeight, this.MonsterCount));
+
+            foreach (var archer in Archers) { archer.DefaultClock.Restart(); }
+            foreach (var wizard in Wizards) { wizard.DefaultClock.Restart(); }
+            foreach (var trap in Traps) { trap.DefaultTimer.Restart(); }
+            
             LevelTime.Restart();
 
             //Console.WriteLine("Done");
@@ -945,6 +955,11 @@ namespace ChendiAdventures
                     case BlockType.Brick:
                     {
                         level.Append("W");
+                        break;
+                    }
+                    case BlockType.TransparentBrick:
+                    {
+                        level.Append('w');
                         break;
                     }
                     case BlockType.Spike:

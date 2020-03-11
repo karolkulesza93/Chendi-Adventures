@@ -17,7 +17,7 @@ namespace ChendiAdventures
         {
             _character = character;
             LastMove = Movement.Right;
-            _frameTime = 0.01f;
+            _frameTime = 0.05f;
 
             _animLeft = new Animation(this, _frameTime,
                 new Vector2i(0, 30),

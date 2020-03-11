@@ -90,14 +90,14 @@ namespace ChendiAdventures
                 case Difficulty.Medium:
                 {
                     Speed = 1f;
-                    ProcsDistance = 400f;
+                    ProcsDistance = 300f;
                     Points = 1000;
                     break;
                 }
                 case Difficulty.Hard:
                 {
                     Speed = 1.5f;
-                    ProcsDistance = 600f;
+                    ProcsDistance = 400f;
                     Points = 1300;
                     break;
                 }

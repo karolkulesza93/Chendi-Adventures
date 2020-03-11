@@ -10,8 +10,8 @@ namespace ChendiAdventures
 
         public Monster(float x, float y, Texture texture) : base(x, y, texture)
         {
-            XMinPos = x - 100;
-            XMaxPos = x + 100;
+            XMinPos = x - 96;
+            XMaxPos = x + 128;
 
             SpeedX = 2f;
             SpeedY = 0f;

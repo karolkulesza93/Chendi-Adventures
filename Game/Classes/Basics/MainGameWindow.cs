@@ -14,18 +14,17 @@ using SFML.Window;
  Promotor: dr Piotr Jastrzębski
 
 
-DO ZAPROGRAMOWANIA:
+PROPOZYCJE DO ZROBIENIA:
 
 - nowe mechaniki /itemy / cos nowego ogolnie ???????? { golem(monster)(immune to dmg?)  }
-- moze bossy??
+- moze bossy?? a jak bossy to jakies ability za pokonanie bossa np double jump / dash / wall jump
 - generowanie poziomu***
-- zwiekszenie mozliwosci level editora ? (CRUD)*
 - jak sie uda to shadery/swiatlo ogarnac aby ladnie wygladalo**
 
 DO ZROBIENIA:
 - levele
 - scenka na poczatek i koniec
-- animacja teleportow
+- ANIMACJE ATAKU < tego na serio brak tego
 
 */
 
@@ -530,7 +529,11 @@ namespace ChendiAdventures
                 //secret keys to enter level editor
                 if (Keyboard.IsKeyPressed(Keyboard.Key.LShift) && Keyboard.IsKeyPressed(Keyboard.Key.LAlt) &&
                     Keyboard.IsKeyPressed(Keyboard.Key.L))
+                {
                     LevelEditor();
+                    _chendi.sCoin.Play();
+                    flag = true;
+                }
                 //
 
                 _start.ChangeColor(Color.White);
@@ -572,6 +575,8 @@ namespace ChendiAdventures
                             if (_level.LevelNumber != 0)
                             {
                                 _level.LevelNumber = 1;
+                                //dev manip
+                                if (_isDevManip) this._level.LevelNumber = _startingLevel;
                             }
                             _chendi.ResetMainCharacter();
                             _menuTheme.Stop();
@@ -631,6 +636,8 @@ namespace ChendiAdventures
 
         private void GameLoop()
         {
+            DrawLoadingScreen();
+
             _levelSummary = new TextLine("", 25, -1000, -1000, Color.White);
 
             SetView(new Vector2f(_windowWidth/2, _windowHeight/2), _view.Center);
@@ -638,8 +645,7 @@ namespace ChendiAdventures
 
             if (_level.LevelNumber == 1) BegginingScene();
 
-            //dev manip
-            if (_isDevManip) this._level.LevelNumber = _startingLevel;
+            
 
             _level.LoadLevel($"lvl{_level.LevelNumber}");
 
@@ -879,7 +885,11 @@ namespace ChendiAdventures
 
         private void LevelEditor()
         {
+            DrawLoadingScreen();
             _menuTheme.Stop();
+
+            if (!File.Exists(@"levels/edit.dat")) return;
+
             _level.LoadLevel("edit");
 
             var choice = new Sprite(new Texture(@"img/edit.png"));

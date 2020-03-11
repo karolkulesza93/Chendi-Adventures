@@ -7,7 +7,7 @@ namespace ChendiAdventures
     public class Block : Entity
     {
         public static Sound sCrush = new Sound(new SoundBuffer(@"sfx/crush.wav"));
-        public static Sound sPetrify = new Sound(new SoundBuffer(@"sfx/petrifier.wav"));
+        public static Sound sPurify = new Sound(new SoundBuffer(@"sfx/petrifier.wav"));
         public Clock DefaultTimer;
 
         public Block(float x, float y, Texture texture, BlockType type = BlockType.None, int hintNumber = 0) : base(x,
@@ -36,6 +36,11 @@ namespace ChendiAdventures
                 case BlockType.Brick:
                 {
                     SetTextureRectanlge(0, 0, 32, 32);
+                    break;
+                }
+                case BlockType.TransparentBrick:
+                {
+                    SetTextureRectanlge(0, 160,32,32);
                     break;
                 }
                 case BlockType.Spike:

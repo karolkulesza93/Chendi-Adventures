@@ -7,7 +7,7 @@ namespace ChendiAdventures
     public abstract class Creature : Entity
     {
         protected static Sound sJump;
-        public static Sound sKill = new Sound(new SoundBuffer(@"sfx/kill.wav"));
+        public static Sound sKill = new Sound(new SoundBuffer(@"sfx/kill.wav")) { Volume = 50 };
         protected Animation _animLeft;
         protected Animation _animRight;
         public int Points { get; set; }
@@ -128,9 +128,15 @@ namespace ChendiAdventures
                     level.UnpassableContains((obstacle =
                         level.GetObstacle(Get32NextPosition().X + 0.85f, Get32NextPosition().Y + 0.99f)).Type))
                 {
+                    if (obstacle.Type == BlockType.Stone) obstacle.Stomp();
+                    if ((obstacle =
+                            level.GetObstacle(Get32NextPosition().X + 0.85f, Get32NextPosition().Y + 0.99f)).Type ==
+                        BlockType.Stone)
+                    {
+                        obstacle.Stomp();
+                    }
                     NewY = (int) Get32NextPosition().Y;
                     IsStandingOnBlocks = true;
-                    if (obstacle.Type == BlockType.Stone) obstacle.Stomp();
                     SpeedY = 0;
                 }
             }

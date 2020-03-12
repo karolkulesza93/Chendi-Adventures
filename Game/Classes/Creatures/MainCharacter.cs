@@ -173,7 +173,7 @@ namespace ChendiAdventures
                     DefaultClock.Restart();
                 }
                 //arrow
-                if (Keyboard.IsKeyPressed(KeyARROW) && DefaultClock.ElapsedTime.AsMilliseconds() > 1000 &&
+                if (Keyboard.IsKeyPressed(KeyARROW) && DefaultClock.ElapsedTime.AsMilliseconds() > 700 &&
                     ArrowAmount > 0 && IsVulnerable && Arrow.X < 0 && IsStandingOnBlocks && !IsShooting && !IsAttacking)
                 {
                     IsShooting = true;
@@ -185,7 +185,7 @@ namespace ChendiAdventures
                     Arrow.SetPosition(X, Y + 12);
                 }
                 //energized arrow
-                if (Keyboard.IsKeyPressed(KeyTHUNDER) && DefaultClock.ElapsedTime.AsMilliseconds() > 1500 &&
+                if (Keyboard.IsKeyPressed(KeyTHUNDER) && DefaultClock.ElapsedTime.AsMilliseconds() > 1200 &&
                     ArrowAmount > 0 && Mana > 0 && IsVulnerable && IsStandingOnBlocks && !IsShooting && !IsAttacking)
                 {
                     IsShooting = true;
@@ -259,16 +259,19 @@ namespace ChendiAdventures
                     MoveLeft();
                     Sword.LastMove = Movement.Left;
                     Arrow.LastMove = Movement.Left;
+                    _lastMove = Movement.Left;
                 }
                 else if (Keyboard.IsKeyPressed(KeyLEFT) && !Keyboard.IsKeyPressed(KeyRIGHT) && !IsAttacking && !IsShooting)
                 {
                     MoveLeft();
                     Sword.LastMove = Movement.Left;
                     Arrow.LastMove = Movement.Left;
+                    _lastMove = Movement.Left;
                 }
                 else if (SpeedX < 0)
                 {
                     SpeedX += dX;
+                    _lastMove = Movement.Left;
                     if (SpeedX > 0) SpeedX = 0;
                 }
                 //movement right
@@ -277,16 +280,19 @@ namespace ChendiAdventures
                     MoveRight();
                     Sword.LastMove = Movement.Right;
                     Arrow.LastMove = Movement.Right;
+                    _lastMove = Movement.Right;
                 }
                 else if (Keyboard.IsKeyPressed(KeyRIGHT) && !Keyboard.IsKeyPressed(KeyLEFT) && !IsAttacking && !IsShooting)
                 {
                     MoveRight();
                     Sword.LastMove = Movement.Right;
                     Arrow.LastMove = Movement.Right;
+                    _lastMove = Movement.Right;
                 }
                 else if (SpeedX > 0)
                 {
                     SpeedX -= dX;
+                    _lastMove = Movement.Right;
                     if (SpeedX < 0) SpeedX = 0;
                 }
             }
@@ -332,12 +338,10 @@ namespace ChendiAdventures
             if (SpeedX < 0)
             {
                 MovementDirection = Movement.Left;
-                _lastMove = MovementDirection;
             }
             else if (SpeedX > 0)
             {
                 MovementDirection = Movement.Right;
-                _lastMove = MovementDirection;
             }
             else MovementDirection = Movement.None;
 
@@ -468,7 +472,7 @@ namespace ChendiAdventures
                         }
                     case BlockType.Exit:
                         {
-                            if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks)
+                            if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks && !IsDead)
                             {
                                 SpeedX = 0;
                                 SetTextureRectanlge(128,64);
@@ -712,6 +716,7 @@ namespace ChendiAdventures
             if (!IsDead && IsVulnerable && !GotExit)
             {
                 sDie.Play();
+                sKill.Play();
                 level.AddParticleEffect(new ParticleEffect(X, Y, Color.Red));
                 Sword.Reset();
                 DefaultClock.Restart();

@@ -182,7 +182,7 @@ namespace ChendiAdventures
             Wizards.Clear();
 
             UnableToPassl = new List<BlockType>
-                {BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor, BlockType.TransparentBrick};
+                {BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor, BlockType.TransparentBrick, BlockType.HardBlock };
 
             //Console.WriteLine("Entity lists cleared");
 
@@ -266,6 +266,11 @@ namespace ChendiAdventures
                     case 'w':
                     {
                         LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.TransparentBrick));
+                        break;
+                    }
+                    case 'Z':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.HardBlock));
                         break;
                     }
                     //traps
@@ -829,7 +834,20 @@ namespace ChendiAdventures
                 }
                 case 30:
                 {
-                    ShowHint(obstacle, "MIGHTY WIZARDS...\nAND THEIR HOMING PROJECTILES...", -50, -22);
+                    switch (obstacle.HintNumber)
+                    {
+                        case 1:
+                        {
+                            ShowHint(obstacle, "MIGHTY WIZARDS...\nAND THEIR HOMING PROJECTILES...", -50, -22);
+                                    break;
+                        }
+                        case 2:
+                        {
+                            ShowHint(obstacle, "PRETTY HARD BLOCK...", -50, -22);
+                            break;
+                        }
+                    }
+                        
                     break;
                 }
             }
@@ -959,12 +977,17 @@ namespace ChendiAdventures
                     }
                     case BlockType.TransparentBrick:
                     {
-                        level.Append('w');
+                        level.Append("w");
                         break;
                     }
                     case BlockType.Spike:
                     {
                         level.Append("#");
+                        break;
+                    }
+                    case BlockType.HardBlock:
+                    {
+                        level.Append("Z");
                         break;
                     }
                     case BlockType.Enterance:

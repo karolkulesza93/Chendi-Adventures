@@ -8,6 +8,8 @@ namespace ChendiAdventures
     {
         public static Sound sCrush = new Sound(new SoundBuffer(@"sfx/crush.wav"));
         public static Sound sPurify = new Sound(new SoundBuffer(@"sfx/petrifier.wav"));
+        public static Sound sHard = new Sound(new SoundBuffer(@"sfx/hard.wav"));
+        public static Sound sDestroy = new Sound(new SoundBuffer(@"sfx/destroyed.wav")) { Volume = 60 };
         public Clock DefaultTimer;
 
         public Block(float x, float y, Texture texture, BlockType type = BlockType.None, int hintNumber = 0) : base(x,
@@ -27,6 +29,7 @@ namespace ChendiAdventures
         public int HintNumber { get; set; }
         public bool IsDestroyed { get; private set; }
         public bool IsStomped { get; set; }
+        public int Health { get; set; }
         public BlockType Type { get; set; }
 
         public void SetBlock(BlockType type)
@@ -41,6 +44,12 @@ namespace ChendiAdventures
                 case BlockType.TransparentBrick:
                 {
                     SetTextureRectanlge(0, 160,32,32);
+                    break;
+                }
+                case BlockType.HardBlock:
+                {
+                    SetTextureRectanlge(0, 192, 32, 32);
+                    Health = 200;
                     break;
                 }
                 case BlockType.Spike:
@@ -390,5 +399,17 @@ namespace ChendiAdventures
                 DefaultTimer = new Clock();
             }
         }
+
+        public void HitHardblock()
+        {
+            Health--;
+            if (sHard.Status != SoundStatus.Playing) sHard.Play();
+
+            if (Health < 150) { SetTextureRectanlge(32,192); }
+            if (Health < 100) { SetTextureRectanlge(64, 192); }
+            if (Health < 50) { SetTextureRectanlge(96, 192); }
+
+        }
+        
     }
 }

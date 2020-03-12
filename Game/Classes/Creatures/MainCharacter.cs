@@ -23,7 +23,6 @@ namespace ChendiAdventures
         private Animation _jumpBack;
         private Animation _victoryAnimation;
         //
-
         public MainCharacter(float x, float y, Texture texture) : base(x, y, texture)
         {
             SetTextureRectanlge(32, 64, 32, 32);

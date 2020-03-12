@@ -63,6 +63,29 @@ namespace ChendiAdventures
                     _character.AddToScore(level, 10, obstacle.X, obstacle.Y);
                 }
 
+                if ((obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y)).Type == BlockType.HardBlock ||
+                    (obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y)).Type ==
+                    BlockType.HardBlock ||
+                    (obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y + 0.9375f)).Type ==
+                    BlockType.HardBlock ||
+                    (obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y + 0.9375f)).Type ==
+                    BlockType.HardBlock)
+                {
+                    obstacle.HitHardblock();
+                    if (obstacle.Health <= 0)
+                    {
+                        obstacle.DeleteObstacle();
+                        Block.sDestroy.Play();
+                        level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                            new Color(57, 65, 81)));
+                        _character.AddToScore(level, 100, obstacle.X, obstacle.Y);
+                    }
+                }
+
+
+
+
+
                 foreach (var monster in level.Monsters)
                     if (GetBoundingBox().Intersects(monster.GetBoundingBox()))
                     {

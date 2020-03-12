@@ -930,13 +930,13 @@ namespace ChendiAdventures
 
             //tiles 
             int t1 = 1;
-            int t2 = 16;
+            int t2 = 18;
             //pickups
-            int p1 = 17;
-            int p2 = 27;
+            int p1 = 19;
+            int p2 = 29;
             //details
-            int d1 = 28;
-            int d2 = 34;
+            int d1 = 30;
+            int d2 = 36;
 
             while (_window.IsOpen)
             {

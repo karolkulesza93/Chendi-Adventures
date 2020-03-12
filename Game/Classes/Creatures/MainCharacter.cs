@@ -15,6 +15,9 @@ namespace ChendiAdventures
         private Movement _lastMove;
         private Animation _attackLeft;
         private Animation _attackRight;
+        private Animation _jumpLeft;
+        private Animation _jumpRight;
+        private Animation _victoryAnimation;
         //
 
         public MainCharacter(float x, float y, Texture texture) : base(x, y, texture)
@@ -67,6 +70,22 @@ namespace ChendiAdventures
                 new Vector2i(64, 128),
                 new Vector2i(96, 128),
                 new Vector2i(128, 128)
+                );
+
+            _jumpLeft = new Animation(this, 0.05f,
+                new Vector2i(64,96),
+                new Vector2i(96,96)
+                );
+            _jumpRight = new Animation(this, 0.05f,
+                new Vector2i(0, 96),
+                new Vector2i(32,96)
+                );
+
+            _victoryAnimation = new Animation(this, 0.1f,
+                new Vector2i(128,64),
+                new Vector2i(128,96),
+                new Vector2i(128, 64),
+                new Vector2i(128, 32)
                 );
             //
 
@@ -149,6 +168,7 @@ namespace ChendiAdventures
                 if (Keyboard.IsKeyPressed(KeyATTACK) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 && IsVulnerable && !IsAttacking && !IsShooting)
                 {
                     IsAttacking = true;
+                    sJump.Stop();
                     if (Keyboard.IsKeyPressed(Keyboard.Key.Up)) IsUpAttacking = true;
                     DefaultClock.Restart();
                 }
@@ -158,7 +178,7 @@ namespace ChendiAdventures
                 {
                     IsShooting = true;
                     Projectile.sShoot.Play();
-                    //ArrowAmount--;
+                    ArrowAmount--;
                     Arrow.ArrowDirectionDefine();
                     Arrow.isEnergized = false;
                     DefaultClock.Restart();
@@ -234,13 +254,13 @@ namespace ChendiAdventures
                 }
 
                 //movement left
-                if (Keyboard.IsKeyPressed(KeyLEFT) && !IsStandingOnBlocks)
+                if (Keyboard.IsKeyPressed(KeyLEFT) && !Keyboard.IsKeyPressed(KeyRIGHT) && !IsStandingOnBlocks)
                 {
                     MoveLeft();
                     Sword.LastMove = Movement.Left;
                     Arrow.LastMove = Movement.Left;
                 }
-                else if (Keyboard.IsKeyPressed(KeyLEFT) && !IsAttacking && !IsShooting)
+                else if (Keyboard.IsKeyPressed(KeyLEFT) && !Keyboard.IsKeyPressed(KeyRIGHT) && !IsAttacking && !IsShooting)
                 {
                     MoveLeft();
                     Sword.LastMove = Movement.Left;
@@ -252,13 +272,13 @@ namespace ChendiAdventures
                     if (SpeedX > 0) SpeedX = 0;
                 }
                 //movement right
-                if (Keyboard.IsKeyPressed(KeyRIGHT) && !IsStandingOnBlocks)
+                if (Keyboard.IsKeyPressed(KeyRIGHT) && !Keyboard.IsKeyPressed(KeyLEFT) && !IsStandingOnBlocks)
                 {
                     MoveRight();
                     Sword.LastMove = Movement.Right;
                     Arrow.LastMove = Movement.Right;
                 }
-                else if (Keyboard.IsKeyPressed(KeyRIGHT) && !IsAttacking && !IsShooting)
+                else if (Keyboard.IsKeyPressed(KeyRIGHT) && !Keyboard.IsKeyPressed(KeyLEFT) && !IsAttacking && !IsShooting)
                 {
                     MoveRight();
                     Sword.LastMove = Movement.Right;
@@ -389,49 +409,12 @@ namespace ChendiAdventures
                 }
                 else if (SpeedY != 0)
                 {
-                    if (MovementDirection == Movement.Left) SetTextureRectanlge(32, 96, 32, 32);
-                    else if (MovementDirection == Movement.Right) SetTextureRectanlge(0, 96, 32, 32);
+                    if (MovementDirection == Movement.Left) _jumpLeft.Animate();
+                    else if (MovementDirection == Movement.Right) _jumpRight.Animate();
                     else if (Keyboard.IsKeyPressed(Keyboard.Key.Up)) SetTextureRectanlge(64, 64, 32, 32);
-                    else SetTextureRectanlge(64, 96, 32, 32);
+                    else SetTextureRectanlge(96, 64, 32, 32);
                 }
             }
-
-
-
-
-            /*
-            if (IsStandingOnBlocks)
-            {
-                if (SpeedX == 0 && IsAttacking)
-                {
-                    if (_lastMove == Movement.Left)
-                    {
-                        _attackLeft.Animate();
-                    }
-                    else if (_lastMove == Movement.Right)
-                    {
-                        _attackRight.Animate();
-                    }
-                }
-                else
-                {
-                    if (MovementDirection == Movement.Right) _animRight.Animate();
-                    else if (MovementDirection == Movement.Left) _animLeft.Animate();
-                    else if (Keyboard.IsKeyPressed(Keyboard.Key.Up)) SetTextureRectanlge(0, 64, 32, 32);
-                    else SetTextureRectanlge(32, 64, 32, 32);
-                }
-            }
-            else if (!IsStandingOnBlocks && SpeedY != 0)
-            {
-                if (MovementDirection == Movement.Left) SetTextureRectanlge(32, 96, 32, 32);
-                else if (MovementDirection == Movement.Right) SetTextureRectanlge(0, 96, 32, 32);
-                else if (Keyboard.IsKeyPressed(Keyboard.Key.Up)) SetTextureRectanlge(64, 64, 32, 32);
-                else SetTextureRectanlge(64, 96, 32, 32);
-            }
-            */
-
-
-
 
             //==//==//==//==//==//==//==//==//==//==//==//==//==//==//==//==//==//==//
 
@@ -440,7 +423,7 @@ namespace ChendiAdventures
                 if (IsStandingOnBlocks) SetTextureRectanlge(96, 0, 32, 32);
                 else SetTextureRectanlge(64, 0, 32, 32);
             }
-            if (GotExit) SetTextureRectanlge(96, 96, 32, 32);
+            if (GotExit) _victoryAnimation.Animate();
         }
 
         public override void CollisionDependence(Level level)
@@ -488,6 +471,7 @@ namespace ChendiAdventures
                             if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks)
                             {
                                 SpeedX = 0;
+                                SetTextureRectanlge(128,64);
                                 GotExit = true;
                             }
 
@@ -725,7 +709,7 @@ namespace ChendiAdventures
 
         public void Die(Level level)
         {
-            if (!IsDead && IsVulnerable)
+            if (!IsDead && IsVulnerable && !GotExit)
             {
                 sDie.Play();
                 level.AddParticleEffect(new ParticleEffect(X, Y, Color.Red));

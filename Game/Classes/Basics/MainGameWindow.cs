@@ -317,20 +317,20 @@ namespace ChendiAdventures
 
                 if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Up))
                 {
-                    _chendi.sAtk.Play();
+                    _chendi.sCoin.Play();
                     flag = true;
                     choice--;
                 }
                 else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Down))
                 {
-                    _chendi.sAtk.Play();
+                    _chendi.sCoin.Play();
                     flag = true;
                     choice++;
                 }
                 else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Space))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
                     switch (choice)
                     {
                         case 1: //resolution
@@ -411,7 +411,7 @@ namespace ChendiAdventures
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 {
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
                     SaveSettings();
                     _isSettigs = false;
                     _isMenu = true;
@@ -480,7 +480,7 @@ namespace ChendiAdventures
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 {
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
                     _isHighscore = false;
                     _isMenu = true;
                 }
@@ -531,7 +531,7 @@ namespace ChendiAdventures
                     Keyboard.IsKeyPressed(Keyboard.Key.L))
                 {
                     LevelEditor();
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
                     flag = true;
                 }
                 //
@@ -550,13 +550,13 @@ namespace ChendiAdventures
 
                 if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Up))
                 {
-                    _chendi.sAtk.Play();
+                    _chendi.sCoin.Play();
                     flag = true;
                     choice--;
                 }
                 else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Down))
                 {
-                    _chendi.sAtk.Play();
+                    _chendi.sCoin.Play();
                     flag = true;
                     choice++;
                 }
@@ -564,7 +564,7 @@ namespace ChendiAdventures
                 {
                     
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
                     switch (choice)
                     {
                         case 1:
@@ -696,7 +696,7 @@ namespace ChendiAdventures
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                 {
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
                     _isPaused = false;
                     Thread.Sleep(200);
                 }
@@ -761,7 +761,7 @@ namespace ChendiAdventures
 
                     if (Keyboard.IsKeyPressed(Keyboard.Key.Space))
                     {
-                        _chendi.sCoin.Play();
+                        _chendi.sPickup.Play();
                         _chendi.ResetMainCharacter();
                         _chendi.Continues--;
                         _gameEnd.Stop();
@@ -771,7 +771,7 @@ namespace ChendiAdventures
 
                     if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
                     {
-                        _chendi.sCoin.Play();
+                        _chendi.sPickup.Play();
                         _chendi.ResetMainCharacter();
                         _gameEnd.Stop();
                         DrawLoadingScreen();
@@ -947,28 +947,28 @@ namespace ChendiAdventures
                 {
                     x--;
                     flag = true;
-                    _chendi.sAtk.Play();
+                    _chendi.sCoin.Play();
                 }
 
                 if (!flag && x < _level.LevelWidth - 2 && Keyboard.IsKeyPressed(Keyboard.Key.Right))
                 {
                     x++;
                     flag = true;
-                    _chendi.sAtk.Play();
+                    _chendi.sCoin.Play();
                 }
 
                 if (!flag && y > 1 && Keyboard.IsKeyPressed(Keyboard.Key.Up))
                 {
                     y--;
                     flag = true;
-                    _chendi.sAtk.Play();
+                    _chendi.sCoin.Play();
                 }
 
                 if (!flag && y < _level.LevelHeight - 2 && Keyboard.IsKeyPressed(Keyboard.Key.Down))
                 {
                     y++;
                     flag = true;
-                    _chendi.sAtk.Play();
+                    _chendi.sCoin.Play();
                 }
 
                 type = _level.GetObstacle(x, y).Type;
@@ -977,7 +977,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.X))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
                     type++;
                     if (type == (BlockType) d2+1) type = 0;
@@ -1007,7 +1007,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Z))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
                     if (type > 0) type--;
                     else type = (BlockType) d2;
@@ -1037,7 +1037,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.C))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
 
                     if (typeM >= (BlockType) t1 && typeM <= (BlockType) t2)
@@ -1063,7 +1063,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.D))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
                     type = BlockType.None;
 
@@ -1078,7 +1078,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num1))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
                     _level.Monsters.Add(new Monster(x * 32, y * 32, Entity.KnightTexture));
                 }
@@ -1086,7 +1086,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num2))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
                     _level.Archers.Add(new Archer(x * 32, y * 32, Entity.ArcherTexture, Movement.Left));
                 }
@@ -1094,7 +1094,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num3))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
                     _level.Archers.Add(new Archer(x * 32, y * 32, Entity.ArcherTexture, Movement.Right));
                 }
@@ -1102,7 +1102,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num4))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
                     _level.Ghosts.Add(new Ghost(x * 32, y * 32, Entity.GhostTexture));
                 }
@@ -1110,7 +1110,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num5))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
                     _level.Wizards.Add(new Wizard(x * 32, y * 32, Entity.WizardTexture));
                 }
@@ -1148,7 +1148,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num7))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
                     _level.Traps.Add(new Trap(x * 32, y * 32, Entity.TrapsTexture, TrapType.Crusher));
                 }
@@ -1156,7 +1156,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num8))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
                     _level.Traps.Add(new Trap(x * 32, y * 32, Entity.TrapsTexture, TrapType.Spikes));
                 }
@@ -1164,7 +1164,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num9))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
                     _level.Traps.Add(new Trap(x * 32, y * 32, Entity.TrapsTexture, TrapType.BlowTorchLeft));
                 }
@@ -1172,7 +1172,7 @@ namespace ChendiAdventures
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num0))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
 
                     _level.Traps.Add(new Trap(x * 32, y * 32, Entity.TrapsTexture, TrapType.BlowTorchRight));
                 }
@@ -1226,21 +1226,21 @@ namespace ChendiAdventures
                 if (view && !flag && Keyboard.IsKeyPressed(Keyboard.Key.A))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
                     view = false;
                 }
 
                 if (!view && !flag && Keyboard.IsKeyPressed(Keyboard.Key.S))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
                     view = true;
                 }
 
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.I))
                 {
                     flag = true;
-                    _chendi.sCoin.Play();
+                    _chendi.sPickup.Play();
                     x = 1;
                     y = 1;
                 }
@@ -1321,7 +1321,7 @@ namespace ChendiAdventures
                     if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Up) ||
                                           Keyboard.IsKeyPressed(Keyboard.Key.Down)))
                     {
-                        _chendi.sAtk.Play();
+                        _chendi.sCoin.Play();
                         flag = true;
                         choice = !choice;
                         if (choice)
@@ -1338,7 +1338,7 @@ namespace ChendiAdventures
                     else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Space))
                     {
                         flag = true;
-                        _chendi.sCoin.Play();
+                        _chendi.sPickup.Play();
 
                         if (choice)
                         {
@@ -1404,8 +1404,6 @@ namespace ChendiAdventures
                 //summary to the center
                 _levelSummary.X = _view.Center.X - 1000;
                 _levelSummary.Y = _view.Center.Y - 100;
-
-                _chendi.SetTextureRectanlge(96, 96, 32, 32);
             }
 
             var timer = new Clock();
@@ -1435,6 +1433,9 @@ namespace ChendiAdventures
                 if (!isLottery && timer.ElapsedTime.AsSeconds() > 5) _screenChange.BlackOut();
 
                 if (Victory.Status != SoundStatus.Playing) _chendi.GrantAdditionalLifeDependingOnScore();
+
+                _chendi.MainCharactereUpdate(_level);
+                _level.LevelUpdate();
 
                 DrawGame(_chendi, false);
                 _window.Draw(_levelSummary);
@@ -1510,6 +1511,8 @@ namespace ChendiAdventures
                     }
 
                     gameMachine.GameMachineUpdate();
+                    _chendi.MainCharactereUpdate(_level);
+                    _level.LevelUpdate();
 
                     DrawGame(_chendi, false);
                     _window.Draw(_levelSummary);
@@ -1548,13 +1551,13 @@ namespace ChendiAdventures
 
                 if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Up))
                 {
-                    _chendi.sAtk.Play();
+                    _chendi.sCoin.Play();
                     flag = true;
                     choice--;
                 }
                 else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Down))
                 {
-                    _chendi.sAtk.Play();
+                    _chendi.sCoin.Play();
                     flag = true;
                     choice++;
                 }

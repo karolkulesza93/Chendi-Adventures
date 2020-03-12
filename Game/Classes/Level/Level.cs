@@ -638,16 +638,16 @@ namespace ChendiAdventures
             }
         }
 
-        public int GetBonusForTime(double time) // do zmiany!!!!!
+        public int GetBonusForTime(double time)
         {
             var value = 0f;
-            var points = (int) ((LevelWidth * LevelHeight + MonsterCount * LevelNumber) / time) * LevelNumber * 10;
+            int points = 100 * (int)(((LevelWidth * LevelWidth) + MonsterCount) / time);
 
             switch (MainGameWindow.GameDifficulty)
             {
                 case Difficulty.Easy:
                 {
-                    value = 0.75f;
+                    value = 0.8f;
                     break;
                 }
                 case Difficulty.Medium:
@@ -657,7 +657,7 @@ namespace ChendiAdventures
                 }
                 case Difficulty.Hard:
                 {
-                    value = 1.3f;
+                    value = 1.2f;
                     break;
                 }
             }

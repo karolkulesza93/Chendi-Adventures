@@ -16,15 +16,13 @@ using SFML.Window;
 
 PROPOZYCJE DO ZROBIENIA:
 
-- nowe mechaniki /itemy / cos nowego ogolnie ???????? { golem(monster)(immune to dmg?)  }
-- moze bossy?? a jak bossy to jakies ability za pokonanie bossa np double jump / dash / wall jump
 - generowanie poziomu***
 - jak sie uda to shadery/swiatlo ogarnac aby ladnie wygladalo**
 
 DO ZROBIENIA:
 - levele
 - scenka na poczatek i koniec
-- ANIMACJE ATAKU < tego na serio brak tego
+- weryfikacja punktów
 
 */
 
@@ -96,6 +94,7 @@ namespace ChendiAdventures
         private TextLine _settings;
         private TextLine _start;
         public static Sound Victory = new Sound(new SoundBuffer(@"sfx/victory.wav"));
+        public static Sound sChoice = new Sound(new SoundBuffer(@"sfx/choice.wav"));
         private int _windowHeight;
         private Styles _windowStyle = Styles.Fullscreen;
         private int _windowWidth;
@@ -317,13 +316,13 @@ namespace ChendiAdventures
 
                 if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Up))
                 {
-                    _chendi.sCoin.Play();
+                    sChoice.Play();
                     flag = true;
                     choice--;
                 }
                 else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Down))
                 {
-                    _chendi.sCoin.Play();
+                    sChoice.Play();
                     flag = true;
                     choice++;
                 }
@@ -550,13 +549,13 @@ namespace ChendiAdventures
 
                 if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Up))
                 {
-                    _chendi.sCoin.Play();
+                    sChoice.Play();
                     flag = true;
                     choice--;
                 }
                 else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Down))
                 {
-                    _chendi.sCoin.Play();
+                    sChoice.Play();
                     flag = true;
                     choice++;
                 }
@@ -947,28 +946,28 @@ namespace ChendiAdventures
                 {
                     x--;
                     flag = true;
-                    _chendi.sCoin.Play();
+                    sChoice.Play();
                 }
 
                 if (!flag && x < _level.LevelWidth - 2 && Keyboard.IsKeyPressed(Keyboard.Key.Right))
                 {
                     x++;
                     flag = true;
-                    _chendi.sCoin.Play();
+                    sChoice.Play();
                 }
 
                 if (!flag && y > 1 && Keyboard.IsKeyPressed(Keyboard.Key.Up))
                 {
                     y--;
                     flag = true;
-                    _chendi.sCoin.Play();
+                    sChoice.Play();
                 }
 
                 if (!flag && y < _level.LevelHeight - 2 && Keyboard.IsKeyPressed(Keyboard.Key.Down))
                 {
                     y++;
                     flag = true;
-                    _chendi.sCoin.Play();
+                    sChoice.Play();
                 }
 
                 type = _level.GetObstacle(x, y).Type;
@@ -1321,7 +1320,7 @@ namespace ChendiAdventures
                     if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Up) ||
                                           Keyboard.IsKeyPressed(Keyboard.Key.Down)))
                     {
-                        _chendi.sCoin.Play();
+                        sChoice.Play();
                         flag = true;
                         choice = !choice;
                         if (choice)
@@ -1388,6 +1387,7 @@ namespace ChendiAdventures
                 var bonus = _level.GetBonusForTime(time);
 
                 _chendi.Score += bonus;
+                if (_level.LevelNumber == 0) _chendi.Score = 0;
 
                 _levelSummary.EditText(string.Format(
                     "LEVEL COMPLETED!\n" +
@@ -1551,13 +1551,13 @@ namespace ChendiAdventures
 
                 if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Up))
                 {
-                    _chendi.sCoin.Play();
+                    sChoice.Play();
                     flag = true;
                     choice--;
                 }
                 else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Down))
                 {
-                    _chendi.sCoin.Play();
+                    sChoice.Play();
                     flag = true;
                     choice++;
                 }

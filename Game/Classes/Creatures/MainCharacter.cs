@@ -13,10 +13,14 @@ namespace ChendiAdventures
 
         //mian character animations
         private Movement _lastMove;
+        private Animation _standing;
         private Animation _attackLeft;
         private Animation _attackRight;
         private Animation _jumpLeft;
         private Animation _jumpRight;
+        private Animation _jumpUp;
+        private Animation _jumpDown;
+        private Animation _jumpBack;
         private Animation _victoryAnimation;
         //
 
@@ -48,6 +52,10 @@ namespace ChendiAdventures
             GotExit = false;
 
             //animations
+            _standing = new Animation(this, 0.2f,
+                new Vector2i(32,64),
+                new Vector2i(128,0)
+                );
             _animLeft = new Animation(this, 0.05f,
                 new Vector2i(0, 32),
                 new Vector2i(32, 32));
@@ -72,6 +80,18 @@ namespace ChendiAdventures
                 new Vector2i(128, 128)
                 );
 
+            _jumpUp = new Animation(this, 0.05f,
+                new Vector2i(0,192),
+                new Vector2i(32, 192)
+                );
+            _jumpDown = new Animation(this, 0.05f,
+                new Vector2i(64,192),
+                new Vector2i(96, 192)
+                );
+            _jumpBack = new Animation(this, 0.05f,
+                new Vector2i(64,64),
+                new Vector2i(96,64)
+                );
             _jumpLeft = new Animation(this, 0.05f,
                 new Vector2i(64,96),
                 new Vector2i(96,96)
@@ -380,7 +400,7 @@ namespace ChendiAdventures
                     if (MovementDirection == Movement.Right) _animRight.Animate();
                     else if (MovementDirection == Movement.Left) _animLeft.Animate();
                     else if (Keyboard.IsKeyPressed(Keyboard.Key.Up)) SetTextureRectanlge(0, 64, 32, 32);
-                    else SetTextureRectanlge(32, 64, 32, 32);
+                    else _standing.Animate();
                 }
             }
             else
@@ -415,8 +435,12 @@ namespace ChendiAdventures
                 {
                     if (MovementDirection == Movement.Left) _jumpLeft.Animate();
                     else if (MovementDirection == Movement.Right) _jumpRight.Animate();
-                    else if (Keyboard.IsKeyPressed(Keyboard.Key.Up)) SetTextureRectanlge(64, 64, 32, 32);
-                    else SetTextureRectanlge(96, 64, 32, 32);
+                    else if (Keyboard.IsKeyPressed(Keyboard.Key.Up)) _jumpBack.Animate();
+                    else
+                    {
+                        if (SpeedY < 0) _jumpUp.Animate(); 
+                        else _jumpDown.Animate();
+                    }
                 }
             }
 
@@ -723,7 +747,7 @@ namespace ChendiAdventures
                 IsDead = true;
                 SpeedY = -10f;
                 
-                //this.Lives--;
+                this.Lives--;
 
                 HasSilverKey = false;
                 HasGoldenKey = false;

@@ -98,7 +98,7 @@ namespace ChendiAdventures
                     SetTextureRectanlge(96, 0, 32, 32);
                     startY = Y;
                     Y += 32;
-                    SpeedY = 1f;
+                    SpeedY = 1.5f;
                     IsUp = false;
                     sSpikes.Volume = 50;
                     break;

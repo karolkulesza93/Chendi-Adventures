@@ -15,14 +15,12 @@ using SFML.Window;
 
 
 PROPOZYCJE DO ZROBIENIA:
-
 - generowanie poziomu***
 - jak sie uda to shadery/swiatlo ogarnac aby ladnie wygladalo**
 
 DO ZROBIENIA:
 - levele
 - scenka na poczatek i koniec
-- weryfikacja punktów
 
 */
 
@@ -526,7 +524,7 @@ namespace ChendiAdventures
                 if (_gameLogo.Position.Y < 50) _gameLogo.Position = new Vector2f((_windowWidth - _gameLogo.Texture.Size.X) / 2, _gameLogo.Position.Y + 25);
 
                 //secret keys to enter level editor
-                if (Keyboard.IsKeyPressed(Keyboard.Key.LShift) && Keyboard.IsKeyPressed(Keyboard.Key.LAlt) &&
+                if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.LShift) && Keyboard.IsKeyPressed(Keyboard.Key.LAlt) &&
                     Keyboard.IsKeyPressed(Keyboard.Key.L))
                 {
                     LevelEditor();
@@ -930,13 +928,13 @@ namespace ChendiAdventures
 
             //tiles 
             int t1 = 1;
-            int t2 = 18;
+            int t2 = 20;
             //pickups
-            int p1 = 19;
-            int p2 = 29;
+            int p1 = 21;
+            int p2 = 31;
             //details
-            int d1 = 30;
-            int d2 = 36;
+            int d1 = 32;
+            int d2 = 38;
 
             while (_window.IsOpen)
             {

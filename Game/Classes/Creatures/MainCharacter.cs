@@ -134,7 +134,6 @@ namespace ChendiAdventures
             sImmortality.Volume = 30;
             sImmortality.Loop = true;
         }
-
         public Sword Sword { get; }
         public Arrow Arrow { get; }
         public int Coins { get; set; }
@@ -177,7 +176,7 @@ namespace ChendiAdventures
 
         public void MainCharacterSteering(Level level)
         {
-            if (!IsDead)
+            if (!IsDead && !GotExit)
             {
                 //just die
                 if (Keyboard.IsKeyPressed(KeyDIE)) Die(level);
@@ -276,16 +275,22 @@ namespace ChendiAdventures
                 if (Keyboard.IsKeyPressed(KeyLEFT) && !Keyboard.IsKeyPressed(KeyRIGHT) && !IsStandingOnBlocks)
                 {
                     MoveLeft();
-                    Sword.LastMove = Movement.Left;
-                    Arrow.LastMove = Movement.Left;
-                    _lastMove = Movement.Left;
+                    if (SpeedX <= 0)
+                    {
+                        Sword.LastMove = Movement.Left;
+                        Arrow.LastMove = Movement.Left;
+                        _lastMove = Movement.Left;
+                    }
                 }
                 else if (Keyboard.IsKeyPressed(KeyLEFT) && !Keyboard.IsKeyPressed(KeyRIGHT) && !IsAttacking && !IsShooting)
                 {
                     MoveLeft();
-                    Sword.LastMove = Movement.Left;
-                    Arrow.LastMove = Movement.Left;
-                    _lastMove = Movement.Left;
+                    if (SpeedX <= 0)
+                    {
+                        Sword.LastMove = Movement.Left;
+                        Arrow.LastMove = Movement.Left;
+                        _lastMove = Movement.Left;
+                    }
                 }
                 else if (SpeedX < 0)
                 {
@@ -293,20 +298,27 @@ namespace ChendiAdventures
                     _lastMove = Movement.Left;
                     if (SpeedX > 0) SpeedX = 0;
                 }
+                
                 //movement right
                 if (Keyboard.IsKeyPressed(KeyRIGHT) && !Keyboard.IsKeyPressed(KeyLEFT) && !IsStandingOnBlocks)
                 {
                     MoveRight();
-                    Sword.LastMove = Movement.Right;
-                    Arrow.LastMove = Movement.Right;
-                    _lastMove = Movement.Right;
+                    if (SpeedX >= 0)
+                    {
+                        Sword.LastMove = Movement.Right;
+                        Arrow.LastMove = Movement.Right;
+                        _lastMove = Movement.Right;
+                    }
                 }
                 else if (Keyboard.IsKeyPressed(KeyRIGHT) && !Keyboard.IsKeyPressed(KeyLEFT) && !IsAttacking && !IsShooting)
                 {
                     MoveRight();
-                    Sword.LastMove = Movement.Right;
-                    Arrow.LastMove = Movement.Right;
-                    _lastMove = Movement.Right;
+                    if (SpeedX >= 0)
+                    {
+                        Sword.LastMove = Movement.Right;
+                        Arrow.LastMove = Movement.Right;
+                        _lastMove = Movement.Right;
+                    }
                 }
                 else if (SpeedX > 0)
                 {
@@ -511,6 +523,14 @@ namespace ChendiAdventures
                                 level.isShopOpened = true;
                             }
 
+                            break;
+                        }
+                    case BlockType.Lever:
+                        {
+                            if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks)
+                            {
+                                Block.FlipLever();
+                            }
                             break;
                         }
                     case BlockType.Purifier:

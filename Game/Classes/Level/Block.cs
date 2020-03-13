@@ -1,4 +1,5 @@
-﻿using SFML.Audio;
+﻿using System.Collections.Generic;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 
@@ -11,6 +12,7 @@ namespace ChendiAdventures
         public static Sound sHard = new Sound(new SoundBuffer(@"sfx/hard.wav"));
         public static Sound sDestroy = new Sound(new SoundBuffer(@"sfx/destroyed.wav")) { Volume = 60 };
         public Clock DefaultTimer;
+        public static Clock LeverTimer;
 
         public Block(float x, float y, Texture texture, BlockType type = BlockType.None, int hintNumber = 0) : base(x,
             y, texture)
@@ -30,6 +32,9 @@ namespace ChendiAdventures
         public bool IsDestroyed { get; private set; }
         public bool IsStomped { get; set; }
         public int Health { get; set; }
+        public static bool IsLeverOn { get; set; }
+        public static List<Block> SteelGates = new List<Block>();
+        public static List<Block> Levers = new List<Block>();
         public BlockType Type { get; set; }
 
         public void SetBlock(BlockType type)
@@ -50,6 +55,20 @@ namespace ChendiAdventures
                 {
                     SetTextureRectanlge(0, 192, 32, 32);
                     Health = 200;
+                    break;
+                }
+                case BlockType.SteelGate:
+                {
+                    SetTextureRectanlge(96, 160, 32, 32);
+                    SteelGates.Add(this);
+                    break;
+                }
+                case BlockType.Lever:
+                {
+                    SetTextureRectanlge(32, 160, 32, 32);
+                    LeverTimer = new Clock();
+                    IsLeverOn = false;
+                    Levers.Add(this);
                     break;
                 }
                 case BlockType.Spike:
@@ -410,6 +429,56 @@ namespace ChendiAdventures
             if (Health < 50) { SetTextureRectanlge(96, 192); }
 
         }
-        
+
+        public static void FlipLever()
+        {
+            if (IsLeverOn == false)
+            {
+                IsLeverOn = true;
+                LeverTimer.Restart();
+                MainGameWindow.sChoice.Play();
+
+                foreach (Block gate in SteelGates)
+                {
+                    gate.Type = BlockType.None;
+                }
+
+                foreach (Block lever in Levers)
+                {
+                    lever.SetTextureRectanlge(64, 160);
+                }
+
+            }
+        }
+        public static void LeverMechanismUpdate()
+        {
+            if (IsLeverOn == false)
+            {
+                foreach (var gate in SteelGates)
+                {
+                    if (gate.Y < gate.OriginalPos.Y) gate.Y += 0.002f;
+                }
+            }
+            else if (IsLeverOn == true && LeverTimer.ElapsedTime.AsSeconds() < 3)
+            {
+                foreach (var gate in SteelGates)
+                {
+                    if (gate.Y > gate.OriginalPos.Y - 32) gate.Y -= 0.002f;
+                }
+            }
+            else
+            {
+                IsLeverOn = false;
+                MainGameWindow.sChoice.Play();
+                foreach (Block gate in SteelGates)
+                {
+                    gate.Type = BlockType.SteelGate;
+                }
+                foreach (var lever in Levers)
+                {
+                    lever.SetTextureRectanlge(32, 160);
+                }
+            }
+        }
     }
 }

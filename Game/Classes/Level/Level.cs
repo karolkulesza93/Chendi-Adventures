@@ -166,6 +166,8 @@ namespace ChendiAdventures
 
         public void LoadLevel(string level)
         {
+            Block.Levers.Clear();
+            Block.SteelGates.Clear(); 
             //Console.WriteLine("Level load start...");
 
             ScoreAdditionEffects.Clear();
@@ -182,7 +184,8 @@ namespace ChendiAdventures
             Wizards.Clear();
 
             UnableToPassl = new List<BlockType>
-                {BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor, BlockType.TransparentBrick, BlockType.HardBlock };
+                {BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor,
+                    BlockType.TransparentBrick, BlockType.HardBlock, BlockType.SteelGate };
 
             //Console.WriteLine("Entity lists cleared");
 
@@ -271,6 +274,16 @@ namespace ChendiAdventures
                     case 'Z':
                     {
                         LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.HardBlock));
+                        break;
+                    }
+                    case '8':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.SteelGate));
+                        break;
+                    }
+                    case 'l':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Lever));
                         break;
                     }
                     //traps
@@ -577,6 +590,8 @@ namespace ChendiAdventures
                             new Color(150, 150, 150)));
                 }
 
+                Block.LeverMechanismUpdate();
+
                 if (obstacle.Type == BlockType.Trampoline)
                     if (obstacle.DefaultTimer.ElapsedTime.AsSeconds() > 0.1f)
                         obstacle.SetTextureRectanlge(64, 32, 32, 32);
@@ -591,7 +606,7 @@ namespace ChendiAdventures
                 foreach (var monster in Monsters) monster.UpdateCreature();
                 foreach (var archer in Archers) archer.UpdateCreature(this);
                 foreach (var ghost in Ghosts) ghost.UpdateCreature(this, _mainCharacter);
-                foreach (var wizard in Wizards) wizard.UpdateCreature(_mainCharacter);
+                foreach (var wizard in Wizards) wizard.UpdateCreature(_mainCharacter, this);
             }
 
             //details
@@ -850,6 +865,11 @@ namespace ChendiAdventures
                         
                     break;
                 }
+                case 35:
+                {
+                    ShowHint(obstacle, "LEVERS ARE USED TO OPEN\nHEAVY METAL GATES... WHO KNOWS,\nMAYBE THEY STILL WORKS", -60, -34);
+                    break;
+                }
             }
         }
 
@@ -1053,6 +1073,16 @@ namespace ChendiAdventures
                     case BlockType.Purifier:
                     {
                         level.Append('|');
+                        break;
+                    }
+                    case BlockType.SteelGate:
+                    {
+                        level.Append('8');
+                        break;
+                    }
+                    case BlockType.Lever:
+                    {
+                        level.Append('l');
                         break;
                     }
                     case BlockType.Wood:

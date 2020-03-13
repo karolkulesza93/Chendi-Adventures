@@ -1,4 +1,5 @@
-﻿using SFML.Graphics;
+﻿using System;
+using SFML.Graphics;
 using SFML.System;
 
 namespace ChendiAdventures
@@ -7,6 +8,7 @@ namespace ChendiAdventures
     {
         public readonly Clock DefaultClock;
         private int _shootInterval;
+        private float _procsDistance;
         public float XMaxPos;
         public float XMinPos;
 
@@ -22,6 +24,7 @@ namespace ChendiAdventures
             SpeedY = 0f;
 
             _shootInterval = 10;
+            _procsDistance = 500;
 
             _animLeft = new Animation(this, 0.1f,
                 new Vector2i(0, 0),
@@ -46,21 +49,24 @@ namespace ChendiAdventures
             else _animLeft.Animate();
         }
 
-        public new void UpdateCreature(MainCharacter character)
+        public new void UpdateCreature(MainCharacter character, Level level)
         {
             if (!IsDead)
             {
                 X += SpeedX;
                 if (Left < XMinPos || Right > XMaxPos) SpeedX *= -1;
 
-                if (DefaultClock.ElapsedTime.AsSeconds() > _shootInterval)
+                if (DefaultClock.ElapsedTime.AsSeconds() > _shootInterval &&
+                    (float)Math.Sqrt(Math.Pow(GetCenterPosition().X - character.GetCenterPosition().X, 2) + 
+                                     Math.Pow(GetCenterPosition().Y - character.GetCenterPosition().Y, 2)) <
+                    _procsDistance)
                 {
                     EnergyBall.Attack(X + 8, Y + 8);
                     DefaultClock.Restart();
                 }
             }
 
-            EnergyBall.UpdateEnergyBall(character);
+            EnergyBall.UpdateEnergyBall(character, level);
 
             UpdateTextures();
         }
@@ -87,6 +93,7 @@ namespace ChendiAdventures
                 case Difficulty.Easy:
                 {
                     _shootInterval = 12;
+                    _procsDistance = 200;
                     SpeedX = 0.5f;
                     Points = 1000;
                     break;
@@ -94,6 +101,7 @@ namespace ChendiAdventures
                 case Difficulty.Medium:
                 {
                     _shootInterval = 10;
+                    _procsDistance = 300;
                     SpeedX = 1f;
                     Points = 1300;
                     break;
@@ -101,6 +109,7 @@ namespace ChendiAdventures
                 case Difficulty.Hard:
                 {
                     _shootInterval = 8;
+                    _procsDistance = 500;
                     SpeedX = 2f;
                     Points = 1600;
                     break;

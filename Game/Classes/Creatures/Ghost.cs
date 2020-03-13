@@ -50,10 +50,10 @@ namespace ChendiAdventures
                                              Math.Pow(GetCenterPosition().Y - character.GetCenterPosition().Y, 2)) <
                 ProcsDistance)
             {
-                if (GetCenterPosition().X > character.GetCenterPosition().X) SpeedX = -1 * Speed;
+                if (GetCenterPosition().X >= character.GetCenterPosition().X) SpeedX = -1 * Speed;
                 else SpeedX = Speed;
 
-                if (GetCenterPosition().Y > character.GetCenterPosition().Y) SpeedY = -1 * Speed;
+                if (GetCenterPosition().Y >= character.GetCenterPosition().Y) SpeedY = -1 * Speed;
                 else SpeedY = Speed;
 
                 X += SpeedX;

@@ -11,6 +11,7 @@ namespace ChendiAdventures
         public static Sound sPurify = new Sound(new SoundBuffer(@"sfx/petrifier.wav"));
         public static Sound sHard = new Sound(new SoundBuffer(@"sfx/hard.wav"));
         public static Sound sDestroy = new Sound(new SoundBuffer(@"sfx/destroyed.wav")) { Volume = 60 };
+        public static Sound sLever = new Sound(new SoundBuffer(@"sfx/lever.wav"));
         public Clock DefaultTimer;
         public static Clock LeverTimer;
 
@@ -35,6 +36,7 @@ namespace ChendiAdventures
         public static bool IsLeverOn { get; set; }
         public static List<Block> SteelGates = new List<Block>();
         public static List<Block> Levers = new List<Block>();
+        private static int LeverInterval = 10;
         public BlockType Type { get; set; }
 
         public void SetBlock(BlockType type)
@@ -427,7 +429,6 @@ namespace ChendiAdventures
             if (Health < 150) { SetTextureRectanlge(32,192); }
             if (Health < 100) { SetTextureRectanlge(64, 192); }
             if (Health < 50) { SetTextureRectanlge(96, 192); }
-
         }
 
         public static void FlipLever()
@@ -436,7 +437,7 @@ namespace ChendiAdventures
             {
                 IsLeverOn = true;
                 LeverTimer.Restart();
-                MainGameWindow.sChoice.Play();
+                sLever.Play();
 
                 foreach (Block gate in SteelGates)
                 {
@@ -459,7 +460,7 @@ namespace ChendiAdventures
                     if (gate.Y < gate.OriginalPos.Y) gate.Y += 0.002f;
                 }
             }
-            else if (IsLeverOn == true && LeverTimer.ElapsedTime.AsSeconds() < 3)
+            else if (IsLeverOn == true && LeverTimer.ElapsedTime.AsSeconds() < LeverInterval)
             {
                 foreach (var gate in SteelGates)
                 {
@@ -469,7 +470,7 @@ namespace ChendiAdventures
             else
             {
                 IsLeverOn = false;
-                MainGameWindow.sChoice.Play();
+                sLever.Play();
                 foreach (Block gate in SteelGates)
                 {
                     gate.Type = BlockType.SteelGate;

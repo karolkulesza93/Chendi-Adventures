@@ -25,15 +25,13 @@ namespace ChendiAdventures
 
             IsDead = false;
             SetTextureRectanlge(0, 0, 32, 32);
-            sGhost = new Sound(new SoundBuffer(@"sfx/ghost.wav"));
-            sGhost.Volume = 40;
 
             ApplyDifficulty();
         }
 
         public float Speed { get; set; }
         public float ProcsDistance { get; set; }
-        public Sound sGhost { get; }
+        public static Sound sGhost = new Sound(new SoundBuffer(@"sfx/ghost.wav")) { Volume = 40 };
         public Clock DefaultClock { get; }
 
         public override void UpdateTextures()
@@ -46,7 +44,7 @@ namespace ChendiAdventures
         {
             UpdateTextures();
 
-            if (!IsDead && (float) Math.Sqrt(Math.Pow(GetCenterPosition().X - character.GetCenterPosition().X, 2) +
+            if (!IsDead &&  !character.IsDead && (float) Math.Sqrt(Math.Pow(GetCenterPosition().X - character.GetCenterPosition().X, 2) +
                                              Math.Pow(GetCenterPosition().Y - character.GetCenterPosition().Y, 2)) <
                 ProcsDistance)
             {

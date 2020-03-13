@@ -162,8 +162,8 @@ namespace ChendiAdventures
                 case Reward.Score10000:
                 {
                     character.sPickup.Play();
-                        character.Score += 10000;
-                    _reward.EditText("YOU HAVE WON 10000 POINTS");
+                        character.Score += 50000;
+                    _reward.EditText("WOW! YOU HAVE WON 50000 POINTS!");
                     break;
                 }
                 case Reward.Life:

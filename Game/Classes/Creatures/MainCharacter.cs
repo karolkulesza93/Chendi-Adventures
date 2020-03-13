@@ -750,7 +750,11 @@ namespace ChendiAdventures
             foreach (var wizard in level.Wizards)
             {
                 if (GetBoundingBox().Intersects(wizard.GetBoundingBox())) Die(level);
-                if (GetBoundingBox().Intersects(wizard.EnergyBall.GetBoundingBox())) Die(level);
+                if (GetBoundingBox().Intersects(wizard.EnergyBall.GetBoundingBox()))
+                {
+                    Die(level);
+                    wizard.EnergyBall.ResetEnergyBall(level);
+                }
             }
         }
 
@@ -766,7 +770,7 @@ namespace ChendiAdventures
                 IsDead = true;
                 SpeedY = -10f;
                 
-                this.Lives--;
+                //this.Lives--;
 
                 HasSilverKey = false;
                 HasGoldenKey = false;

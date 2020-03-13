@@ -71,6 +71,8 @@ namespace ChendiAdventures
                     (obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y + 0.9375f)).Type ==
                     BlockType.HardBlock)
                 {
+                    level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                        new Color(57, 65, 81), 1));
                     obstacle.HitHardblock();
                     if (obstacle.Health <= 0)
                     {

@@ -49,11 +49,9 @@ namespace ChendiAdventures
                 X += SpeedX;
                 Y += SpeedY;
 
-                if (DefaultTimer.ElapsedTime.AsSeconds() > 8)
+                if (DefaultTimer.ElapsedTime.AsSeconds() > 5)
                 {
-                    isAttacking = false;
-                    level.Particles.Add(new ParticleEffect(X - 8, Y - 8, Color.Yellow));
-                    SetPosition(-100, -100);
+                    ResetEnergyBall(level);
                 }
 
                 _anim.Animate(16);
@@ -66,6 +64,13 @@ namespace ChendiAdventures
             isAttacking = true;
             DefaultTimer.Restart();
             SetPosition(x, y);
+        }
+
+        public void ResetEnergyBall(Level level)
+        {
+            isAttacking = false;
+            level.Particles.Add(new ParticleEffect(X - 8, Y - 8, Color.Yellow));
+            SetPosition(-100, -100);
         }
     }
 }

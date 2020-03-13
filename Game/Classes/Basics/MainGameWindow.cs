@@ -1036,6 +1036,16 @@ namespace ChendiAdventures
                     flag = true;
                     _chendi.sPickup.Play();
 
+                    typeM = _level.GetObstacle(x, y).Type;
+                }
+
+
+
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.V))
+                {
+                    flag = true;
+                    _chendi.sPickup.Play();
+
 
                     if (typeM >= (BlockType) t1 && typeM <= (BlockType) t2)
                     {
@@ -1408,7 +1418,7 @@ namespace ChendiAdventures
             timer.Restart();
             _chendi.sImmortality.Stop();
             bool isLottery;
-            if (_level.LevelNumber < 51 && _level.LevelNumber > 15 && Randomizer.Next(100)+1 > 75)
+            if (_level.LevelNumber < 51 && _level.LevelNumber > 15 && Randomizer.Next(100)+1 > 50)
             {
                 isLottery = true;
             }

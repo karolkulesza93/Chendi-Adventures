@@ -613,16 +613,13 @@ namespace ChendiAdventures
             //text slide effect
             if (isLevelEditor == false)
             {
-                if (LevelTime.ElapsedTime.AsSeconds() < 0.5f)_levelDescription.MoveText(_view.Center.X - _view.Size.X/2 - 300, _view.Center.Y - 100);
-                if (_levelDescription.X < _view.Center.X - 1.2f * _levelDescription.Width / 2 && LevelTime.ElapsedTime.AsSeconds() > 0.5f)
-                { _levelDescription.MoveText(_levelDescription.X + 50, _levelDescription.Y); }
-                else if (LevelTime.ElapsedTime.AsSeconds() < 2.5f && LevelTime.ElapsedTime.AsSeconds() > 0.5f)
-                { _levelDescription.MoveText(_view.Center.X - 1.2f * _levelDescription.Width / 2, _view.Center.Y - 100); }
-
-                if (_levelDescription.X < _view.Center.X + _view.Size.X / 2 + 500 && LevelTime.ElapsedTime.AsSeconds() > 2.5f)
-                { _levelDescription.MoveText(_levelDescription.X + 50, _levelDescription.Y); }
                 if (LevelTime.ElapsedTime.AsSeconds() > 5)
                 { _levelDescription.MoveText(-100, -100); }
+                else if (LevelTime.ElapsedTime.AsSeconds() > 4)
+                { _levelDescription.MoveText(_levelDescription.X + 50, _view.Center.Y - 100); }
+                else if (LevelTime.ElapsedTime.AsSeconds() > 0.5f)
+                { _levelDescription.MoveText(_view.Center.X - 1.2f * _levelDescription.Width / 2, _view.Center.Y - 100); }
+                else if (_levelDescription.X < _view.Center.X - 1.2f * _levelDescription.Width / 2) { _levelDescription.MoveText(_levelDescription.X + 50, _view.Center.Y - 100); }
             } 
 
             try

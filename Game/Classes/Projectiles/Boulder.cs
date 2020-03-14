@@ -34,12 +34,12 @@ namespace ChendiAdventures
 
         public void Attack(float x, float y, Movement dir)
         {
+            SetPosition(x, y);
             SpeedX = MainGameWindow.Randomizer.Next(5) + 4;
             SpeedY = -1 * MainGameWindow.Randomizer.Next(3) - 4;
             if (dir == Movement.Left) SpeedX *= -1;
             isAttacking = true;
             sHurl.Play();
-            SetPosition(x, y);
         }
 
         public void ResetBoulder(Level level)
@@ -47,21 +47,22 @@ namespace ChendiAdventures
             isAttacking = false;
             level.Particles.Add(new ParticleEffect(X - 8, Y - 8, new Color(100,100,100)));
             Block.sDestroy.Play();
-            SetPosition(-100, -100);
+            SetPosition(-50, 300);
         }
 
         public void BoulderUpdate(Level level)
         {
-            _anim.Animate(16);
             if (isAttacking)
             {
                 X += SpeedX;
                 Y += SpeedY;
                 SpeedY += 0.23f;
-            }
-            if (level.UnpassableContains(level.GetObstacle(GetCenterPosition().X/32, GetCenterPosition().Y/32).Type))
-            {
-                ResetBoulder(level);
+                _anim.Animate(16);
+
+                if (level.UnpassableContains(level.GetObstacle(GetCenterPosition().X / 32, GetCenterPosition().Y / 32).Type))
+                {
+                    ResetBoulder(level);
+                }
             }
         }
 

@@ -37,11 +37,10 @@ namespace ChendiAdventures
                 new Vector2i(60, 60),
                 new Vector2i(90, 60),
                 new Vector2i(120, 60));
-
-            sWood = new Sound(new SoundBuffer(@"sfx/wood.wav")) {Volume = 50};
         }
 
-        public Sound sWood { get; }
+        public Sound sWood = new Sound(new SoundBuffer(@"sfx/wood.wav")) {Volume = 50};
+        public Sound sBroke = new Sound(new SoundBuffer(@"sfx/broke.wav"));
 
         public void SwordCollisionCheck(Level level)
         {
@@ -112,12 +111,23 @@ namespace ChendiAdventures
                     }
 
                 foreach (var archer in level.Archers)
+                {
                     if (GetBoundingBox().Intersects(archer.GetBoundingBox()))
                     {
                         _character.AddToScore(level, archer.Points, archer.X, archer.Y);
                         level.Particles.Add(new ParticleEffect(archer.X, archer.Y, Color.Red));
                         archer.Die(level);
                     }
+
+                    if (GetBoundingBox().Intersects(archer.Arrow.GetBoundingBox()))
+                    {
+                        level.Particles.Add(new ParticleEffect(archer.Arrow.X, archer.Arrow.Y,
+                            new Color(193, 97, 0), 10));
+                        archer.Arrow.DeleteArrow();
+                        sBroke.Play();
+                    }
+                }
+                    
 
                 foreach (var wizard in level.Wizards)
                     if (GetBoundingBox().Intersects(wizard.GetBoundingBox()))

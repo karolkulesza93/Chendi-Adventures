@@ -20,12 +20,12 @@ namespace ChendiAdventures
 
             Health = 10;
             HurlInterval = 6;
-            ProcsDistance = 400;
+            ProcsDistance = 200;
 
             SpeedX = 1f;
             SpeedY = 0f;
 
-            Boulder = new Boulder(-100,-100, GolemTexture, Movement.None);
+            Boulder = new Boulder(300,-50, GolemTexture, Movement.None);
 
             _animLeft = new Animation(this, 0.1f,
                 new Vector2i(0, 0),

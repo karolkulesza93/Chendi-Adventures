@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading;
 using SFML.Audio;
@@ -19,6 +18,7 @@ using SFML.Window;
 PROPOZYCJE DO ZROBIENIA:
 - generowanie poziomu***
 - jak sie uda to shadery/swiatlo ogarnac aby ladnie wygladalo**
+- po smierci resp kilka sekund przed
 
 DO ZROBIENIA:
 - levele
@@ -84,7 +84,7 @@ namespace ChendiAdventures
         private bool _isPaused;
         private bool _isQuit;
         private bool _isSettigs;
-
+        public string Title { get; set; }
         public static Difficulty GameDifficulty { get; set; }
         public static bool IsVsync { get; set; }
 
@@ -107,7 +107,12 @@ namespace ChendiAdventures
             _windowHeight = (int) _window.Size.Y;
             _window.SetFramerateLimit(60);
             _window.SetVisible(true);
+
+            //events
             _window.Closed += OnClosed;
+            _window.KeyPressed += OnKeyPress;
+            //
+
             _window.SetMouseCursorVisible(false);
             _window.SetKeyRepeatEnabled(false);
             _window.SetVerticalSyncEnabled(true);
@@ -115,7 +120,6 @@ namespace ChendiAdventures
             _screenChange = new ScreenChange(ref _view);
         }
 
-        public string Title { get; set; }
 
         private void OnClosed(object sender, EventArgs e)
         {
@@ -127,6 +131,16 @@ namespace ChendiAdventures
             _isQuit = false;
         }
 
+        [Obsolete]
+        private void OnKeyPress(object sender, EventArgs e)
+        {
+            if (Keyboard.IsKeyPressed(Keyboard.Key.Q))
+            {
+                Image img = _window.Capture();
+                img.SaveToFile(string.Format(@"screenshots/img_{0}.png", DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss")));
+            }
+        }
+        
         public void GameStart()
         {
 
@@ -306,7 +320,7 @@ namespace ChendiAdventures
                     flag = true;
                     choice++;
                 }
-                else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
                 {
                     flag = true;
                     _chendi.sPickup.Play();
@@ -388,7 +402,7 @@ namespace ChendiAdventures
                     }
                 }
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER))
                 {
                     _chendi.sPickup.Play();
                     SaveSettings();
@@ -434,7 +448,7 @@ namespace ChendiAdventures
                 //slide text effect
                 if (keys.X < 50) keys.MoveText(keys.X + 50, keys.Y);
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape)) break;
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER)) break;
                 AnimateBackground();
                 _window.Draw(_background);
 
@@ -457,7 +471,7 @@ namespace ChendiAdventures
                 if (hs.Y < 5) { hs.MoveText(hs.X, hs.Y + 10);}
                 if (_highscoreValues.X < _view.Center.X - 750) _highscoreValues.X += 50;
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER))
                 {
                     _chendi.sPickup.Play();
                     _isHighscore = false;
@@ -539,7 +553,7 @@ namespace ChendiAdventures
                     flag = true;
                     choice++;
                 }
-                else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
                 {
                     
                     flag = true;
@@ -677,7 +691,7 @@ namespace ChendiAdventures
 
                 levels[choice].ChangeColor(Color.Green);
 
-                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                if (!flag && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
                 {
                     _chendi.sPickup.Play();
                     DrawLoadingScreen();
@@ -691,7 +705,7 @@ namespace ChendiAdventures
                     _menuTheme.Stop();
                 }
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER))
                 {
                     _chendi.sPickup.Play();
                     _isLevelSelection = false;
@@ -720,10 +734,6 @@ namespace ChendiAdventures
 
             SetView(new Vector2f(_windowWidth/2, _windowHeight/2), _view.Center);
             _screenChange.Reset();
-
-            if (_level.LevelNumber == 1) BegginingScene();
-
-            
 
             _level.LoadLevel($"lvl{_level.LevelNumber}");
 
@@ -767,12 +777,11 @@ namespace ChendiAdventures
                 //slide text effect
                 if (_pause.X < _view.Center.X - 100) { _pause.MoveText(_pause.X + 30, _pause.Y);}
 
-
                 this.DrawGame(_chendi, false);
                 _window.Draw(_pause);
                 _window.Display();
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER) || Keyboard.IsKeyPressed(Keyboard.Key.Space))
                 {
                     _chendi.sPickup.Play();
                     _isPaused = false;
@@ -838,7 +847,7 @@ namespace ChendiAdventures
 
                     _continue.EditText(string.Format("CONTINUE? {0}", 10 - (int)clock.ElapsedTime.AsSeconds()));
 
-                    if (Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                    if (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP))
                     {
                         _chendi.sPickup.Play();
                         _chendi.ResetMainCharacter();
@@ -848,7 +857,7 @@ namespace ChendiAdventures
                         return;
                     }
 
-                    if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+                    if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER))
                     {
                         _chendi.sPickup.Play();
                         _chendi.ResetMainCharacter();
@@ -926,7 +935,7 @@ namespace ChendiAdventures
         {
             if (_chendi.IsDead && _chendi.DefaultClock.ElapsedTime.AsSeconds() > 2.5f) _screenChange.BlackOut();
 
-            if (Keyboard.IsKeyPressed(Keyboard.Key.P)) 
+            if (Keyboard.IsKeyPressed(Keyboard.Key.Space)) 
             {
                 Creature.sKill.Play();
                 _isPaused = true;
@@ -1436,7 +1445,7 @@ namespace ChendiAdventures
                             _no.ChangeColor(Color.Green);
                         }
                     }
-                    else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                    else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
                     {
                         flag = true;
                         _chendi.sPickup.Play();
@@ -1586,7 +1595,7 @@ namespace ChendiAdventures
                 {
                     ResetWindow();
 
-                    if (isRolling && !done && Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                    if (isRolling && !done && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
                     {
                         Creature.sKill.Play();
                         isRolling = false;
@@ -1678,7 +1687,7 @@ namespace ChendiAdventures
                 if (choice == 0) choice = 4;
                 if (choice == 5) choice = 1;
 
-                if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
                 {
                     merchant.SellWares(choice);
                     flag = true;
@@ -1686,7 +1695,7 @@ namespace ChendiAdventures
 
 
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER))
                 {
                     _level.isShopOpened = false;
                 }

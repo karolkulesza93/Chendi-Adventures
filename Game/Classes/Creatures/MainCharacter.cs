@@ -501,7 +501,7 @@ namespace ChendiAdventures
                         }
                     case BlockType.Exit:
                         {
-                            if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks && !IsDead)
+                            if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
                             {
                                 SpeedX = 0;
                                 SetTextureRectanlge(128, 64);
@@ -512,7 +512,7 @@ namespace ChendiAdventures
                         }
                     case BlockType.Shop:
                         {
-                            if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks)
+                            if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
                             {
                                 level.isShopOpened = true;
                             }
@@ -521,7 +521,7 @@ namespace ChendiAdventures
                         }
                     case BlockType.Lever:
                         {
-                            if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks)
+                            if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
                             {
                                 Block.FlipLever();
                             }
@@ -667,7 +667,7 @@ namespace ChendiAdventures
                     //teleports/////////////////
                     case BlockType.Teleport1:
                         {
-                            if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1)
+                            if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1 && IsStandingOnBlocks && !IsDead && SpeedX == 0)
                             {
                                 sTp.Play();
                                 SetPosition(level.tp2Position.X, level.tp2Position.Y);
@@ -678,7 +678,7 @@ namespace ChendiAdventures
                         }
                     case BlockType.Teleport2:
                         {
-                            if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1)
+                            if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1 && IsStandingOnBlocks && !IsDead && SpeedX == 0)
                             {
                                 sTp.Play();
                                 SetPosition(level.tp1Position.X, level.tp1Position.Y);
@@ -690,7 +690,7 @@ namespace ChendiAdventures
                     //
                     case BlockType.Teleport3:
                         {
-                            if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1)
+                            if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1 && IsStandingOnBlocks && !IsDead && SpeedX == 0)
                             {
                                 sTp.Play();
                                 SetPosition(level.tp4Position.X, level.tp4Position.Y);
@@ -701,7 +701,7 @@ namespace ChendiAdventures
                         }
                     case BlockType.Teleport4:
                         {
-                            if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1)
+                            if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1 && IsStandingOnBlocks && !IsDead && SpeedX == 0)
                             {
                                 sTp.Play();
                                 SetPosition(level.tp3Position.X, level.tp3Position.Y);
@@ -767,15 +767,15 @@ namespace ChendiAdventures
         {
             if (!IsDead && IsVulnerable && !GotExit)
             {
-                sDie.Play();
-                sKill.Play();
-                level.AddParticleEffect(new ParticleEffect(X, Y, Color.Red));
+                //sDie.Play();
+                //sKill.Play();
+                //level.AddParticleEffect(new ParticleEffect(X, Y, Color.Red));
                 Sword.Reset();
                 DefaultClock.Restart();
-                IsDead = true;
+                //IsDead = true;
                 SpeedY = -10f;
 
-                this.Lives--;
+                //this.Lives--;
 
                 HasSilverKey = false;
                 HasGoldenKey = false;

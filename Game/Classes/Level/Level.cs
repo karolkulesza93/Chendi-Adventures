@@ -33,6 +33,9 @@ v :enterance
 + :shop
 o :coin
 | :putifier
+Z :hard block
+l :lever
+8 :steel gate (opens when lever is pulled)
 $ :sack of gold
 # :spikes (kills immidietly)
 R :wood (destructible)
@@ -46,6 +49,7 @@ m :+1 mana potion
 < :archer shooting left
 f :ghost (killable only by energized arrow)
 % :wizard (shoots projectiles that follow You)
+E :golem (throws boulders, durable)
 1 :teleport 1 (teleports to teleport2)
 2 :teleport 2 (teleports to teleport1)
 3 :teleport 3 (teleports to teleport4)
@@ -578,7 +582,14 @@ namespace ChendiAdventures
 
         public Block GetObstacle(float x, float y)
         {
-            return LevelObstacles[(int) y * LevelLenght + (int) x];
+            try
+            {
+                return LevelObstacles[(int)y * LevelLenght + (int)x];
+            }
+            catch (Exception)
+            {
+                return new Block(-100,-100, null);
+            }
         }
 
         public bool UnpassableContains(BlockType type)

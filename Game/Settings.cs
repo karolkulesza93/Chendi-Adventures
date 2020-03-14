@@ -59,7 +59,7 @@ namespace ChendiAdventures
 
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("a")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Z")]
         public char Jump
         {
             get
@@ -146,5 +146,21 @@ namespace ChendiAdventures
                 this["Kys"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int HighestLevel
+        {
+            get
+            {
+                return ((int)(this["HighestLevel"]));
+            }
+            set
+            {
+                this["HighestLevel"] = value;
+            }
+        }
+
     }
 }

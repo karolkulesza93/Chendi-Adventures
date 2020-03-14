@@ -38,7 +38,7 @@ namespace ChendiAdventures
                 new Vector2i(90, 60),
                 new Vector2i(120, 60));
 
-            sWood = new Sound(new SoundBuffer(@"sfx/wood.wav"));
+            sWood = new Sound(new SoundBuffer(@"sfx/wood.wav")) {Volume = 50};
         }
 
         public Sound sWood { get; }

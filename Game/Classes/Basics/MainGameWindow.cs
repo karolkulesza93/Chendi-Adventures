@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading;
 using SFML.Audio;
@@ -28,27 +30,6 @@ namespace ChendiAdventures
 {
     public sealed class MainGameWindow
     {
-        //dev manip
-        private void DevManip()
-        {
-            string answer;
-
-            Console.Write("Play on fullscreen?\n> ");
-            answer = Console.ReadLine();
-            if (answer == "Y" || answer == "y") _windowStyle = Styles.Fullscreen;
-            else _windowStyle = Styles.Resize;
-
-            Console.Write("Select level:\n> ");
-            _startingLevel = int.Parse(Console.ReadLine());
-
-            Console.WriteLine("Configuration complete.");
-        }
-
-        private int _startingLevel = 1;
-
-        private bool _isDevManip = false;
-        //
-
         private static MainGameWindow _instance;
         private static readonly object Padlock = new object();
         public static MainGameWindow Instance
@@ -97,6 +78,7 @@ namespace ChendiAdventures
         private Styles _windowStyle = Styles.Fullscreen;
         private int _windowWidth;
         private bool _isGame;
+        private bool _isLevelSelection;
         private bool _isHighscore;
         private bool _isMenu;
         private bool _isPaused;
@@ -110,6 +92,7 @@ namespace ChendiAdventures
         {
             _isMenu = true;
             _isGame = false;
+            _isLevelSelection = false;
             _isHighscore = false;
             _isSettigs = false;
             _isQuit = false;
@@ -118,8 +101,6 @@ namespace ChendiAdventures
 
         private MainGameWindow(string title) : this()
         {
-            if (_isDevManip) DevManip();
-
             Title = title;
             _window = new RenderWindow(VideoMode.DesktopMode, Title, _windowStyle);
             _windowWidth = (int)_window.Size.X;
@@ -219,9 +200,10 @@ namespace ChendiAdventures
 
         private void MainLoop()
         {
-            while (_isGame || _isMenu || _isHighscore || _isSettigs)
+            while (_isGame || _isLevelSelection || _isMenu || _isHighscore || _isSettigs)
             {
                 if (_isMenu) MainMenuLoop();
+                if (_isLevelSelection) LevelSelectionLoop();
                 if (_isGame) GameLoop();
                 if (_isHighscore) HighScoreLoop();
                 if (_isSettigs) SettingsLoop();
@@ -433,15 +415,15 @@ namespace ChendiAdventures
             keys.SetOutlineThickness(5);
 
             StringBuilder str = new StringBuilder();
-            str.Append($"'{_chendi.KeyLEFT.ToString().ToUpper()}' : MOVE LEFT\n");
-            str.Append($"'{_chendi.KeyRIGHT.ToString().ToUpper()}' : MOVE RIGHT\n");
-            str.Append($"'{_chendi.KeyUP.ToString().ToUpper()}' : LOOK UP\n");
-            str.Append($"'{_chendi.KeyJUMP.ToString().ToUpper()}' : JUMP\n");
-            str.Append($"'{_chendi.KeyATTACK.ToString().ToUpper()}' : SWORD ATTACK\n");
-            str.Append($"'{_chendi.KeyARROW.ToString().ToUpper()}' : SHOOT AN ARROW\n");
-            str.Append($"'{_chendi.KeyTHUNDER.ToString().ToUpper()}' : SHOOT AN ENERGIZED ARROW\n");
-            str.Append($"'{_chendi.KeyIMMORTALITY.ToString().ToUpper()}' : BECOME IMMORTAL\n");
-            str.Append($"'{_chendi.KeyDIE.ToString().ToUpper()}' : KILL YOURSELF");
+            str.Append($"'{MainCharacter.KeyLEFT.ToString().ToUpper()}' : MOVE LEFT\n");
+            str.Append($"'{MainCharacter.KeyRIGHT.ToString().ToUpper()}' : MOVE RIGHT\n");
+            str.Append($"'{MainCharacter.KeyUP.ToString().ToUpper()}' : ACTION OR LOOK UP\n");
+            str.Append($"'{MainCharacter.KeyJUMP.ToString().ToUpper()}' : JUMP\n");
+            str.Append($"'{MainCharacter.KeyATTACK.ToString().ToUpper()}' : SWORD ATTACK\n");
+            str.Append($"'{MainCharacter.KeyARROW.ToString().ToUpper()}' : SHOOT AN ARROW\n");
+            str.Append($"'{MainCharacter.KeyTHUNDER.ToString().ToUpper()}' : SHOOT AN ENERGIZED ARROW\n");
+            str.Append($"'{MainCharacter.KeyIMMORTALITY.ToString().ToUpper()}' : BECOME IMMORTAL\n");
+            str.Append($"'{MainCharacter.KeyDIE.ToString().ToUpper()}' : KILL YOURSELF");
 
             keys.EditText(str.ToString());
 
@@ -566,17 +548,23 @@ namespace ChendiAdventures
                     {
                         case 1:
                         {
-                            DrawLoadingScreen();
-                            _isMenu = false;
-                            _isGame = true;
-                            if (_level.LevelNumber != 0)
+                            if (Settings.Default.HighestLevel >= 5 && _level.LevelNumber != 0)
                             {
-                                _level.LevelNumber = 1;
-                                //dev manip
-                                if (_isDevManip) this._level.LevelNumber = _startingLevel;
+                                _isMenu = false;
+                                _isLevelSelection = true;
                             }
-                            _chendi.ResetMainCharacter();
-                            _menuTheme.Stop();
+                            else
+                            {
+                                DrawLoadingScreen();
+                                _isMenu = false;
+                                _isGame = true;
+                                if (_level.LevelNumber != 0)
+                                {
+                                    _level.LevelNumber = 1;
+                                }
+                                _chendi.ResetMainCharacter();
+                                _menuTheme.Stop();
+                            }
                             break;
                         }
                         case 2:
@@ -631,6 +619,99 @@ namespace ChendiAdventures
             }
         }
 
+        private void LevelSelectionLoop()
+        {
+            int maxLevel = Settings.Default.HighestLevel;
+            List<TextLine> levels = new List<TextLine>();
+
+            for (int i = 0; i <= maxLevel; i += 5)
+            {
+                levels.Add(new TextLine(string.Format("LEVEL {0}", i == 0 ? 1 : i), 50, -400 - (i/5)*100, (i / 5) * 60, Color.White));
+            }
+
+            for (int i = 0; i < levels.Count; i++)
+            {
+                levels[i].MoveText(levels[i].X, _view.Size.Y - 50 - 60 * (levels.Count - i));
+                levels[i].SetOutlineThickness(5);
+            }
+
+            var choice = 0;
+            var delay = 0;
+            var flag = true;
+
+            levels[0].ChangeColor(Color.Green);
+
+            while (_window.IsOpen && _isLevelSelection)
+            {
+                ResetWindow();
+
+                if (flag) delay++;
+                if (delay > 10)
+                {
+                    delay = 0;
+                    flag = false;
+                }
+
+                //text slide effect
+                foreach (var line in levels)
+                {
+                    if (line.X < 50) line.MoveText(line.X + 50, line.Y);
+                    line.ChangeColor(Color.White);
+                }
+
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Up))
+                {
+                    sChoice.Play();
+                    flag = true;
+                    choice--;
+                }
+                else if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Down))
+                {
+                    sChoice.Play();
+                    flag = true;
+                    choice++;
+                }
+
+                if (choice < 0) choice = levels.Count - 1;
+                if (choice > levels.Count - 1) choice = 0;
+
+                levels[choice].ChangeColor(Color.Green);
+
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Space))
+                {
+                    _chendi.sPickup.Play();
+                    DrawLoadingScreen();
+                    _isLevelSelection = false;
+                    _isGame = true;
+                    if (_level.LevelNumber != 0)
+                    {
+                        _level.LevelNumber = choice == 0 ? 1 : choice * 5;
+                    }
+                    _chendi.ResetMainCharacter();
+                    _menuTheme.Stop();
+                }
+
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+                {
+                    _chendi.sPickup.Play();
+                    _isLevelSelection = false;
+                    _isMenu = true;
+                }
+
+
+                if (_isLevelSelection)
+                {
+                    AnimateBackground();
+                    _window.Draw(_background);
+                    foreach (var line in levels)
+                    {
+                        _window.Draw(line);
+                    }
+                    _window.Display();
+                }
+            }
+        }
+
         private void GameLoop()
         {
             DrawLoadingScreen();
@@ -655,7 +736,7 @@ namespace ChendiAdventures
 
                 ResetWindow();
 
-                _chendi.MainCharactereUpdate(_level);
+                _chendi.MainCharacterUpdate(_level);
                 _level.LevelUpdate();
 
                 ViewManipulation(_level);
@@ -721,6 +802,7 @@ namespace ChendiAdventures
         {
             var clock = new Clock();
             SetView(new Vector2f(_windowWidth, _windowHeight), new Vector2f(_windowWidth / 2, _windowHeight / 2));
+
 
             if (_chendi.Continues == 0)
             {
@@ -1377,6 +1459,11 @@ namespace ChendiAdventures
             if (_chendi.OutOfLives) //game over
             {
                 _highscoreValues.AddNewRecord(new HighscoreRecord(_chendi.Score, _level.LevelNumber, GameDifficulty.ToString().ToUpper()));
+                if (_level.LevelNumber > Settings.Default.HighestLevel)
+                {
+                    Settings.Default.HighestLevel = _level.LevelNumber;
+                    Settings.Default.Save();
+                }
 
                 _gameEnd.Play();
 
@@ -1442,7 +1529,7 @@ namespace ChendiAdventures
 
                 if (Victory.Status != SoundStatus.Playing) _chendi.GrantAdditionalLifeDependingOnScore();
 
-                _chendi.MainCharactereUpdate(_level);
+                _chendi.MainCharacterUpdate(_level);
                 _level.LevelUpdate();
 
                 DrawGame(_chendi, false);
@@ -1519,7 +1606,7 @@ namespace ChendiAdventures
                     }
 
                     gameMachine.GameMachineUpdate();
-                    _chendi.MainCharactereUpdate(_level);
+                    _chendi.MainCharacterUpdate(_level);
                     _level.LevelUpdate();
 
                     DrawGame(_chendi, false);

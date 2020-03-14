@@ -25,7 +25,6 @@ namespace ChendiAdventures
 
             SetBlock(type);
         }
-
         public Vector2f OriginalPos { get; }
         public Animation BlockAnimation { get; private set; }
         public TextLine Hint { get; set; }
@@ -33,10 +32,6 @@ namespace ChendiAdventures
         public bool IsDestroyed { get; private set; }
         public bool IsStomped { get; set; }
         public int Health { get; set; }
-        public static bool IsLeverOn { get; set; }
-        public static List<Block> SteelGates = new List<Block>();
-        public static List<Block> Levers = new List<Block>();
-        private static int LeverInterval = 10;
         public BlockType Type { get; set; }
 
         public void SetBlock(BlockType type)
@@ -62,15 +57,15 @@ namespace ChendiAdventures
                 case BlockType.SteelGate:
                 {
                     SetTextureRectanlge(96, 160, 32, 32);
-                    SteelGates.Add(this);
+                    Level.SteelGates.Add(this);
                     break;
                 }
                 case BlockType.Lever:
                 {
                     SetTextureRectanlge(32, 160, 32, 32);
                     LeverTimer = new Clock();
-                    IsLeverOn = false;
-                    Levers.Add(this);
+                    Level.IsLeverOn = false;
+                    Level.Levers.Add(this);
                     break;
                 }
                 case BlockType.Spike:
@@ -433,18 +428,18 @@ namespace ChendiAdventures
 
         public static void FlipLever()
         {
-            if (IsLeverOn == false)
+            if (Level.IsLeverOn == false)
             {
-                IsLeverOn = true;
+                Level.IsLeverOn = true;
                 LeverTimer.Restart();
                 sLever.Play();
 
-                foreach (Block gate in SteelGates)
+                foreach (Block gate in Level.SteelGates)
                 {
                     gate.Type = BlockType.None;
                 }
 
-                foreach (Block lever in Levers)
+                foreach (Block lever in Level.Levers)
                 {
                     lever.SetTextureRectanlge(64, 160);
                 }
@@ -453,29 +448,29 @@ namespace ChendiAdventures
         }
         public static void LeverMechanismUpdate()
         {
-            if (IsLeverOn == false)
+            if (Level.IsLeverOn == false)
             {
-                foreach (var gate in SteelGates)
+                foreach (var gate in Level.SteelGates)
                 {
                     if (gate.Y < gate.OriginalPos.Y) gate.Y += 0.002f;
                 }
             }
-            else if (IsLeverOn == true && LeverTimer.ElapsedTime.AsSeconds() < LeverInterval)
+            else if (Level.IsLeverOn == true && LeverTimer.ElapsedTime.AsSeconds() < Level.LeverInterval)
             {
-                foreach (var gate in SteelGates)
+                foreach (var gate in Level.SteelGates)
                 {
                     if (gate.Y > gate.OriginalPos.Y - 32) gate.Y -= 0.002f;
                 }
             }
             else
             {
-                IsLeverOn = false;
+                Level.IsLeverOn = false;
                 sLever.Play();
-                foreach (Block gate in SteelGates)
+                foreach (Block gate in Level.SteelGates)
                 {
                     gate.Type = BlockType.SteelGate;
                 }
-                foreach (var lever in Levers)
+                foreach (var lever in Level.Levers)
                 {
                     lever.SetTextureRectanlge(32, 160);
                 }

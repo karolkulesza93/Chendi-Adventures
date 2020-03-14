@@ -38,6 +38,7 @@ namespace ChendiAdventures
             Arrow = new Arrow(-100, -100, ArrowTexture, Movement.Right);
             ArrowAmount = 3;
             Mana = 0;
+            IsJumping = false;
             IsAttacking = false;
             IsUpAttacking = false;
             IsShooting = false;
@@ -102,33 +103,23 @@ namespace ChendiAdventures
 
             _victoryAnimation = new Animation(this, 0.1f,
                 new Vector2i(128,64),
+                new Vector2i(128, 192),
                 new Vector2i(128,96),
                 new Vector2i(128, 64),
+                new Vector2i(128, 192),
                 new Vector2i(128, 32)
                 );
             //
-
-            KeyUP = Keyboard.Key.Up;
-            KeyLEFT = Keyboard.Key.Left;
-            KeyRIGHT = Keyboard.Key.Right;
-            KeyJUMP = Keyboard.Key.Z;
-            KeyATTACK = Keyboard.Key.X;
-            KeyARROW = Keyboard.Key.C;
-            KeyTHUNDER = Keyboard.Key.D;
-            KeyIMMORTALITY = Keyboard.Key.S;
-            KeyDIE = Keyboard.Key.U;
 
             sJump = new Sound(new SoundBuffer(@"sfx/jump.wav"));
             sTramp = new Sound(new SoundBuffer(@"sfx/trampoline.wav"));
             sCoin = new Sound(new SoundBuffer(@"sfx/coin.wav"));
             sCoin.Volume = 30;
             sAtk = new Sound(new SoundBuffer(@"sfx/sword.wav"));
-            sAtk.Volume = 30;
             sDie = new Sound(new SoundBuffer(@"sfx/death.wav"));
             sTp = new Sound(new SoundBuffer(@"sfx/teleport.wav"));
             sKey = new Sound(new SoundBuffer(@"sfx/key.wav"));
             sLife = new Sound(new SoundBuffer(@"sfx/life.wav"));
-            sLife.Volume = 50;
             sPickup = new Sound(new SoundBuffer(@"sfx/pickup.wav"));
             sImmortality = new Sound(new SoundBuffer(@"sfx/immortality.wav"));
             sImmortality.Volume = 30;
@@ -142,6 +133,7 @@ namespace ChendiAdventures
         public int Lives { get; set; }
         public int Continues { get; set; }
         public int Score { get; set; }
+        public bool IsJumping { get; private set; }
         public bool IsAttacking { get; private set; }
         public bool IsUpAttacking { get; private set; }
         public bool IsShooting { get; private set; }
@@ -153,15 +145,15 @@ namespace ChendiAdventures
         public int LivesGranted { get; set; }
 
         //steering
-        public Keyboard.Key KeyUP { get; set; }
-        public Keyboard.Key KeyLEFT { get; set; }
-        public Keyboard.Key KeyRIGHT { get; set; }
-        public Keyboard.Key KeyJUMP { get; set; }
-        public Keyboard.Key KeyATTACK { get; set; }
-        public Keyboard.Key KeyARROW { get; set; }
-        public Keyboard.Key KeyTHUNDER { get; set; }
-        public Keyboard.Key KeyDIE { get; set; }
-        public Keyboard.Key KeyIMMORTALITY { get; set; }
+        public static Keyboard.Key KeyUP = Keyboard.Key.Up;
+        public static Keyboard.Key KeyLEFT = Keyboard.Key.Left;
+        public static Keyboard.Key KeyRIGHT = Keyboard.Key.Right;
+        public static Keyboard.Key KeyJUMP = Keyboard.Key.Z;
+        public static Keyboard.Key KeyATTACK = Keyboard.Key.X;
+        public static Keyboard.Key KeyARROW = Keyboard.Key.C;
+        public static Keyboard.Key KeyTHUNDER = Keyboard.Key.D;
+        public static Keyboard.Key KeyDIE = Keyboard.Key.U;
+        public static Keyboard.Key KeyIMMORTALITY = Keyboard.Key.S;
 
         //sounds
         public Sound sTramp { get; }
@@ -181,7 +173,8 @@ namespace ChendiAdventures
                 //just die
                 if (Keyboard.IsKeyPressed(KeyDIE)) Die(level);
                 //jump
-                if (Keyboard.IsKeyPressed(KeyJUMP) && !IsShooting && !IsAttacking) Jump();
+                if (Keyboard.IsKeyPressed(KeyJUMP) && !IsShooting && !IsAttacking && !IsJumping) Jump();
+                IsJumping = Keyboard.IsKeyPressed(KeyJUMP);
                 //attack
                 if (Keyboard.IsKeyPressed(KeyATTACK) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 && IsVulnerable && !IsAttacking && !IsShooting)
                 {
@@ -342,7 +335,7 @@ namespace ChendiAdventures
             }
         }
 
-        public void MainCharactereUpdate(Level level)
+        public void MainCharacterUpdate(Level level)
         {
             MainCharacterSteering(level);
 
@@ -719,7 +712,7 @@ namespace ChendiAdventures
                     //////////////////
                     case BlockType.Hint:
                         {
-                            level.SetHints(obstacle, this);
+                            level.SetHints(obstacle);
                             break;
                         }
                 }
@@ -770,7 +763,7 @@ namespace ChendiAdventures
                 IsDead = true;
                 SpeedY = -10f;
                 
-                //this.Lives--;
+                this.Lives--;
 
                 HasSilverKey = false;
                 HasGoldenKey = false;
@@ -821,6 +814,7 @@ namespace ChendiAdventures
         public void ResetMainCharacter()
         {
             GotExit = false;
+            IsJumping = false;
             IsAttacking = false;
             IsDead = false;
             OutOfLives = false;
@@ -831,6 +825,9 @@ namespace ChendiAdventures
             Score = 0;
             LivesGranted = 0;
             Coins = 0;
+
+            SpeedY = 0;
+            SpeedX = 0;
 
             _immortalityAnimationCounter = 0;
             _immortalityAnimationFlag = false;

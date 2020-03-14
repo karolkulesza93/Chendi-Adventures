@@ -9,7 +9,7 @@
       <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="Jump" Type="System.Char" Scope="User">
-      <Value Profile="(Default)">a</Value>
+      <Value Profile="(Default)">Z</Value>
     </Setting>
     <Setting Name="Attack" Type="System.Char" Scope="User">
       <Value Profile="(Default)">X</Value>
@@ -25,6 +25,9 @@
     </Setting>
     <Setting Name="Kys" Type="System.Char" Scope="User">
       <Value Profile="(Default)">U</Value>
+    </Setting>
+    <Setting Name="HighestLevel" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

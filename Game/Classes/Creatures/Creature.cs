@@ -7,7 +7,7 @@ namespace ChendiAdventures
     public abstract class Creature : Entity
     {
         protected static Sound sJump;
-        public static Sound sKill = new Sound(new SoundBuffer(@"sfx/kill.wav")) { Volume = 50 };
+        public static Sound sKill = new Sound(new SoundBuffer(@"sfx/kill.wav"));
         protected Animation _animLeft;
         protected Animation _animRight;
         public int Points { get; set; }

@@ -86,6 +86,11 @@ namespace ChendiAdventures
         public List<BlockType> UnableToPassl;
         public bool isShopOpened;
 
+        public static bool IsLeverOn { get; set; }
+        public static List<Block> SteelGates = new List<Block>();
+        public static List<Block> Levers = new List<Block>();
+        public static int LeverInterval = 10;
+
         public Level(MainCharacter character, View view)
         {
             _mainCharacter = character;
@@ -140,7 +145,6 @@ namespace ChendiAdventures
         public int StartCoins { get; set; }
         public int StartArrows { get; set; }
         public int StartMana { get; set; }
-
         public void Draw(RenderTarget target, RenderStates states)
         {
             target.Draw(_background);
@@ -166,8 +170,8 @@ namespace ChendiAdventures
 
         public void LoadLevel(string level)
         {
-            Block.Levers.Clear();
-            Block.SteelGates.Clear(); 
+            Levers.Clear();
+            SteelGates.Clear(); 
             //Console.WriteLine("Level load start...");
 
             ScoreAdditionEffects.Clear();
@@ -683,7 +687,7 @@ namespace ChendiAdventures
             return points < 0 ? 0 : points - points % 10;
         }
 
-        public void SetHints(Block obstacle, MainCharacter character)
+        public void SetHints(Block obstacle)
         {
             switch (LevelNumber)
             {
@@ -723,20 +727,20 @@ namespace ChendiAdventures
                         }
                         case 7:
                         {
-                            ShowHint(obstacle, string.Format("PRESS '{0}' TO JUMP", character.KeyJUMP.ToString()), -50,
+                            ShowHint(obstacle, string.Format("PRESS '{0}' TO JUMP", MainCharacter.KeyJUMP.ToString()), -50,
                                 -10);
                             break;
                         }
                         case 8:
                         {
-                            ShowHint(obstacle, string.Format("PRESS '{0}' TO ATTACK", character.KeyATTACK.ToString()),
+                            ShowHint(obstacle, string.Format("PRESS '{0}' TO ATTACK", MainCharacter.KeyATTACK.ToString()),
                                 -50, -10);
                             break;
                         }
                         case 9:
                         {
                             ShowHint(obstacle,
-                                string.Format("PRESS '{0}' TO SHOOT AN ARROW", character.KeyARROW.ToString()), -70,
+                                string.Format("PRESS '{0}' TO SHOOT AN ARROW", MainCharacter.KeyARROW.ToString()), -70,
                                 -10);
                             break;
                         }
@@ -757,7 +761,7 @@ namespace ChendiAdventures
                         {
                             ShowHint(obstacle,
                                 string.Format("IF YOU FALL INTO A TRAP,\nJUST KYS BY PRESSING '{0}'",
-                                    character.KeyDIE.ToString()), -60, -22);
+                                    MainCharacter.KeyDIE.ToString()), -60, -22);
                             break;
                         }
                     }
@@ -801,7 +805,7 @@ namespace ChendiAdventures
                             ShowHint(obstacle, string.Format(
                                     "MANA POTION CAN BE USED IN TWO WAYS:\nTO ENCHANT YOUR ARROWS BY PRESSING '{0}'\n" +
                                     "OR BECOME INVINCIBLE FOR\nA COUPLE OF SECONDS BY PRESSING '{1}'",
-                                    character.KeyTHUNDER.ToString(), character.KeyIMMORTALITY.ToString()),
+                                    MainCharacter.KeyTHUNDER.ToString(), MainCharacter.KeyIMMORTALITY.ToString()),
                                 -60, -44);
                             break;
                         }

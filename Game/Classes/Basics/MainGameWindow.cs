@@ -1010,13 +1010,13 @@ namespace ChendiAdventures
 
             //tiles 
             int t1 = 1;
-            int t2 = 20;
+            int t2 = 21;
             //pickups
-            int p1 = 21;
-            int p2 = 31;
+            int p1 = 22;
+            int p2 = 32;
             //details
-            int d1 = 32;
-            int d2 = 38;
+            int d1 = 33;
+            int d2 = 39;
 
             while (_window.IsOpen)
             {
@@ -1431,13 +1431,19 @@ namespace ChendiAdventures
 
                         if (choice)
                         {
+                            DrawLoadingScreen();
+                            if (_level.LevelNumber > Settings.Default.HighestLevel)
+                            {
+                                Settings.Default.HighestLevel = _level.LevelNumber;
+                                Settings.Default.Save();
+                            }
                             _isGame = false;
                             _isMenu = true;
                             flag = false;
                             _level.LevelNumber = 1;
                             _chendi.ResetMainCharacter();
                             SetView(new Vector2f(_windowWidth,_windowHeight), new Vector2f(_windowWidth/2, _windowHeight/2));
-                            Thread.Sleep(500);
+                            Thread.Sleep(300);
                         }
 
                         break;
@@ -1540,12 +1546,12 @@ namespace ChendiAdventures
                 if (timer.ElapsedTime.AsSeconds() > 6)
                 {
                     _level.LevelNumber++;
-                    _chendi.GotExit = false;
                     //lottery
                     if (isLottery)
                     {
                         LotteryLoop();
                     }
+                    _chendi.GotExit = false;
                     DrawLoadingScreen();
                     break;
                 }

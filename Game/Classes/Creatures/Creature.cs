@@ -6,7 +6,9 @@ namespace ChendiAdventures
 {
     public abstract class Creature : Entity
     {
-        protected static Sound sJump;
+        public static Sound sJump;
+        public static Sound sStep;
+        public static Sound sLand;
         public static Sound sKill = new Sound(new SoundBuffer(@"sfx/kill.wav"));
         protected Animation _animLeft;
         protected Animation _animRight;
@@ -116,8 +118,8 @@ namespace ChendiAdventures
                         level.GetObstacle(Get32NextPosition().X + 0.85f, Get32NextPosition().Y + 0.1f)).Type))
                 {
                     NewY = (int) Get32NextPosition().Y + 1;
+                    if (SpeedY < -10f) sJump.Stop();
                     SpeedY = 0;
-                    sJump.Stop();
                     //Console.WriteLine("from BOTTOM side");
                 }
             }
@@ -137,6 +139,7 @@ namespace ChendiAdventures
                     }
                     NewY = (int) Get32NextPosition().Y;
                     IsStandingOnBlocks = true;
+                    if (SpeedY > 1f) sLand.Play();
                     SpeedY = 0;
                 }
             }

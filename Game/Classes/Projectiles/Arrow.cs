@@ -33,6 +33,15 @@ namespace ChendiAdventures
                 TipPosition.Y > 0 && TipPosition.Y < level.LevelHeight * 32)
             {
                 X += SpeedX;
+                if ((obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32)).Type ==
+                    BlockType.EnergyBall && isEnergized)
+                {
+                    obstacle.DeleteObstacle();
+                    sEnergyHit.Play();
+                    level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                        Color.Yellow));
+                    DeleteArrow();
+                }
                 if (level.UnpassableContains(
                     (obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32)).Type)) DeleteArrow();
             }

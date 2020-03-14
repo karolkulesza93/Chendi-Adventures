@@ -68,6 +68,19 @@ namespace ChendiAdventures
                     Level.Levers.Add(this);
                     break;
                 }
+                case BlockType.EnergyBall:
+                {
+                    BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(0, 224),
+                        new Vector2i(32, 224),
+                        new Vector2i(64, 224),
+                        new Vector2i(96, 224),
+                        new Vector2i(64, 224),
+                        new Vector2i(32, 224)
+                    );
+                    SetTextureRectanlge(0, 224, 32, 32);
+                    break;
+                }
                 case BlockType.Spike:
                 {
                     SetTextureRectanlge(0, 32, 32, 32);
@@ -178,7 +191,7 @@ namespace ChendiAdventures
                         new Vector2i(64, 224),
                         new Vector2i(32, 224)
                     );
-                    SetTextureRectanlge(0, 244, 32, 32);
+                    SetTextureRectanlge(0, 224, 32, 32);
                     break;
                 }
                 case BlockType.Mana:

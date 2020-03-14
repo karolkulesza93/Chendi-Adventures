@@ -45,7 +45,7 @@ namespace ChendiAdventures
 
         public void SwordCollisionCheck(Level level)
         {
-            if (X > 0 && Y > 0)
+            if (_character.IsAttacking)
             {
                 Block obstacle;
                 if ((obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y)).Type == BlockType.Wood ||
@@ -84,8 +84,23 @@ namespace ChendiAdventures
                     }
                 }
 
-
-
+                if ((obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y)).Type == BlockType.EnergyBall ||
+                    (obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y)).Type ==
+                    BlockType.EnergyBall ||
+                    (obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y + 0.9375f)).Type ==
+                    BlockType.EnergyBall ||
+                    (obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y + 0.9375f)).Type ==
+                    BlockType.EnergyBall)
+                {
+                    level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                        Color.Cyan, 10));
+                    _character.SpeedX = obstacle.GetCenterPosition().X - _character.GetCenterPosition().X < 0
+                        ? 15f
+                        : -15f;
+                    _character.SpeedY = -5f;
+                    _character.IsAttacking = false;
+                    Block.sHard.Play();
+                }
 
 
                 foreach (var monster in level.Monsters)

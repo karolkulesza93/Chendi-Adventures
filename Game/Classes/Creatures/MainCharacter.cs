@@ -53,8 +53,8 @@ namespace ChendiAdventures
 
             //animations
             _standing = new Animation(this, 0.2f,
-                new Vector2i(32,64),
-                new Vector2i(128,0)
+                new Vector2i(32, 64),
+                new Vector2i(128, 0)
                 );
             _animLeft = new Animation(this, 0.05f,
                 new Vector2i(0, 32),
@@ -66,13 +66,13 @@ namespace ChendiAdventures
             _lastMove = Movement.Right;
 
             _attackLeft = new Animation(this, 0.05f,
-                new Vector2i(0,160),
+                new Vector2i(0, 160),
                 new Vector2i(32, 160),
                 new Vector2i(64, 160),
                 new Vector2i(96, 160),
                 new Vector2i(128, 160)
                 );
-            _attackRight = new Animation(this,0.05f,
+            _attackRight = new Animation(this, 0.05f,
                 new Vector2i(0, 128),
                 new Vector2i(32, 128),
                 new Vector2i(64, 128),
@@ -81,30 +81,30 @@ namespace ChendiAdventures
                 );
 
             _jumpUp = new Animation(this, 0.05f,
-                new Vector2i(0,192),
+                new Vector2i(0, 192),
                 new Vector2i(32, 192)
                 );
             _jumpDown = new Animation(this, 0.05f,
-                new Vector2i(64,192),
+                new Vector2i(64, 192),
                 new Vector2i(96, 192)
                 );
             _jumpBack = new Animation(this, 0.05f,
-                new Vector2i(64,64),
-                new Vector2i(96,64)
+                new Vector2i(64, 64),
+                new Vector2i(96, 64)
                 );
             _jumpLeft = new Animation(this, 0.05f,
-                new Vector2i(64,96),
-                new Vector2i(96,96)
+                new Vector2i(64, 96),
+                new Vector2i(96, 96)
                 );
             _jumpRight = new Animation(this, 0.05f,
                 new Vector2i(0, 96),
-                new Vector2i(32,96)
+                new Vector2i(32, 96)
                 );
 
             _victoryAnimation = new Animation(this, 0.1f,
-                new Vector2i(128,64),
+                new Vector2i(128, 64),
                 new Vector2i(128, 192),
-                new Vector2i(128,96),
+                new Vector2i(128, 96),
                 new Vector2i(128, 64),
                 new Vector2i(128, 192),
                 new Vector2i(128, 32)
@@ -112,18 +112,17 @@ namespace ChendiAdventures
             //
 
             sJump = new Sound(new SoundBuffer(@"sfx/jump.wav"));
+            sStep = new Sound(new SoundBuffer(@"sfx/step.wav")) { Volume = 15 };
+            sLand = new Sound(new SoundBuffer(@"sfx/land.wav")) { Volume = 30 };
             sTramp = new Sound(new SoundBuffer(@"sfx/trampoline.wav"));
-            sCoin = new Sound(new SoundBuffer(@"sfx/coin.wav"));
-            sCoin.Volume = 30;
+            sCoin = new Sound(new SoundBuffer(@"sfx/coin.wav")) { Volume = 40 };
             sAtk = new Sound(new SoundBuffer(@"sfx/sword.wav"));
             sDie = new Sound(new SoundBuffer(@"sfx/death.wav"));
             sTp = new Sound(new SoundBuffer(@"sfx/teleport.wav"));
             sKey = new Sound(new SoundBuffer(@"sfx/key.wav"));
             sLife = new Sound(new SoundBuffer(@"sfx/life.wav"));
             sPickup = new Sound(new SoundBuffer(@"sfx/pickup.wav"));
-            sImmortality = new Sound(new SoundBuffer(@"sfx/immortality.wav"));
-            sImmortality.Volume = 30;
-            sImmortality.Loop = true;
+            sImmortality = new Sound(new SoundBuffer(@"sfx/immortality.wav")) { Volume = 30, Loop = true };
         }
         public Sword Sword { get; }
         public Arrow Arrow { get; }
@@ -134,8 +133,8 @@ namespace ChendiAdventures
         public int Continues { get; set; }
         public int Score { get; set; }
         public bool IsJumping { get; private set; }
-        public bool IsAttacking { get; private set; }
-        public bool IsUpAttacking { get; private set; }
+        public bool IsAttacking { get; set; }
+        public bool IsUpAttacking { get; set; }
         public bool IsShooting { get; private set; }
         public bool IsVulnerable { get; private set; }
         public bool HasSilverKey { get; set; }
@@ -238,7 +237,7 @@ namespace ChendiAdventures
                 if (IsAttacking)
                 {
                     if (sAtk.Status != SoundStatus.Playing) sAtk.Play();
-                    if (DefaultClock.ElapsedTime.AsSeconds() > 0.25f) {IsAttacking = false; IsUpAttacking = false; }
+                    if (DefaultClock.ElapsedTime.AsSeconds() > 0.25f) { IsAttacking = false; IsUpAttacking = false; }
                     else if (IsUpAttacking)
                         Sword.AttackUp();
                     else if (!IsUpAttacking) Sword.Attack();
@@ -291,7 +290,7 @@ namespace ChendiAdventures
                     _lastMove = Movement.Left;
                     if (SpeedX > 0) SpeedX = 0;
                 }
-                
+
                 //movement right
                 if (Keyboard.IsKeyPressed(KeyRIGHT) && !Keyboard.IsKeyPressed(KeyLEFT) && !IsStandingOnBlocks)
                 {
@@ -324,12 +323,12 @@ namespace ChendiAdventures
             {
                 if (SpeedX > 0)
                 {
-                    SpeedX -= dX/4;
+                    SpeedX -= dX / 4;
                     if (SpeedX < 0) SpeedX = 0f;
                 }
                 else if (SpeedX < 0f)
                 {
-                    SpeedX += dX/4;
+                    SpeedX += dX / 4;
                     if (SpeedX > 0) SpeedX = 0f;
                 }
             }
@@ -343,6 +342,8 @@ namespace ChendiAdventures
 
             Arrow.ArrowUpdate(this, level);
             Sword.SwordCollisionCheck(level);
+
+            if (SpeedX != 0 && IsStandingOnBlocks && sStep.Status != SoundStatus.Playing) sStep.Play();
 
             if (GotExit)
             {
@@ -442,7 +443,7 @@ namespace ChendiAdventures
                     else if (Keyboard.IsKeyPressed(Keyboard.Key.Up)) _jumpBack.Animate();
                     else
                     {
-                        if (SpeedY < 0) _jumpUp.Animate(); 
+                        if (SpeedY < 0) _jumpUp.Animate();
                         else _jumpDown.Animate();
                     }
                 }
@@ -472,25 +473,25 @@ namespace ChendiAdventures
                 switch (i)
                 {
                     case 0:
-                    {
-                        obstacle = level.GetObstacle(Get32Position().X + 0.1f, Get32Position().Y + 0.1f);
-                        break;
-                    }
-                    case 1: 
-                    {
-                        obstacle = level.GetObstacle(Get32Position().X+0.9f, Get32Position().Y+0.1f);
-                        break;
-                    }
-                    case 2: 
-                    {
-                        obstacle = level.GetObstacle(Get32Position().X+0.9f, Get32Position().Y+0.9f);
-                        break;
-                    }
-                    case 3: 
-                    {
-                        obstacle = level.GetObstacle(Get32Position().X + 0.1f, Get32Position().Y+0.9f);
-                        break;
-                    }
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.1f, Get32Position().Y + 0.1f);
+                            break;
+                        }
+                    case 1:
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.9f, Get32Position().Y + 0.1f);
+                            break;
+                        }
+                    case 2:
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.9f, Get32Position().Y + 0.9f);
+                            break;
+                        }
+                    case 3:
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.1f, Get32Position().Y + 0.9f);
+                            break;
+                        }
                 }
                 switch (obstacle.Type)
                 {
@@ -503,7 +504,7 @@ namespace ChendiAdventures
                             if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks && !IsDead)
                             {
                                 SpeedX = 0;
-                                SetTextureRectanlge(128,64);
+                                SetTextureRectanlge(128, 64);
                                 GotExit = true;
                             }
 
@@ -762,7 +763,7 @@ namespace ChendiAdventures
                 DefaultClock.Restart();
                 IsDead = true;
                 SpeedY = -10f;
-                
+
                 this.Lives--;
 
                 HasSilverKey = false;
@@ -855,7 +856,7 @@ namespace ChendiAdventures
 
         public new FloatRect GetBoundingBox()
         {
-            return new FloatRect(X +2, Y+2, 30,30 );
+            return new FloatRect(X + 2, Y + 2, 30, 30);
         }
     }
 }

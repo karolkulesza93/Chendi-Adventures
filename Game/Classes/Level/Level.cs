@@ -189,7 +189,7 @@ namespace ChendiAdventures
 
             UnableToPassl = new List<BlockType>
                 {BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor,
-                    BlockType.TransparentBrick, BlockType.HardBlock, BlockType.SteelGate };
+                    BlockType.TransparentBrick, BlockType.HardBlock, BlockType.SteelGate, BlockType.EnergyBall};
 
             //Console.WriteLine("Entity lists cleared");
 
@@ -288,6 +288,11 @@ namespace ChendiAdventures
                     case 'l':
                     {
                         LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Lever));
+                        break;
+                    }
+                    case 'E':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.EnergyBall));
                         break;
                     }
                     //traps
@@ -581,7 +586,8 @@ namespace ChendiAdventures
                     obstacle.Type == BlockType.TripleMana || obstacle.Type == BlockType.SackOfGold ||
                     obstacle.Type == BlockType.Exit || obstacle.Type == BlockType.Teleport1 ||
                     obstacle.Type == BlockType.Teleport2 || obstacle.Type == BlockType.Purifier ||
-                    obstacle.Type == BlockType.Teleport3 || obstacle.Type == BlockType.Teleport4)
+                    obstacle.Type == BlockType.Teleport3 || obstacle.Type == BlockType.Teleport4 ||
+                    obstacle.Type == BlockType.EnergyBall)
                     obstacle.BlockAnimation.Animate();
 
                 if (obstacle.Type == BlockType.Hint && !_mainCharacter.GetBoundingBox().Intersects(obstacle.GetBoundingBox())) HideHint(obstacle);
@@ -813,6 +819,11 @@ namespace ChendiAdventures
 
                     break;
                 }
+                case 16:
+                {
+                    ShowHint(obstacle, "ONLY STRONG MAGIC CAN\nBREAK THAT BARRIER", -60, -22);
+                    break;
+                }
                 case 20:
                 {
                     switch (obstacle.HintNumber)
@@ -1009,6 +1020,11 @@ namespace ChendiAdventures
                     case BlockType.HardBlock:
                     {
                         level.Append("Z");
+                        break;
+                    }
+                    case BlockType.EnergyBall:
+                    {
+                        level.Append("E");
                         break;
                     }
                     case BlockType.Enterance:

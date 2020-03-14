@@ -44,7 +44,7 @@ namespace ChendiAdventures
         public Movement Direction { get; set; }
         public bool isDrawing { get; private set; }
 
-        public new void UpdateCreature(Level level)
+        public void UpdateCreature(Level level)
         {
             //arrow
             Arrow.ProjectileUpdate(level);
@@ -96,7 +96,7 @@ namespace ChendiAdventures
             target.Draw(Arrow, states);
         }
 
-        public void Die(Level level)
+        public override void Die(Level level)
         {
             IsDead = true;
             sKill.Play();

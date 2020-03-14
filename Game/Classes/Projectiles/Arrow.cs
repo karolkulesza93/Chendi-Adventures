@@ -73,6 +73,25 @@ namespace ChendiAdventures
                     if (!isEnergized) DeleteArrow();
                 }
 
+            foreach (var golem in level.Golems)
+            {
+                if (GetBoundingBox().Intersects(golem.GetBoundingBox()))
+                {
+                    if (!isEnergized) DeleteArrow();
+                    else
+                    {
+                        level.Particles.Add(new ParticleEffect(golem.X, golem.Y,
+                            new Color(100, 100, 100), 10));
+                        level.Particles.Add(new ParticleEffect(golem.X, golem.Y,
+                            Color.Yellow, 5));
+                        golem.Health -= 2;
+                        sEnergyHit.Play();
+                        DeleteArrow();
+                    }
+                }
+            }
+
+
             if (isEnergized)
                 foreach (var ghost in level.Ghosts)
                     if (GetBoundingBox().Intersects(ghost.GetBoundingBox()))

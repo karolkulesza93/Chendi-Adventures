@@ -65,7 +65,7 @@ namespace ChendiAdventures
             }
         }
 
-        public void Die(Level level)
+        public override void Die(Level level)
         {
             level.Particles.Add(new ParticleEffect(X, Y, Color.Cyan));
             SetPosition(400, -100);

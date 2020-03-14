@@ -147,6 +147,10 @@ namespace ChendiAdventures
             Set32Position(NewX, NewY);
         }
 
+        public virtual void Die(Level level)
+        {
+        }
+
         public virtual void UpdateTextures()
         {
         }

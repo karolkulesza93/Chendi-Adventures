@@ -126,6 +126,27 @@ namespace ChendiAdventures
                         level.Particles.Add(new ParticleEffect(wizard.X, wizard.Y, Color.Red));
                         wizard.Die(level);
                     }
+
+                foreach (var golem in level.Golems)
+                {
+                    if (GetBoundingBox().Intersects(golem.GetBoundingBox()))
+                    {
+                        golem.Health--;
+                        level.Particles.Add(new ParticleEffect(golem.X, golem.Y,
+                            new Color(100, 100, 100), 10));
+                        _character.SpeedX = golem.GetCenterPosition().X - _character.GetCenterPosition().X < 0
+                            ? 10f
+                            : -10f;
+                        _character.SpeedY = -5f;
+                        _character.IsAttacking = false;
+                        Block.sHard.Play();
+                    }
+
+                    if (GetBoundingBox().Intersects(golem.Boulder.GetBoundingBox()))
+                    {
+                        golem.Boulder.ResetBoulder(level);
+                    }
+                }
             }
         }
 

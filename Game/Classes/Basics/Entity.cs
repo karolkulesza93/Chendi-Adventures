@@ -12,6 +12,7 @@ namespace ChendiAdventures
         public static Texture DetailsTexture = new Texture(@"img/details.png");
         public static Texture GhostTexture = new Texture(@"img/ghost.png");
         public static Texture KnightTexture = new Texture(@"img/knight.png");
+        public static Texture GolemTexture = new Texture(@"img/golem.png");
         public static Texture MainCharacterTexture = new Texture(@"img/MainCharacter.png");
         public static Texture PickupsTexture = new Texture(@"img/pickups.png");
         public static Texture SwordTexture = new Texture(@"img/sword.png");

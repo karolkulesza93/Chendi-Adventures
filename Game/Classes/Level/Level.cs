@@ -71,6 +71,8 @@ namespace ChendiAdventures
         public readonly List<Ghost> Ghosts;
         public readonly List<Wizard> Wizards;
         public readonly List<Monster> Monsters;
+        public readonly List<Golem> Golems;
+        
         public readonly List<Block> LevelObstacles;
         public readonly List<ParticleEffect> Particles;
         public readonly List<ScoreAdditionEffect> ScoreAdditionEffects;
@@ -107,6 +109,7 @@ namespace ChendiAdventures
             Archers = new List<Archer>();
             Ghosts = new List<Ghost>();
             Wizards = new List<Wizard>();
+            Golems = new List<Golem>();
 
             LevelTime = new Clock();
 
@@ -148,22 +151,23 @@ namespace ChendiAdventures
         public void Draw(RenderTarget target, RenderStates states)
         {
             target.Draw(_background);
-            foreach (var i in Traps) target.Draw(i, states);
+            foreach (var i in Traps) target.Draw(i);
 
             foreach (var i in LevelObstacles)
             {
-                target.Draw(i, states);
-                if (i.Type == BlockType.Hint) target.Draw(i.Hint, states);
+                target.Draw(i);
+                if (i.Type == BlockType.Hint) target.Draw(i.Hint);
             }
             //monsters
-            foreach (var i in Monsters) target.Draw(i, states);
-            foreach (var i in Archers) target.Draw(i, states);
-            foreach (var i in Ghosts) target.Draw(i, states);
-            foreach (var i in Wizards) target.Draw(i, states);
+            foreach (var i in Monsters) target.Draw(i);
+            foreach (var i in Archers) target.Draw(i);
+            foreach (var i in Ghosts) target.Draw(i);
+            foreach (var i in Wizards) target.Draw(i);
+            foreach (var i in Golems) target.Draw(i);
             //
 
-            foreach (var i in Particles) target.Draw(i, states);
-            foreach (var i in ScoreAdditionEffects) target.Draw(i, states);
+            foreach (var i in Particles) target.Draw(i);
+            foreach (var i in ScoreAdditionEffects) target.Draw(i);
 
             target.Draw(_levelDescription);
         }
@@ -186,6 +190,7 @@ namespace ChendiAdventures
             Archers.Clear();
             Ghosts.Clear();
             Wizards.Clear();
+            Golems.Clear();
 
             UnableToPassl = new List<BlockType>
                 {BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor,
@@ -398,6 +403,12 @@ namespace ChendiAdventures
                         Wizards.Add(new Wizard(32 * X, 32 * Y, Entity.WizardTexture));
                         break;
                     }
+                    case 'B':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                        Golems.Add(new Golem(32 * X, 32 * Y, Entity.GolemTexture));
+                        break;
+                    }
                     // coins
                     case 'o':
                     {
@@ -555,7 +566,9 @@ namespace ChendiAdventures
             //File.AppendAllText("log.txt", string.Format("Level {0} loaded succesfully ({1}:{2}  MC value: {3})\n", level, this.LevelWidth, this.LevelHeight, this.MonsterCount));
 
             foreach (var archer in Archers) { archer.DefaultClock.Restart(); }
+            foreach (var ghost in Ghosts) { ghost.DefaultClock.Restart();}
             foreach (var wizard in Wizards) { wizard.DefaultClock.Restart(); }
+            foreach (var golem in Golems) { golem.DefaultClock.Restart();}
             foreach (var trap in Traps) { trap.DefaultTimer.Restart(); }
             
             LevelTime.Restart();
@@ -617,6 +630,7 @@ namespace ChendiAdventures
                 foreach (var archer in Archers) archer.UpdateCreature(this);
                 foreach (var ghost in Ghosts) ghost.UpdateCreature(this, _mainCharacter);
                 foreach (var wizard in Wizards) wizard.UpdateCreature(_mainCharacter, this);
+                foreach (var golem in Golems) golem.UpdateCreature(_mainCharacter, this);
             }
 
             //details
@@ -882,6 +896,11 @@ namespace ChendiAdventures
                     ShowHint(obstacle, "LEVERS ARE USED TO OPEN\nHEAVY METAL GATES... WHO KNOWS,\nMAYBE THEY STILL WORKS", -60, -34);
                     break;
                 }
+                case 40:
+                {
+                    ShowHint(obstacle, "GOLEMS ARE RESPONSIBLE FOR\nTHAT EARTH QUAKE!", -60, -22);
+                    break;
+                }
             }
         }
 
@@ -951,6 +970,13 @@ namespace ChendiAdventures
                     if (i.Get32Position().X == tile && i.Get32Position().Y == y)
                     {
                         level.Append("%");
+                        monsterFlag = true;
+                    }
+
+                foreach (var i in Golems)
+                    if (i.Get32Position().X == tile && i.Get32Position().Y == y)
+                    {
+                        level.Append("B");
                         monsterFlag = true;
                     }
 

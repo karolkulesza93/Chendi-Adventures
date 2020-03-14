@@ -44,7 +44,7 @@ namespace ChendiAdventures
             UpdateTextures();
         }
 
-        public void Die(Level level)
+        public override void Die(Level level)
         {
             sKill.Play();
             level.Particles.Add(new ParticleEffect(X, Y, Color.Red));

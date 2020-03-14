@@ -22,7 +22,6 @@ namespace ChendiAdventures
             Type = type;
             IsDestroyed = false;
             HintNumber = hintNumber;
-
             SetBlock(type);
         }
         public Vector2f OriginalPos { get; }

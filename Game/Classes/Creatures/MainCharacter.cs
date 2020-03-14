@@ -750,6 +750,17 @@ namespace ChendiAdventures
                     wizard.EnergyBall.ResetEnergyBall(level);
                 }
             }
+
+            foreach (var golem in level.Golems)
+            {
+                if (GetBoundingBox().Intersects(golem.GetBoundingBox())) Die(level);
+                if (GetBoundingBox().Intersects(golem.Boulder.GetBoundingBox()))
+                {
+                    Die(level);
+                    golem.Boulder.ResetBoulder(level);
+                }
+            }
+
         }
 
         public void Die(Level level)

@@ -1204,6 +1204,14 @@ namespace ChendiAdventures
                     _level.Wizards.Add(new Wizard(x * 32, y * 32, Entity.WizardTexture));
                 }
 
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Num6))
+                {
+                    flag = true;
+                    _chendi.sPickup.Play();
+
+                    _level.Golems.Add(new Golem(x * 32, y * 32, Entity.GolemTexture));
+                }
+
                 //clear mosters
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F1))
                 {
@@ -1231,6 +1239,13 @@ namespace ChendiAdventures
                     flag = true;
                     Creature.sKill.Play();
                     _level.Wizards.Clear();
+                }
+
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F6))
+                {
+                    flag = true;
+                    Creature.sKill.Play();
+                    _level.Golems.Clear();
                 }
 
                 //changes - traps
@@ -1295,8 +1310,8 @@ namespace ChendiAdventures
                     flag = true;
                     Creature.sKill.Play();
 
-                    for (x = 1; x < _level.LevelWidth - 2; x++)
-                    for (y = 1; y < _level.LevelHeight - 2; y++)
+                    for (x = 1; x < _level.LevelWidth - 1; x++)
+                    for (y = 1; y < _level.LevelHeight - 1; y++)
                     {
                         type = BlockType.None;
 
@@ -1306,9 +1321,6 @@ namespace ChendiAdventures
                         _level.GetObstacle(x, y).Type = type;
                         _level.GetObstacle(x, y).SetBlock(type);
                     }
-
-                    x = 1;
-                    y = 1;
                 }
 
                 //viem manip (+/-)

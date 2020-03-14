@@ -18,7 +18,7 @@ using SFML.Window;
 PROPOZYCJE DO ZROBIENIA:
 - generowanie poziomu***
 - jak sie uda to shadery/swiatlo ogarnac aby ladnie wygladalo**
-- po smierci resp kilka sekund przed
+- po smierci resp kilka sekund przed*
 
 DO ZROBIENIA:
 - levele
@@ -1297,10 +1297,48 @@ namespace ChendiAdventures
                     Creature.sKill.Play();
                     _level.Traps.Clear();
                 }
+                //mirror image
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F10))
+                {
+                    flag = true;
+                    _chendi.sPickup.Play();
 
+                    BlockType typeMirror;
+
+                    for (x = 1; x < (_level.LevelWidth - 2) / 2 + 1; x++)
+                    for (y = 1; y < _level.LevelHeight - 1; y++)
+                    {
+                        typeMirror = _level.GetObstacle(x, y).Type;
+                        _level.GetObstacle(_level.LevelWidth - x -1, y).Type = typeMirror;
+
+                        if (typeMirror >= (BlockType)t1 && typeMirror <= (BlockType)t2)
+                        {
+                            _level.GetObstacle(_level.LevelWidth - x-1, y).LoadedTexture = Entity.TilesTexture;
+                            _level.GetObstacle(_level.LevelWidth - x-1, y).UseTexture();
+                        }
+                        else if (typeMirror >= (BlockType)p1 && typeMirror <= (BlockType)p2)
+                        {
+                            _level.GetObstacle(_level.LevelWidth - x-1, y).LoadedTexture = Entity.PickupsTexture;
+                            _level.GetObstacle(_level.LevelWidth - x-1, y).UseTexture();
+                        }
+                        else
+                        {
+                            _level.GetObstacle(_level.LevelWidth - x-1, y).LoadedTexture = Entity.DetailsTexture;
+                            _level.GetObstacle(_level.LevelWidth - x-1, y).UseTexture();
+                        }
+
+                        _level.GetObstacle(_level.LevelWidth - x-1, y).Type = typeMirror;
+                        _level.GetObstacle(_level.LevelWidth - x-1, y).SetBlock(typeMirror);
+
+                    }
+
+                    x = (_level.LevelWidth - 2) / 2 + 1;
+                    y = (_level.LevelHeight - 2) / 2 + 1;
+                }
+                //generate
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F11))
                 {
-                    x = 1; y = 1;
+                    //x = 1; y = 1;
                     /*
                     string level = LevelManager.Generator.GenerateLevel("GENERATED_LEVEL", _level.LevelWidth,
                         _level.LevelHeight,
@@ -1313,7 +1351,7 @@ namespace ChendiAdventures
                         _randomizer.Next(2) == 1 ? true : false, _randomizer.Next(2) == 1 ? true : false);
                     _level.LoadLevel(string.Format("GENERATED_LEVEL_{0}x{1}", _level.LevelWidth, _level.LevelHeight));*/
                 }
-
+                //clear blocks
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F12))
                 {
                     flag = true;
@@ -1330,6 +1368,8 @@ namespace ChendiAdventures
                         _level.GetObstacle(x, y).Type = type;
                         _level.GetObstacle(x, y).SetBlock(type);
                     }
+
+                    x = 1; y = 1;
                 }
 
                 //viem manip (+/-)
@@ -1347,13 +1387,47 @@ namespace ChendiAdventures
                     view = true;
                 }
 
-                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.I))
+                //left up corner
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.I)) 
                 {
                     flag = true;
                     _chendi.sPickup.Play();
                     x = 1;
                     y = 1;
                 }
+                //right up corner
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.O))
+                {
+                    flag = true;
+                    _chendi.sPickup.Play();
+                    x = _level.LevelWidth - 2;
+                    y = 1;
+                }
+                //left down corner
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.K))
+                {
+                    flag = true;
+                    _chendi.sPickup.Play();
+                    x = 1;
+                    y = _level.LevelHeight - 2;
+                }
+                //right down corner
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.L))
+                {
+                    flag = true;
+                    _chendi.sPickup.Play();
+                    x = _level.LevelWidth - 2;
+                    y = _level.LevelHeight - 2;
+                }
+                //center
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.P))
+                {
+                    flag = true;
+                    _chendi.sPickup.Play();
+                    x = (_level.LevelWidth - 2)/2 + 1;
+                    y = (_level.LevelHeight - 2)/2 + 1;
+                }
+
 
                 choice.Position = new Vector2f(x * 32, y * 32);
                 position.MoveText(choice.Position.X + 34, choice.Position.Y - 36);

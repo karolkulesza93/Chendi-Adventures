@@ -20,21 +20,15 @@ namespace LevelManager
         //==//==//==// GENERATE TEMPLATE //==//==//==//
         private void bGenerate_Click(object sender, EventArgs e)
         {
-            string generatedTemplate= Generator.GenerateTemplate((int)nudWidth.Value, (int)nudHeight.Value);
+            string generatedTemplate = cbEdit.Checked ?
+                Generator.GenerateTemplate((int)nudWidth.Value, (int)nudHeight.Value, true) : 
+                Generator.GenerateTemplate((int)nudWidth.Value, (int)nudHeight.Value);
 
-            lGenerateStatus.Text = $"{Generator.Title} GENERATED";
+            lGenerateStatus.Text = "GENERATED";
             lGenerateStatus.Visible = true;
         }
-        private void nudTemplateSize_ValueChange(object sender, EventArgs e)
-        {
-            lGenerateStatus.Visible = false;
-        }
-
-        private void nudLevelSize_ValueChange(object sender, EventArgs e)
-        {
-            lGenerateLevelStatus.Visible = false;
-        }
-
+        
+        //==//==//==// GENERATE LEVEL //==//==//==//
         private void bLevelGenerate_Click(object sender, EventArgs e)
         {
             lGenerateLevelStatus.Text = $"{Generator.Title} GENERATED";
@@ -45,6 +39,19 @@ namespace LevelManager
                 crushersAvailable.Checked, spikeballsAvailable.Checked, blowtorchersAvailable.Checked,
                 silverDoorAvailable.Checked, goldenDoorAvailable.Checked, teleportsAvailable.Checked,
                 shopAvailable.Checked, spikeballsAvailable.Checked, trampolinesAvailable.Checked);
+        }
+        //==//==//==// CLEANING //==//==//==//
+        private void nudTemplateSize_ValueChange(object sender, EventArgs e)
+        {
+            lGenerateStatus.Visible = false;
+        }
+        private void nudLevelSize_ValueChange(object sender, EventArgs e)
+        {
+            lGenerateLevelStatus.Visible = false;
+        }
+        private void cbEdit_CheckedChanged(object sender, EventArgs e)
+        {
+            lGenerateStatus.Visible = false;
         }
     }
 }

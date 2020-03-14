@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LevelManager));
             this.nudWidth = new System.Windows.Forms.NumericUpDown();
             this.nudHeight = new System.Windows.Forms.NumericUpDown();
@@ -38,7 +37,6 @@
             this.bGenerate = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.pGenerateLevel = new System.Windows.Forms.Panel();
             this.tbName = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -65,6 +63,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.cbEdit = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudHeight)).BeginInit();
             this.pGenerateTemplate.SuspendLayout();
@@ -78,16 +77,21 @@
             this.nudWidth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.nudWidth.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nudWidth.ImeMode = System.Windows.Forms.ImeMode.Off;
+            this.nudWidth.Increment = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
             this.nudWidth.InterceptArrowKeys = false;
             this.nudWidth.Location = new System.Drawing.Point(37, 26);
             this.nudWidth.Margin = new System.Windows.Forms.Padding(5);
             this.nudWidth.Maximum = new decimal(new int[] {
-            256,
+            127,
             0,
             0,
             0});
             this.nudWidth.Minimum = new decimal(new int[] {
-            30,
+            31,
             0,
             0,
             0});
@@ -98,7 +102,7 @@
             this.nudWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nudWidth.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
             this.nudWidth.Value = new decimal(new int[] {
-            30,
+            31,
             0,
             0,
             0});
@@ -109,11 +113,16 @@
             this.nudHeight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.nudHeight.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nudHeight.ImeMode = System.Windows.Forms.ImeMode.Off;
+            this.nudHeight.Increment = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
             this.nudHeight.InterceptArrowKeys = false;
             this.nudHeight.Location = new System.Drawing.Point(151, 26);
             this.nudHeight.Margin = new System.Windows.Forms.Padding(5);
             this.nudHeight.Maximum = new decimal(new int[] {
-            256,
+            255,
             0,
             0,
             0});
@@ -150,6 +159,7 @@
             // pGenerateTemplate
             // 
             this.pGenerateTemplate.BackColor = System.Drawing.Color.Transparent;
+            this.pGenerateTemplate.Controls.Add(this.cbEdit);
             this.pGenerateTemplate.Controls.Add(this.lGenerateStatus);
             this.pGenerateTemplate.Controls.Add(this.bGenerate);
             this.pGenerateTemplate.Controls.Add(this.nudHeight);
@@ -167,10 +177,10 @@
             this.lGenerateStatus.BackColor = System.Drawing.Color.Transparent;
             this.lGenerateStatus.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lGenerateStatus.ForeColor = System.Drawing.Color.Lime;
-            this.lGenerateStatus.Location = new System.Drawing.Point(243, 31);
+            this.lGenerateStatus.Location = new System.Drawing.Point(317, 28);
             this.lGenerateStatus.Margin = new System.Windows.Forms.Padding(5);
             this.lGenerateStatus.Name = "lGenerateStatus";
-            this.lGenerateStatus.Size = new System.Drawing.Size(228, 13);
+            this.lGenerateStatus.Size = new System.Drawing.Size(154, 16);
             this.lGenerateStatus.TabIndex = 6;
             this.lGenerateStatus.Text = "000000";
             this.lGenerateStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -502,11 +512,16 @@
             this.nudLevelHeight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.nudLevelHeight.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nudLevelHeight.ImeMode = System.Windows.Forms.ImeMode.Off;
+            this.nudLevelHeight.Increment = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
             this.nudLevelHeight.InterceptArrowKeys = false;
             this.nudLevelHeight.Location = new System.Drawing.Point(151, 26);
             this.nudLevelHeight.Margin = new System.Windows.Forms.Padding(5);
             this.nudLevelHeight.Maximum = new decimal(new int[] {
-            256,
+            255,
             0,
             0,
             0});
@@ -533,16 +548,21 @@
             this.nudLevelWidth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.nudLevelWidth.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nudLevelWidth.ImeMode = System.Windows.Forms.ImeMode.Off;
+            this.nudLevelWidth.Increment = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
             this.nudLevelWidth.InterceptArrowKeys = false;
             this.nudLevelWidth.Location = new System.Drawing.Point(37, 26);
             this.nudLevelWidth.Margin = new System.Windows.Forms.Padding(5);
             this.nudLevelWidth.Maximum = new decimal(new int[] {
-            256,
+            127,
             0,
             0,
             0});
             this.nudLevelWidth.Minimum = new decimal(new int[] {
-            30,
+            31,
             0,
             0,
             0});
@@ -553,7 +573,7 @@
             this.nudLevelWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nudLevelWidth.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
             this.nudLevelWidth.Value = new decimal(new int[] {
-            30,
+            31,
             0,
             0,
             0});
@@ -595,6 +615,20 @@
             this.label7.TabIndex = 0;
             this.label7.Text = "GENERATE LEVEL";
             // 
+            // cbEdit
+            // 
+            this.cbEdit.AutoSize = true;
+            this.cbEdit.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbEdit.ForeColor = System.Drawing.Color.White;
+            this.cbEdit.Location = new System.Drawing.Point(241, 29);
+            this.cbEdit.Margin = new System.Windows.Forms.Padding(5);
+            this.cbEdit.Name = "cbEdit";
+            this.cbEdit.Size = new System.Drawing.Size(78, 17);
+            this.cbEdit.TabIndex = 9;
+            this.cbEdit.Text = "EDIT";
+            this.cbEdit.UseVisualStyleBackColor = true;
+            this.cbEdit.CheckedChanged += new System.EventHandler(this.cbEdit_CheckedChanged);
+            // 
             // LevelManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -631,7 +665,6 @@
         private System.Windows.Forms.NumericUpDown nudHeight;
         private System.Windows.Forms.NumericUpDown nudWidth;
         private System.Windows.Forms.Label lGenerateStatus;
-        private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Panel pGenerateLevel;
         private System.Windows.Forms.Label lGenerateLevelStatus;
         private System.Windows.Forms.Button bLevelGenerate;
@@ -658,6 +691,7 @@
         private System.Windows.Forms.CheckBox wizardsAvailable;
         private System.Windows.Forms.TextBox tbName;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox cbEdit;
     }
 }
 

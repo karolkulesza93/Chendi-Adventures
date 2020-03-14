@@ -9,7 +9,7 @@ namespace LevelManager
     {
         public static string Title { get; set; }
 
-        public static string GenerateTemplate(int width, int height)
+        public static string GenerateTemplate(int width, int height, bool edit = false)
         {
             StringBuilder generatedTemplate = new StringBuilder();
             StringBuilder voidLine = new StringBuilder();
@@ -38,9 +38,17 @@ namespace LevelManager
             generatedTemplate.Remove(generatedTemplate.Length - 2, 2);
 
 
-            Title = string.Format("{0}x{1}", width, height);
+            if (!edit)
+            {
+                Title = string.Format("{0}x{1}", width, height);
+                File.WriteAllText(string.Format(@"levels/templates/{0}.dat", Title), generatedTemplate.ToString());
+            }
+            else
+            {
+                Title = "edit";
+                File.WriteAllText(string.Format(@"levels/{0}.dat", Title), generatedTemplate.ToString());
+            }
 
-            File.WriteAllText(string.Format(@"levels/templates/{0}.dat", Title), generatedTemplate.ToString());
 
             return generatedTemplate.ToString();
         }

@@ -21,12 +21,11 @@ namespace ChendiAdventures
             SpeedX = 0f;
             SpeedY = 0f;
 
-            MaxSpeedX = 5f;
-            MaxSpeedY = 13f;
+            MaxSpeedX = 4f;
+            MaxSpeedY = 12f;
 
-            dX = 0.53f;
-
-            GravityForce = 0.81f;
+            dX = 0.4f;
+            GravityForce = 0.5f;
 
             IsStandingOnBlocks = false;
 

@@ -7,13 +7,7 @@ using SFML.System;
 
 /*
 
-Level creating rules:
-- min width:	30 tiles (1920px)
-- min height:	17 tiles (1088px)
-- has to contain exactly 1 enterance and 1 exit gate
-- jump height: 4
-- trampoline jump height: 9
-- or just use level editor XD
+
 
 Mechanics introduction <level/> <new/>:
 1  :coins, score, life pickup and basic tiles

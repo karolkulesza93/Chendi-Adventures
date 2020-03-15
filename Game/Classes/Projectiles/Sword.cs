@@ -1,4 +1,5 @@
-﻿using SFML.Audio;
+﻿using System;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 
@@ -9,6 +10,7 @@ namespace ChendiAdventures
         private readonly Animation _animLeft;
         private readonly Animation _animRight;
         private readonly Animation _animUp;
+        private readonly Animation _animDown;
         private readonly MainCharacter _character;
         private readonly float _frameTime;
         public Movement LastMove;
@@ -37,6 +39,12 @@ namespace ChendiAdventures
                 new Vector2i(60, 60),
                 new Vector2i(90, 60),
                 new Vector2i(120, 60));
+            _animDown = new Animation(this, _frameTime,
+                new Vector2i(150, 0),
+                new Vector2i(150, 30),
+                new Vector2i(150, 60),
+                new Vector2i(150, 30)
+                );
         }
 
         public Sound sWood = new Sound(new SoundBuffer(@"sfx/wood.wav")) {Volume = 50};
@@ -56,9 +64,12 @@ namespace ChendiAdventures
                     BlockType.Wood)
                 {
                     obstacle.DeleteObstacle();
-                    level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                    if (!_character.IsDownAttacking) level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
                         new Color(193, 97, 0)));
-                    sWood.Play();
+                    else level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                        new Color(193, 97, 0), 10));
+                    if (!_character.IsDownAttacking) sWood.Play();
+                    else if (sWood.Status != SoundStatus.Playing) sWood.Play();
                     _character.AddToScore(level, 10, obstacle.X, obstacle.Y);
                 }
 
@@ -93,10 +104,18 @@ namespace ChendiAdventures
                 {
                     level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
                         Color.Cyan, 10));
-                    _character.SpeedX = obstacle.GetCenterPosition().X - _character.GetCenterPosition().X < 0
-                        ? 15f
-                        : -15f;
-                    _character.SpeedY = -5f;
+                    if (!_character.IsDownAttacking)
+                    {
+                        _character.SpeedX = obstacle.GetCenterPosition().X - _character.GetCenterPosition().X < 0
+                            ? 15f
+                            : -15f;
+                        _character.SpeedY = -5f;
+                    }
+                    else
+                    {
+                        _character.IsDownAttacking = false;
+                        _character.SpeedY = -15f;
+                    }
                     _character.IsAttacking = false;
                     Block.sHard.Play();
                 }
@@ -180,11 +199,19 @@ namespace ChendiAdventures
             _animUp.Animate(30);
         }
 
+        public void AttackDown()
+        {
+            SetPosition(_character.X + 1f, _character.Y + 32);
+            _animDown.Animate(30);
+        }
+
+
         public void Reset()
         {
             _animLeft.ResetAnimation();
             _animRight.ResetAnimation();
             _animUp.ResetAnimation();
+            _animDown.ResetAnimation();
             SetPosition(-400, -400);
         }
     }

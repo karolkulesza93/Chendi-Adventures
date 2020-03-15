@@ -140,6 +140,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Game_TemporaryKey.pfx" />
+    <None Include="notes" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

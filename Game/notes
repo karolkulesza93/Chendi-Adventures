@@ -1,0 +1,72 @@
+﻿Level creating rules:
+- use notepad or level editor (lshift + lalt + L in main menu)
+- min width:	31 tiles (1920px)
+- min height:	17 tiles (1088px)
+- has to contain exactly 1 enterance and 1 exit gate
+- teleports: use in pairs (1-2 and 3-4), one teleport of each pair can be multiple 
+- jump height: 4
+- trampoline jump height: 9
+
+
+Tiles:
+. :empty space / air (can be white space)
+W :wall / brick (unpassable)
+v :enterance
+^ :exit
++ :shop
+o :coin
+| :putifier
+Z :hard block
+l :lever
+8 :steel gate (opens when lever is pulled)
+E :energy barrier
+$ :sack of gold
+# :spikes (kills immidietly)
+R :wood (destructible)
+X :stones (once stomped, disappears after couple of seconds)
+L :life
+0 :+1000
+5 :+5000
+m :+1 mana potion
+M :+3 mana potions
+@ :knight (monster moving back and forth)
+> :archer shooting right
+< :archer shooting left
+f :ghost (killable only by energized arrow)
+% :wizard (shoots projectiles that follow You)
+B :golem (throws boulders, durable)
+1 :teleport 1 (teleports to teleport2)
+2 :teleport 2 (teleports to teleport1)
+3 :teleport 3 (teleports to teleport4)
+4 :teleport 4 (teleports to teleport3)
+s :silver key (unlocks silver lock)
+S :silver lock (unpassable)
+g :golden key (unlocks golden lock)
+G :golden lock (unpassable)
+a :arrow +1
+A :arrow +3
+H :crusher trap
+_ :spikes trap
+] :blowtorch blowing right
+[ :blowtorch blowing left
+
+Mechanics queue: kurwa musze pomyslec XD
+1	Pickups
+1	Exit
+1	Spikes
+1	Wood
+1	Stones
+2	Trampoline
+2	Illusions
+3	Knights
+5	Hard Blocks
+10	Archers
+13	Energy fields
+15	Silver Keys
+17	Ghosts
+20	Teleports
+25	GoldenKeys
+30	Wizards
+35	Purifiers
+40	Levers and Steel Gates
+45	Golems

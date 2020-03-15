@@ -75,7 +75,7 @@ namespace ChendiAdventures
         public static Sound Victory = new Sound(new SoundBuffer(@"sfx/victory.wav"));
         public static Sound sChoice = new Sound(new SoundBuffer(@"sfx/choice.wav"));
         private int _windowHeight;
-        private Styles _windowStyle = Styles.Fullscreen;
+        private Styles _windowStyle = Styles.Resize;
         private int _windowWidth;
         private bool _isGame;
         private bool _isLevelSelection;
@@ -570,6 +570,7 @@ namespace ChendiAdventures
                             else
                             {
                                 DrawLoadingScreen();
+                                Thread.Sleep(200);
                                 _isMenu = false;
                                 _isGame = true;
                                 if (_level.LevelNumber != 0)
@@ -695,6 +696,7 @@ namespace ChendiAdventures
                 {
                     _chendi.sPickup.Play();
                     DrawLoadingScreen();
+                    Thread.Sleep(200);
                     _isLevelSelection = false;
                     _isGame = true;
                     if (_level.LevelNumber != 0)

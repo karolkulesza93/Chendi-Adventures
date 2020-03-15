@@ -16,6 +16,7 @@ namespace ChendiAdventures
         private Animation _standing;
         private Animation _attackLeft;
         private Animation _attackRight;
+        private Animation _attackDown;
         private Animation _jumpLeft;
         private Animation _jumpRight;
         private Animation _jumpUp;
@@ -79,6 +80,11 @@ namespace ChendiAdventures
                 new Vector2i(96, 128),
                 new Vector2i(128, 128)
                 );
+            _attackDown = new Animation(this, 0.05f,
+                new Vector2i(0,224),
+                new Vector2i(32,224),
+                new Vector2i(64,224)
+                );
 
             _jumpUp = new Animation(this, 0.05f,
                 new Vector2i(0, 192),
@@ -135,6 +141,7 @@ namespace ChendiAdventures
         public bool IsJumping { get; private set; }
         public bool IsAttacking { get; set; }
         public bool IsUpAttacking { get; set; }
+        public bool IsDownAttacking { get; set; }
         public bool IsShooting { get; private set; }
         public bool IsVulnerable { get; private set; }
         public bool HasSilverKey { get; set; }
@@ -145,6 +152,7 @@ namespace ChendiAdventures
 
         //steering
         public static Keyboard.Key KeyUP = Keyboard.Key.Up;
+        public static Keyboard.Key KeyDOWN = Keyboard.Key.Down;
         public static Keyboard.Key KeyLEFT = Keyboard.Key.Left;
         public static Keyboard.Key KeyRIGHT = Keyboard.Key.Right;
         public static Keyboard.Key KeyJUMP = Keyboard.Key.Z;
@@ -177,9 +185,11 @@ namespace ChendiAdventures
                 //attack
                 if (Keyboard.IsKeyPressed(KeyATTACK) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 && IsVulnerable && !IsAttacking && !IsShooting)
                 {
+                    if (sAtk.Status != SoundStatus.Playing) sAtk.Play();
                     IsAttacking = true;
                     sJump.Stop();
-                    if (Keyboard.IsKeyPressed(Keyboard.Key.Up)) IsUpAttacking = true;
+                    if (Keyboard.IsKeyPressed(KeyUP) && !IsDownAttacking) IsUpAttacking = true;
+                    else if (Keyboard.IsKeyPressed(KeyDOWN) && !IsUpAttacking && !IsStandingOnBlocks && SpeedY >= -3f) IsDownAttacking = true;
                     DefaultClock.Restart();
                 }
                 //arrow
@@ -236,10 +246,16 @@ namespace ChendiAdventures
 
                 if (IsAttacking)
                 {
-                    if (sAtk.Status != SoundStatus.Playing) sAtk.Play();
-                    if (DefaultClock.ElapsedTime.AsSeconds() > 0.25f) { IsAttacking = false; IsUpAttacking = false; }
+                    if (DefaultClock.ElapsedTime.AsSeconds() > 0.25f && !IsDownAttacking) { IsAttacking = false; IsUpAttacking = false; }
+                    else if (IsStandingOnBlocks && IsDownAttacking)
+                    {
+                        IsAttacking = false;
+                        IsDownAttacking = false;
+                    }
                     else if (IsUpAttacking)
                         Sword.AttackUp();
+                    else if (IsDownAttacking && !IsStandingOnBlocks)
+                        Sword.AttackDown();
                     else if (!IsUpAttacking) Sword.Attack();
                 }
                 else
@@ -264,7 +280,7 @@ namespace ChendiAdventures
                 }
 
                 //movement left
-                if (Keyboard.IsKeyPressed(KeyLEFT) && !Keyboard.IsKeyPressed(KeyRIGHT) && !IsStandingOnBlocks)
+                if (Keyboard.IsKeyPressed(KeyLEFT) && !Keyboard.IsKeyPressed(KeyRIGHT) && !IsStandingOnBlocks && !IsDownAttacking)
                 {
                     MoveLeft();
                     if (SpeedX <= 0)
@@ -292,7 +308,7 @@ namespace ChendiAdventures
                 }
 
                 //movement right
-                if (Keyboard.IsKeyPressed(KeyRIGHT) && !Keyboard.IsKeyPressed(KeyLEFT) && !IsStandingOnBlocks)
+                if (Keyboard.IsKeyPressed(KeyRIGHT) && !Keyboard.IsKeyPressed(KeyLEFT) && !IsStandingOnBlocks && !IsDownAttacking)
                 {
                     MoveRight();
                     if (SpeedX >= 0)
@@ -415,6 +431,10 @@ namespace ChendiAdventures
                     if (IsUpAttacking)
                     {
                         SetTextureRectanlge(64, 64, 32, 32);
+                    }
+                    else if (IsDownAttacking)
+                    {
+                        _attackDown.Animate();
                     }
                     else if (_lastMove == Movement.Left)
                     {
@@ -656,6 +676,7 @@ namespace ChendiAdventures
                         {
                             if (SpeedY > 2 && !IsDead)
                             {
+                                IsDownAttacking = false;
                                 obstacle.SetTextureRectanlge(96, 32, 32, 32);
                                 obstacle.DefaultTimer.Restart();
                                 SpeedY = -20;
@@ -861,8 +882,8 @@ namespace ChendiAdventures
         public override void Draw(RenderTarget target, RenderStates states)
         {
             base.Draw(target, states);
-            target.Draw(Arrow, states);
-            target.Draw(Sword, states);
+            target.Draw(Arrow);
+            target.Draw(Sword);
         }
 
         public new FloatRect GetBoundingBox()

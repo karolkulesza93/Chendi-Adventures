@@ -21,11 +21,7 @@ namespace ChendiAdventures
             SpeedX = 0f;
             SpeedY = 0f;
 
-            MaxSpeedX = 4f;
-            MaxSpeedY = 12f;
-
-            dX = 0.4f;
-            GravityForce = 0.5f;
+            
 
             IsStandingOnBlocks = false;
 
@@ -33,8 +29,8 @@ namespace ChendiAdventures
         }
         public float SpeedX { get; set; } //szybkość po X
         public float SpeedY { get; set; } //szybkość po Y
-        public float MaxSpeedX { get; }
-        public float MaxSpeedY { get; }
+        public float MaxSpeedX { get; protected set; }
+        public float MaxSpeedY { get; protected set; }
         public float dX { get; set; }
         public float GravityForce { get; set; } //szybkosc grawitacji
         public bool IsStandingOnBlocks { get; set; }

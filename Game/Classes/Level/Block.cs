@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
@@ -50,7 +51,7 @@ namespace ChendiAdventures
                 case BlockType.HardBlock:
                 {
                     SetTextureRectanlge(0, 192, 32, 32);
-                    Health = 200;
+                    Health = 100;
                     break;
                 }
                 case BlockType.SteelGate:
@@ -428,14 +429,23 @@ namespace ChendiAdventures
             }
         }
 
-        public void HitHardblock()
+        public void HitHardblock(MainCharacter character)
         {
-            Health--;
+            if (character.IsDownAttacking)
+            {
+                Health -= (int) character.SpeedY * 2;
+            }
+            else
+            {
+                Health--;
+            }
+           
+
             if (sHard.Status != SoundStatus.Playing) sHard.Play();
 
-            if (Health < 150) { SetTextureRectanlge(32,192); }
-            if (Health < 100) { SetTextureRectanlge(64, 192); }
-            if (Health < 50) { SetTextureRectanlge(96, 192); }
+            if (Health < 75) { SetTextureRectanlge(32,192); }
+            if (Health < 50) { SetTextureRectanlge(64, 192); }
+            if (Health < 25) { SetTextureRectanlge(96, 192); }
         }
 
         public static void FlipLever()

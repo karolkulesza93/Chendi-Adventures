@@ -6,11 +6,19 @@ namespace ChendiAdventures
     {
         private int counter;
 
-        public ScoreAdditionEffect(int value, float x, float y)
+        public ScoreAdditionEffect(int value, float x, float y, string msg = "error")
         {
             counter = 0;
             toDestroy = false;
-            Line = new TextLine(value.ToString(), 10, x, y, Color.White);
+            if (value != 0)
+            {
+                Line = new TextLine(value.ToString(), 10, x, y, Color.White);
+            }
+            else
+            {
+                Line = new TextLine(msg, 5, x, y - 5, Color.Red);
+                Line.MoveText(Line.X - (float)0.3 * Line.Width, y);
+            }
         }
 
         public bool toDestroy { get; set; }

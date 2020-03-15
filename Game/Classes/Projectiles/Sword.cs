@@ -83,7 +83,7 @@ namespace ChendiAdventures
                 {
                     level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
                         new Color(57, 65, 81), 1));
-                    obstacle.HitHardblock();
+                    obstacle.HitHardblock(_character);
                     if (obstacle.Health <= 0)
                     {
                         obstacle.DeleteObstacle();
@@ -114,7 +114,7 @@ namespace ChendiAdventures
                     else
                     {
                         _character.IsDownAttacking = false;
-                        _character.SpeedY = -15f;
+                        _character.SpeedY = -10f;
                     }
                     _character.IsAttacking = false;
                     Block.sHard.Play();
@@ -163,10 +163,20 @@ namespace ChendiAdventures
                         golem.Health--;
                         level.Particles.Add(new ParticleEffect(golem.X, golem.Y,
                             new Color(100, 100, 100), 10));
-                        _character.SpeedX = golem.GetCenterPosition().X - _character.GetCenterPosition().X < 0
-                            ? 10f
-                            : -10f;
-                        _character.SpeedY = -5f;
+
+                        if (!_character.IsDownAttacking)
+                        {
+                            _character.SpeedX = golem.GetCenterPosition().X - _character.GetCenterPosition().X < 0
+                                ? 10f
+                                : -10f;
+                            _character.SpeedY = -5f;
+                        }
+                        else
+                        {
+                            _character.SpeedY = -6f;
+                            _character.IsDownAttacking = false;
+                        }
+                        
                         _character.IsAttacking = false;
                         Block.sHard.Play();
                     }
@@ -205,7 +215,6 @@ namespace ChendiAdventures
             _animDown.Animate(30);
         }
 
-
         public void Reset()
         {
             _animLeft.ResetAnimation();
@@ -213,6 +222,16 @@ namespace ChendiAdventures
             _animUp.ResetAnimation();
             _animDown.ResetAnimation();
             SetPosition(-400, -400);
+        }
+
+        public int AnimLeftFrameNumber()
+        {
+            return _animLeft.Frame;
+        }
+
+        public int AnimRightFrameNumber()
+        {
+            return _animRight.Frame;
         }
     }
 }

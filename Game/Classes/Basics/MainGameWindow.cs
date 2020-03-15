@@ -75,7 +75,7 @@ namespace ChendiAdventures
         public static Sound Victory = new Sound(new SoundBuffer(@"sfx/victory.wav"));
         public static Sound sChoice = new Sound(new SoundBuffer(@"sfx/choice.wav"));
         private int _windowHeight;
-        private Styles _windowStyle = Styles.Resize;
+        private Styles _windowStyle = Styles.Fullscreen;
         private int _windowWidth;
         private bool _isGame;
         private bool _isLevelSelection;
@@ -119,7 +119,6 @@ namespace ChendiAdventures
             _view = new View(new FloatRect(0, 0, _windowWidth, _windowHeight));
             _screenChange = new ScreenChange(ref _view);
         }
-
 
         private void OnClosed(object sender, EventArgs e)
         {

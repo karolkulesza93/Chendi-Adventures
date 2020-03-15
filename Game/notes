@@ -7,7 +7,6 @@
 - jump height: 4
 - trampoline jump height: 9
 
-
 Tiles:
 . :empty space / air (can be white space)
 W :wall / brick (unpassable)
@@ -51,22 +50,25 @@ _ :spikes trap
 [ :blowtorch blowing left
 
 Mechanics queue: kurwa musze pomyslec XD
+1	Movement
 1	Pickups
 1	Exit
 1	Spikes
 1	Wood
 1	Stones
-2	Trampoline
-2	Illusions
-3	Knights
+1	Trampoline
+1	Illusions
 5	Hard Blocks
-10	Archers
-13	Energy fields
+10	Energy fields
 15	Silver Keys
-17	Ghosts
-20	Teleports
-25	GoldenKeys
-30	Wizards
+20	Teleport
+25  Golden Keys
+30	Levers and Steel Gates
 35	Purifiers
-40	Levers and Steel Gates
-45	Golems
+
+Monsters introduction:
+1	Knights
+10	Archers
+20  Ghosts
+30  Wizards
+40	Golems

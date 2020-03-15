@@ -1,4 +1,5 @@
-﻿using SFML.Graphics;
+﻿using System;
+using SFML.Graphics;
 using SFML.System;
 
 namespace ChendiAdventures
@@ -20,6 +21,7 @@ namespace ChendiAdventures
                     Color.White); //this.LivesCount.SetOutlineThickness(0.5f);
             Score = new TextLine("SCORE: " + _character.Score, 10, 0, 0,
                 Color.White); //this.Score.SetOutlineThickness(0.5f);
+            Time = new TextLine("TIME: ", 10, 0,0, Color.White);
             CurrentLevel =
                 new TextLine("LEVEL: " + _level.LevelNumber, 10, 0, 0,
                     Color.White); //this.CurrentLevel.SetOutlineThickness(0.5f);
@@ -41,6 +43,7 @@ namespace ChendiAdventures
 
         public TextLine LivesCount { get; }
         public TextLine Score { get; }
+        public TextLine Time { get; }
         public TextLine CurrentLevel { get; }
         public TextLine Arrows { get; }
         public TextLine Mana { get; }
@@ -53,18 +56,19 @@ namespace ChendiAdventures
 
         public void Draw(RenderTarget target, RenderStates states)
         {
-            target.Draw(LivesCount, states);
-            target.Draw(Score, states);
-            target.Draw(CurrentLevel, states);
-            target.Draw(Arrows, states);
-            target.Draw(Mana, states);
-            target.Draw(Coins, states);
+            target.Draw(LivesCount);
+            target.Draw(Score);
+            target.Draw(Time);
+            target.Draw(CurrentLevel);
+            target.Draw(Arrows);
+            target.Draw(Mana);
+            target.Draw(Coins);
 
-            if (_character.HasSilverKey) target.Draw(SilverKey, states);
-            if (_character.HasGoldenKey) target.Draw(GoldenKey, states);
-            target.Draw(Arrow, states);
-            target.Draw(ManaBottle, states);
-            target.Draw(Coins3, states);
+            if (_character.HasSilverKey) target.Draw(SilverKey);
+            if (_character.HasGoldenKey) target.Draw(GoldenKey);
+            target.Draw(Arrow);
+            target.Draw(ManaBottle);
+            target.Draw(Coins3);
         }
 
         public void UpdateUI()
@@ -75,6 +79,7 @@ namespace ChendiAdventures
             else LivesCount.EditText("LIVES: " + _character.Lives);
 
             Score.EditText("SCORE: " + _character.Score);
+            Time.EditText("TIME: " + Math.Round(_level.LevelTime.ElapsedTime.AsSeconds(), 2));
             CurrentLevel.EditText("LEVEL: " + _level.LevelNumber);
             Arrows.EditText("X " + _character.ArrowAmount);
             Coins.EditText("X " + _character.Coins);
@@ -90,9 +95,14 @@ namespace ChendiAdventures
             );
 
             Score.MoveText(
-                _view.Center.X - _view.Size.X / 2 + 10,
+                _view.Center.X - _view.Size.X / 2 + 150,
                 _view.Center.Y - _view.Size.Y / 2 + 7
             );
+
+            Time.MoveText(
+                _view.Center.X - _view.Size.X / 2 + 10,
+                _view.Center.Y - _view.Size.Y / 2 + 7
+                );
 
             CurrentLevel.MoveText(
                 _view.Center.X + _view.Size.X / 2 - 230,
@@ -130,6 +140,7 @@ namespace ChendiAdventures
         {
             LivesCount.MoveText(-100, -100);
             Score.MoveText(-100, -100);
+            Time.MoveText(-100,-100);
             CurrentLevel.MoveText(-100, -100);
             Arrows.MoveText(-100, -100);
             Mana.MoveText(-100, -100);

@@ -186,7 +186,7 @@ namespace ChendiAdventures
                     IsAttacking = true;
                     sJump.Stop();
                     if (Keyboard.IsKeyPressed(KeyUP) && !IsDownAttacking) IsUpAttacking = true;
-                    else if (Keyboard.IsKeyPressed(KeyDOWN) && !IsUpAttacking && !IsStandingOnBlocks && SpeedY >= -3f)
+                    else if (Keyboard.IsKeyPressed(KeyDOWN) && !IsUpAttacking && !IsStandingOnBlocks && SpeedY >= -5f)
                         IsDownAttacking = true;
                     DefaultClock.Restart();
                 }
@@ -339,8 +339,6 @@ namespace ChendiAdventures
             Arrow.ArrowUpdate(this, level);
             Sword.SwordCollisionCheck(level);
 
-            if (SpeedX != 0 && IsStandingOnBlocks && sStep.Status != SoundStatus.Playing) sStep.Play();
-
             if (GotExit)
             {
                 sImmortality.Stop();
@@ -351,6 +349,8 @@ namespace ChendiAdventures
             GrantAdditionalLifeDependingOnScore();
 
             CollisionDependence(level);
+
+            if (SpeedX != 0 && IsStandingOnBlocks && sStep.Status != SoundStatus.Playing) sStep.Play();
 
             if (!IsVulnerable)
             {
@@ -800,6 +800,22 @@ namespace ChendiAdventures
                     if ((trap.Type == TrapType.BlowTorchLeft || trap.Type == TrapType.BlowTorchRight) &&
                         trap.IsBlowing) Die(level);
                     else if (trap.Type == TrapType.Crusher || trap.Type == TrapType.Spikes) Die(level);
+                    else if (trap.Type == TrapType.BlowerLeft)
+                    {
+                        if (trap.IsBlowing)
+                        {
+                            SpeedY = -5f;
+                            SpeedX = -25f;
+                        }
+                    }
+                    else if (trap.Type == TrapType.BlowerRight)
+                    {
+                        if (trap.IsBlowing)
+                        {
+                            SpeedY = -5f;
+                            SpeedX = 25f; 
+                        }
+                    }
                 }
 
             foreach (var monster in level.Monsters)

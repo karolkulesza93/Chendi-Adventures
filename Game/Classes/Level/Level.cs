@@ -131,8 +131,6 @@ namespace ChendiAdventures
 
             LevelObstacles.Clear();
             Traps.Clear();
-            //this.Creatures.Clear();
-            //this.Projectiles.Clear();
 
             Monsters.Clear();
             Archers.Clear();
@@ -276,7 +274,18 @@ namespace ChendiAdventures
                         Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.BlowTorchLeft));
                         break;
                     }
-
+                    case '{':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                        Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.BlowerLeft));
+                        break;
+                    }
+                    case '}':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                        Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.BlowerRight));
+                        break;
+                    }
                     //teleports
                     case '1':
                     {
@@ -806,9 +815,10 @@ namespace ChendiAdventures
                         case 16:
                         {
                             ShowHint(obstacle,
-                                "TO JUMP HIGHER,\n" +
-                                "USE TRAMPOLINES."
-                                , -40, -18);
+                                $"TO JUMP HIGHER,\n" +
+                                $"USE TRAMPOLINES.\n" +
+                                $"HOLD '{MainCharacter.KeyJUMP}' TO JUMP HIGHER."
+                                , -40, -26);
                             break;
                         }
                     }
@@ -1046,6 +1056,18 @@ namespace ChendiAdventures
                             case TrapType.BlowTorchRight:
                             {
                                 level.Append("]");
+                                monsterFlag = true;
+                                break;
+                            }
+                            case TrapType.BlowerLeft:
+                            {
+                                level.Append("{");
+                                monsterFlag = true;
+                                break;
+                            }
+                            case TrapType.BlowerRight:
+                            {
+                                level.Append("}");
                                 monsterFlag = true;
                                 break;
                             }

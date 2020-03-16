@@ -5,7 +5,7 @@ namespace ChendiAdventures
 {
     public class TextLine : Drawable
     {
-        private static readonly Font _font = new Font("font.ttf");
+        private static readonly Font _font = new Font(@".data/font.ttf");
         private readonly Text _text;
 
         public TextLine(string line, int size, float x, float y, Color color)

@@ -87,6 +87,7 @@ namespace ChendiAdventures
                                     new Color(193, 97, 0), 10));
                             sWood.Play();
                             _character.AddToScore(level, 10, obstacle.X, obstacle.Y);
+                            if (_character.IsDownAttacking) _character.SpeedY -= 1f;
                             break;
                         }
                         case BlockType.HardBlock:
@@ -101,6 +102,12 @@ namespace ChendiAdventures
                                 level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
                                     new Color(57, 65, 81)));
                                 _character.AddToScore(level, 100, obstacle.X, obstacle.Y);
+                                if (_character.IsDownAttacking) 
+                                {
+                                    _character.SpeedY = -5f;
+                                    _character.IsDownAttacking = false;
+                                    _character.IsAttacking = false;
+                                }
                             }
 
                             break;
@@ -136,6 +143,12 @@ namespace ChendiAdventures
                         _character.AddToScore(level, monster.Points, monster.X, monster.Y);
                         level.Particles.Add(new ParticleEffect(monster.X, monster.Y, Color.Red));
                         monster.Die(level);
+                        if (_character.IsDownAttacking)
+                        {
+                            _character.SpeedY = -5f;
+                            _character.IsDownAttacking = false;
+                            _character.IsAttacking = false;
+                        }
                     }
 
                 foreach (var archer in level.Archers)
@@ -145,6 +158,12 @@ namespace ChendiAdventures
                         _character.AddToScore(level, archer.Points, archer.X, archer.Y);
                         level.Particles.Add(new ParticleEffect(archer.X, archer.Y, Color.Red));
                         archer.Die(level);
+                        if (_character.IsDownAttacking)
+                        {
+                            _character.SpeedY = -5f;
+                            _character.IsDownAttacking = false;
+                            _character.IsAttacking = false;
+                        }
                     }
 
                     if (GetBoundingBox().Intersects(archer.Arrow.GetBoundingBox()))
@@ -163,6 +182,12 @@ namespace ChendiAdventures
                         _character.AddToScore(level, wizard.Points, wizard.X, wizard.Y);
                         level.Particles.Add(new ParticleEffect(wizard.X, wizard.Y, Color.Red));
                         wizard.Die(level);
+                        if (_character.IsDownAttacking)
+                        {
+                            _character.SpeedY = -5f;
+                            _character.IsDownAttacking = false;
+                            _character.IsAttacking = false;
+                        }
                     }
 
                 foreach (var golem in level.Golems)

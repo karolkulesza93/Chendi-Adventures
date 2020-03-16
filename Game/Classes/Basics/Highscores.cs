@@ -41,7 +41,7 @@ namespace ChendiAdventures
 
         public Highscores()
         {
-            _path = @"highscores.dat";
+            _path = @".data/highscores.dat";
             _maxAmountOfRecords = 20;
             _highscores = new TextLine("", 50, 470, 70, Color.White);
             _highscores.SetOutlineThickness(5);

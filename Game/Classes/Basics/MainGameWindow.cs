@@ -8,24 +8,6 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-/*
-
- PRACA INŻYNIERSKA - KAROL KULESZA
- Temat: Realizacja dwuwymiarowej gry platformowej z użyciem biblioteki SFML
- Promotor: dr Piotr Jastrzębski
-
-
-PROPOZYCJE DO ZROBIENIA:
-- generowanie poziomu***
-- jak sie uda to shadery/swiatlo ogarnac aby ladnie wygladalo**
-- po smierci resp kilka sekund przed*
-
-DO ZROBIENIA:
-- levele
-- scenka na poczatek i koniec
-
-*/
-
 namespace ChendiAdventures
 {
     public sealed class MainGameWindow
@@ -84,6 +66,12 @@ namespace ChendiAdventures
         public string Title { get; set; }
         public static Difficulty GameDifficulty { get; set; }
         public static bool IsVsync { get; set; }
+
+        public void Close()
+        {
+            _window.Close();
+            Environment.Exit(0);
+        }
 
         private void OnClosed(object sender, EventArgs e)
         {
@@ -398,7 +386,7 @@ namespace ChendiAdventures
 
             var choice = 1;
             var delay = 0;
-            var flag = false;
+            var flag = true;
 
 
             while (_window.IsOpen && _isSettigs)
@@ -434,25 +422,26 @@ namespace ChendiAdventures
                     flag = true;
                     choice++;
                 }
-                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) ||
-                                           Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
+                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
                 {
                     flag = true;
-                    _chendi.sPickup.Play();
                     switch (choice)
                     {
                         case 1: //resolution
                         {
+                            _chendi.sError.Play();
                             break;
                         }
                         case 2: //vsync
                         {
                             IsVsync = !IsVsync;
+                            _chendi.sPickup.Play();
                             vsync.EditText($"VSYNC: {(IsVsync ? "ON" : "OFF")}");
                             break;
                         }
                         case 3: // difficulty
                         {
+                            _chendi.sPickup.Play();
                             GameDifficulty++;
                             if (GameDifficulty == (Difficulty) 4) GameDifficulty = (Difficulty) 1;
 
@@ -479,6 +468,7 @@ namespace ChendiAdventures
                         }
                         case 4: //key bindings
                         {
+                            _chendi.sPickup.Play();
                             KeyBindingConfig();
                             break;
                         }
@@ -623,7 +613,7 @@ namespace ChendiAdventures
 
             var choice = 1;
             var delay = 0;
-            var flag = false;
+            var flag = true;
 
             while (_window.IsOpen && _isMenu)
             {
@@ -1118,7 +1108,7 @@ namespace ChendiAdventures
 
             var x = 1;
             var y = 1;
-            var flag = false;
+            var flag = true;
             var delay = 0;
 
             var view = true;
@@ -1241,7 +1231,6 @@ namespace ChendiAdventures
                     typeM = _level.GetObstacle(x, y).Type;
                 }
 
-
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.V))
                 {
                     flag = true;
@@ -1331,39 +1320,39 @@ namespace ChendiAdventures
                     _level.Golems.Add(new Golem(x * 32, y * 32, Entity.GolemTexture));
                 }
 
-                //clear mosters
+                //clear monsters
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F1))
                 {
                     flag = true;
-                    Creature.sKill.Play();
+                    _chendi.sError.Play();
                     _level.Monsters.Clear();
                 }
 
-                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F2))
+                if (!flag && (Keyboard.IsKeyPressed(Keyboard.Key.F2) && Keyboard.IsKeyPressed(Keyboard.Key.F3)))
                 {
                     flag = true;
-                    Creature.sKill.Play();
+                    _chendi.sError.Play();
                     _level.Archers.Clear();
                 }
 
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F4))
                 {
                     flag = true;
-                    Creature.sKill.Play();
+                    _chendi.sError.Play();
                     _level.Ghosts.Clear();
                 }
 
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F5))
                 {
                     flag = true;
-                    Creature.sKill.Play();
+                    _chendi.sError.Play();
                     _level.Wizards.Clear();
                 }
 
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F6))
                 {
                     flag = true;
-                    Creature.sKill.Play();
+                    _chendi.sError.Play();
                     _level.Golems.Clear();
                 }
 
@@ -1400,16 +1389,108 @@ namespace ChendiAdventures
                     _level.Traps.Add(new Trap(x * 32, y * 32, Entity.TrapsTexture, TrapType.BlowTorchRight));
                 }
 
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Dash))
+                {
+                    flag = true;
+                    _chendi.sPickup.Play();
+
+                    _level.Traps.Add(new Trap(x * 32, y * 32, Entity.TrapsTexture, TrapType.BlowerLeft));
+                }
+
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Equal))
+                {
+                    flag = true;
+                    _chendi.sPickup.Play();
+
+                    _level.Traps.Add(new Trap(x * 32, y * 32, Entity.TrapsTexture, TrapType.BlowerRight));
+                }
                 //clear traps
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F7))
                 {
                     flag = true;
-                    Creature.sKill.Play();
-                    _level.Traps.Clear();
-                }
+                    _chendi.sError.Play();
 
-                //mirror image
+                    try
+                    {
+                        for (int i = 0; i < _level.Traps.Count; i++)
+                        {
+                            if (_level.Traps[i].Type == TrapType.Crusher)
+                            {
+                                _level.Traps.RemoveAt(i);
+                                if (i+1 > 0) i--;
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        break;
+                    }
+                }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F8))
+                {
+                    flag = true;
+                    _chendi.sError.Play();
+
+                    try
+                    {
+                        for (int i = 0; i < _level.Traps.Count; i++)
+                        {
+                            if (_level.Traps[i].Type == TrapType.Spikes)
+                            {
+                                _level.Traps.RemoveAt(i);
+                                if (i + 1 > 0) i--;
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        break;
+                    }
+                }
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F9))
+                {
+                    flag = true;
+                    _chendi.sError.Play();
+
+                    try
+                    {
+                        for (int i = 0; i < _level.Traps.Count; i++)
+                        {
+                            if (_level.Traps[i].Type == TrapType.BlowTorchLeft || _level.Traps[i].Type == TrapType.BlowTorchRight)
+                            {
+                                _level.Traps.RemoveAt(i);
+                                if (i + 1 > 0) i--;
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        break;
+                    }
+                }
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F10))
+                {
+                    flag = true;
+                    _chendi.sError.Play();
+
+                    try
+                    {
+                        for (int i = 0; i < _level.Traps.Count; i++)
+                        {
+                            if (_level.Traps[i].Type == TrapType.BlowerLeft || _level.Traps[i].Type == TrapType.BlowerRight)
+                            {
+                                _level.Traps.RemoveAt(i);
+                                if (i + 1 > 0) i--;
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        break;
+                    }
+                }
+                //mirror image
+                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F11))
                 {
                     flag = true;
                     _chendi.sPickup.Play();
@@ -1447,8 +1528,8 @@ namespace ChendiAdventures
                 }
 
                 //generate
-                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F11))
-                {
+                //if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F11))
+                //{
                     //x = 1; y = 1;
                     /*
                     string level = LevelManager.Generator.GenerateLevel("GENERATED_LEVEL", _level.LevelWidth,
@@ -1461,13 +1542,13 @@ namespace ChendiAdventures
                         _randomizer.Next(2) == 1 ? true : false, _randomizer.Next(2) == 1 ? true : false,
                         _randomizer.Next(2) == 1 ? true : false, _randomizer.Next(2) == 1 ? true : false);
                     _level.LoadLevel(string.Format("GENERATED_LEVEL_{0}x{1}", _level.LevelWidth, _level.LevelHeight));*/
-                }
+                //}
 
                 //clear blocks
                 if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.F12))
                 {
                     flag = true;
-                    Creature.sKill.Play();
+                    _chendi.sError.Play();
 
                     for (x = 1; x < _level.LevelWidth - 1; x++)
                     for (y = 1; y < _level.LevelHeight - 1; y++)
@@ -1481,8 +1562,8 @@ namespace ChendiAdventures
                         _level.GetObstacle(x, y).SetBlock(type);
                     }
 
-                    x = 1;
-                    y = 1;
+                    x = (_level.LevelWidth - 2) / 2 + 1;
+                    y = (_level.LevelHeight - 2) / 2 + 1;
                 }
 
                 //viem manip (+/-)
@@ -1593,7 +1674,7 @@ namespace ChendiAdventures
             if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
             {
                 var choice = false;
-                var flag = false;
+                var flag = true;
                 var delay = 0;
 
                 _quitQestion.MoveText(_view.Center.X - 800, _view.Center.Y - 100); //-230
@@ -1728,9 +1809,9 @@ namespace ChendiAdventures
             timer.Restart();
             _chendi.sImmortality.Stop();
             bool isLottery;
-            if (_level.LevelNumber < 51 && _level.LevelNumber > 15 && Randomizer.Next(100) + 1 > 50)
+            if (_level.LevelNumber < 51 && _level.LevelNumber > 5 && Randomizer.Next(100) + 1 > 66)
                 isLottery = true;
-            else if (_level.LevelNumber == 15)
+            else if (_level.LevelNumber == 5)
                 isLottery = true;
             else
                 isLottery = false;
@@ -1842,7 +1923,7 @@ namespace ChendiAdventures
 
             var choice = 1;
             var delay = 0;
-            var flag = false;
+            var flag = true;
 
             while (_window.IsOpen && _isGame)
             {

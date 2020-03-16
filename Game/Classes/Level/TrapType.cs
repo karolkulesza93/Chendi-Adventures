@@ -5,6 +5,8 @@
         Spikes,
         BlowTorchLeft,
         BlowTorchRight,
-        Crusher
+        Crusher,
+        BlowerLeft,
+        BlowerRight
     }
 }

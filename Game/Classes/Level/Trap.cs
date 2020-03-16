@@ -21,8 +21,8 @@ namespace ChendiAdventures
                     Fire1 = new Block(X, Y, TrapsTexture);
                     Fire2 = new Block(X - 32, Y, TrapsTexture);
 
-                    Fire1.SetTextureRectangle(128, 0);
-                    Fire2.SetTextureRectangle(128, 0);
+                    Fire1.SetTextureRectangle(8, 32);
+                    Fire2.SetTextureRectangle(8, 32);
 
                     AnimFire1 = new Animation(Fire1, 0.03f,
                         new Vector2i(32, 96),
@@ -46,8 +46,8 @@ namespace ChendiAdventures
                     Fire1 = new Block(X, Y, TrapsTexture);
                     Fire2 = new Block(X + 32, Y, TrapsTexture);
 
-                    Fire1.SetTextureRectangle(128, 0);
-                    Fire2.SetTextureRectangle(128, 0);
+                    Fire1.SetTextureRectangle(8, 32);
+                    Fire2.SetTextureRectangle(8, 32);
 
                     AnimFire1 = new Animation(Fire1, 0.03f,
                         new Vector2i(0, 64),
@@ -90,17 +90,37 @@ namespace ChendiAdventures
                     sSpikes.Volume = 50;
                     break;
                 }
+                case TrapType.BlowerLeft:
+                {
+                    IsBlowing = false;
+                    _blow = new Animation(this, 0.05f,
+                        new Vector2i(128,0),
+                        new Vector2i(160, 0),
+                        new Vector2i(192, 0)
+                        );
+                    SetTextureRectangle(192,64);
+                    DefaultTimer.Restart();
+                    break;
+                }
+                case TrapType.BlowerRight:
+                {
+                    IsBlowing = false;
+                    _blow = new Animation(this, 0.05f,
+                        new Vector2i(128, 32),
+                        new Vector2i(160, 32),
+                        new Vector2i(192, 32)
+                        );
+                    SetTextureRectangle(192, 96);
+                    DefaultTimer.Restart();
+                    break;
+                }
             }
-
             ApplyDifficulty();
         }
 
         public float SpeedY { get; }
         public TrapType Type { get; }
         public Clock DefaultTimer { get; }
-
-        public Projectile FlameLeft { get; private set; }
-        public Projectile FlameRight { get; private set; }
         public Block Fire1 { get; }
         public Block Fire2 { get; }
         public bool IsBlowing { get; private set; }
@@ -130,8 +150,8 @@ namespace ChendiAdventures
                         IsBlowing = false;
                         DefaultTimer.Restart();
                         SetTextureRectangle(32, 32);
-                        Fire1.SetTextureRectangle(128, 0);
-                        Fire2.SetTextureRectangle(128, 0);
+                        Fire1.SetTextureRectangle(8, 32);
+                        Fire2.SetTextureRectangle(8, 32);
                     }
 
                     break;
@@ -153,8 +173,8 @@ namespace ChendiAdventures
                         IsBlowing = false;
                         DefaultTimer.Restart();
                         SetTextureRectangle(0, 32);
-                        Fire1.SetTextureRectangle(128, 0);
-                        Fire2.SetTextureRectangle(128, 0);
+                        Fire1.SetTextureRectangle(8, 32);
+                        Fire2.SetTextureRectangle(8, 32);
                     }
 
                     break;
@@ -239,6 +259,44 @@ namespace ChendiAdventures
 
                     break;
                 }
+                case TrapType.BlowerLeft:
+                {
+                    if (DefaultTimer.ElapsedTime.AsSeconds() > _blowerInterval + 0.15f && IsBlowing)
+                    {
+                        IsBlowing = false;
+                        DefaultTimer.Restart();
+                        SetTextureRectangle(192, 64);
+                    }
+                    else if (DefaultTimer.ElapsedTime.AsSeconds() > _blowerInterval && IsBlowing)
+                    {
+                        _blow.Animate();
+                    }
+                    else if (DefaultTimer.ElapsedTime.AsSeconds() > _blowerInterval && !IsBlowing)
+                    {
+                        IsBlowing = true;
+                        sBlow.Play();
+                    }
+                    break;
+                }
+                case TrapType.BlowerRight:
+                {
+                    if (DefaultTimer.ElapsedTime.AsSeconds() > _blowerInterval + 0.15f && IsBlowing)
+                    {
+                        IsBlowing = false;
+                        DefaultTimer.Restart();
+                        SetTextureRectangle(192, 96);
+                    }
+                    else if (DefaultTimer.ElapsedTime.AsSeconds() > _blowerInterval && IsBlowing)
+                    {
+                        _blow.Animate();
+                    }
+                    else if (DefaultTimer.ElapsedTime.AsSeconds() > _blowerInterval && !IsBlowing)
+                    {
+                        IsBlowing = true;
+                        sBlow.Play();
+                    }
+                    break;
+                }
             }
         }
 
@@ -262,7 +320,18 @@ namespace ChendiAdventures
                 {
                     return new FloatRect(X + 4, Top + 17, 24, 1);
                 }
-                default: return GetBoundingBox();
+                case TrapType.BlowerRight:
+                {
+                    return new FloatRect(X, Y - 10, 52,52);
+                }
+                case TrapType.BlowerLeft:
+                {
+                    return new FloatRect(X - 10, Y - 10, 52, 52);
+                    }
+                default: 
+                {
+                    return GetBoundingBox();
+                }
             }
         }
 
@@ -297,6 +366,16 @@ namespace ChendiAdventures
                     base.Draw(target, states);
                     break;
                 }
+                case TrapType.BlowerLeft:
+                {
+                    base.Draw(target, states);
+                    break;
+                }
+                case TrapType.BlowerRight:
+                {
+                    base.Draw(target, states);
+                    break;
+                }
             }
         }
 
@@ -315,6 +394,7 @@ namespace ChendiAdventures
                     _spikeInterval = 5;
                     _crusherInterval = 5;
                     _blowtorchInterval = 7;
+                    _blowerInterval = 9;
                     break;
                 }
                 case Difficulty.Medium:
@@ -322,6 +402,7 @@ namespace ChendiAdventures
                     _spikeInterval = 3;
                     _crusherInterval = 3;
                     _blowtorchInterval = 5;
+                    _blowerInterval = 6;
                     break;
                 }
                 case Difficulty.Hard:
@@ -329,6 +410,7 @@ namespace ChendiAdventures
                     _spikeInterval = 2;
                     _crusherInterval = 2;
                     _blowtorchInterval = 3;
+                    _blowerInterval = 3;
                     break;
                 }
             }
@@ -338,11 +420,14 @@ namespace ChendiAdventures
         private static readonly Sound sCrush = new Sound(new SoundBuffer(@"sfx/crusher.wav"));
         private static readonly Sound sGear = new Sound(new SoundBuffer(@"sfx/gear.wav"));
         private static readonly Sound sSpikes = new Sound(new SoundBuffer(@"sfx/spike.wav"));
+        private static readonly Sound sBlow = new Sound(new SoundBuffer(@"sfx/blow.wav")) {Volume = 200};
         private readonly Animation AnimFire1;
         private readonly Animation AnimFire2;
+        private readonly Animation _blow;
         private readonly float startY;
         private int _blowtorchInterval;
         private int _crusherInterval;
         private int _spikeInterval;
+        private int _blowerInterval;
     }
 }

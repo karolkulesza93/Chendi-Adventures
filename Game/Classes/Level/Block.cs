@@ -50,7 +50,7 @@ namespace ChendiAdventures
                 case BlockType.HardBlock:
                 {
                     SetTextureRectangle(0, 192);
-                    Health = 100;
+                    Health = 200;
                     break;
                 }
                 case BlockType.SteelGate:
@@ -535,15 +535,15 @@ namespace ChendiAdventures
         public void HitHardblock(MainCharacter character)
         {
             if (character.IsDownAttacking)
-                Health -= (int) character.SpeedY;
+                Health -= (int) character.SpeedY * 3;
             else
                 Health--;
 
             if (sHard.Status != SoundStatus.Playing) sHard.Play();
 
-            if (Health < 75) SetTextureRectangle(32, 192);
-            if (Health < 50) SetTextureRectangle(64, 192);
-            if (Health < 25) SetTextureRectangle(96, 192);
+            if (Health < 150) SetTextureRectangle(32, 192);
+            if (Health < 100) SetTextureRectangle(64, 192);
+            if (Health < 50) SetTextureRectangle(96, 192);
         }
 
         public static void FlipLever()

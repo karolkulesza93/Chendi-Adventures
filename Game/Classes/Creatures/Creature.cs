@@ -10,9 +10,7 @@ namespace ChendiAdventures
         public static Sound sStep;
         public static Sound sLand;
         public static Sound sKill = new Sound(new SoundBuffer(@"sfx/kill.wav"));
-        protected Animation _animLeft;
-        protected Animation _animRight;
-        public int Points { get; set; }
+
         public Creature(float x, float y, Texture texture) : base(x, y, texture)
         {
             Points = 0;
@@ -21,12 +19,13 @@ namespace ChendiAdventures
             SpeedX = 0f;
             SpeedY = 0f;
 
-            
 
             IsStandingOnBlocks = false;
 
             MovementDirection = Movement.None;
         }
+
+        public int Points { get; set; }
         public float SpeedX { get; set; } //szybkość po X
         public float SpeedY { get; set; } //szybkość po Y
         public float MaxSpeedX { get; protected set; }
@@ -42,7 +41,6 @@ namespace ChendiAdventures
             return new Vector2f((X + SpeedX) / 32, (Y + SpeedY) / 32);
         }
 
-        // movement
         public void MoveLeft()
         {
             if (SpeedX > -1 * MaxSpeedX)
@@ -67,7 +65,6 @@ namespace ChendiAdventures
             }
         }
 
-        ////
         public virtual void CollisionDependence(Level level)
         {
             var NewX = Get32NextPosition().X;
@@ -129,9 +126,7 @@ namespace ChendiAdventures
                     if ((obstacle =
                             level.GetObstacle(Get32NextPosition().X + 0.85f, Get32NextPosition().Y + 0.99f)).Type ==
                         BlockType.Stone)
-                    {
                         obstacle.Stomp();
-                    }
                     NewY = (int) Get32NextPosition().Y;
                     IsStandingOnBlocks = true;
                     if (SpeedY > 1f) sLand.Play();
@@ -156,7 +151,6 @@ namespace ChendiAdventures
 
         public virtual void ApplyDifficulty()
         {
-
             switch (MainGameWindow.GameDifficulty)
             {
                 case Difficulty.Easy:
@@ -172,7 +166,9 @@ namespace ChendiAdventures
                     break;
                 }
             }
-
         }
+
+        protected Animation _animLeft;
+        protected Animation _animRight;
     }
 }

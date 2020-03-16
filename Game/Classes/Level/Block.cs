@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.ExceptionServices;
-using SFML.Audio;
+﻿using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 
@@ -11,10 +9,10 @@ namespace ChendiAdventures
         public static Sound sCrush = new Sound(new SoundBuffer(@"sfx/crush.wav"));
         public static Sound sPurify = new Sound(new SoundBuffer(@"sfx/petrifier.wav"));
         public static Sound sHard = new Sound(new SoundBuffer(@"sfx/hard.wav"));
-        public static Sound sDestroy = new Sound(new SoundBuffer(@"sfx/destroyed.wav")) { Volume = 60 };
+        public static Sound sDestroy = new Sound(new SoundBuffer(@"sfx/destroyed.wav")) {Volume = 60};
         public static Sound sLever = new Sound(new SoundBuffer(@"sfx/lever.wav"));
-        public Clock DefaultTimer;
         public static Clock LeverTimer;
+        public Clock DefaultTimer;
 
         public Block(float x, float y, Texture texture, BlockType type = BlockType.None, int hintNumber = 0) : base(x,
             y, texture)
@@ -25,6 +23,7 @@ namespace ChendiAdventures
             HintNumber = hintNumber;
             SetBlock(type);
         }
+
         public Vector2f OriginalPos { get; }
         public Animation BlockAnimation { get; private set; }
         public TextLine Hint { get; set; }
@@ -40,29 +39,29 @@ namespace ChendiAdventures
             {
                 case BlockType.Brick:
                 {
-                    SetTextureRectanlge(0, 0, 32, 32);
+                    SetTextureRectangle(0, 0);
                     break;
                 }
                 case BlockType.TransparentBrick:
                 {
-                    SetTextureRectanlge(0, 160,32,32);
+                    SetTextureRectangle(0, 160);
                     break;
                 }
                 case BlockType.HardBlock:
                 {
-                    SetTextureRectanlge(0, 192, 32, 32);
+                    SetTextureRectangle(0, 192);
                     Health = 100;
                     break;
                 }
                 case BlockType.SteelGate:
                 {
-                    SetTextureRectanlge(96, 160, 32, 32);
+                    SetTextureRectangle(96, 160);
                     Level.SteelGates.Add(this);
                     break;
                 }
                 case BlockType.Lever:
                 {
-                    SetTextureRectanlge(32, 160, 32, 32);
+                    SetTextureRectangle(32, 160);
                     LeverTimer = new Clock();
                     Level.IsLeverOn = false;
                     Level.Levers.Add(this);
@@ -78,22 +77,22 @@ namespace ChendiAdventures
                         new Vector2i(64, 224),
                         new Vector2i(32, 224)
                     );
-                    SetTextureRectanlge(0, 224, 32, 32);
+                    SetTextureRectangle(0, 224);
                     break;
                 }
                 case BlockType.Spike:
                 {
-                    SetTextureRectanlge(0, 32, 32, 32);
+                    SetTextureRectangle(0, 32);
                     break;
                 }
                 case BlockType.Enterance:
                 {
-                    SetTextureRectanlge(32, 64, 32, 32);
+                    SetTextureRectangle(32, 64);
                     break;
                 }
                 case BlockType.Shop:
                 {
-                    SetTextureRectanlge(32, 32, 32, 32);
+                    SetTextureRectangle(32, 32);
                     break;
                 }
                 case BlockType.Purifier:
@@ -102,9 +101,9 @@ namespace ChendiAdventures
                         new Vector2i(64, 64),
                         new Vector2i(96, 64)
                     );
-                    SetTextureRectanlge(64, 64, 32, 32);
+                    SetTextureRectangle(64, 64);
                     break;
-                    }
+                }
                 case BlockType.Coin:
                 {
                     BlockAnimation = new Animation(this, 0.05f,
@@ -112,10 +111,10 @@ namespace ChendiAdventures
                         new Vector2i(32, 0),
                         new Vector2i(64, 0),
                         new Vector2i(96, 0),
-                        new Vector2i(64, 0),
-                        new Vector2i(32, 0)
+                        new Vector2i(128, 0),
+                        new Vector2i(160, 0)
                     );
-                    SetTextureRectanlge(0, 0, 32, 32);
+                    SetTextureRectangle(0, 0);
                     break;
                 }
                 case BlockType.SackOfGold:
@@ -124,122 +123,194 @@ namespace ChendiAdventures
                         new Vector2i(0, 320),
                         new Vector2i(32, 320),
                         new Vector2i(64, 320),
-                        new Vector2i(96, 320)
+                        new Vector2i(96, 320),
+                        new Vector2i(64, 320),
+                        new Vector2i(32, 320)
                     );
-                    SetTextureRectanlge(0, 320, 32, 32);
+                    SetTextureRectangle(0, 320);
                     break;
                 }
                 case BlockType.Life:
                 {
                     BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(64, 96),
+                        new Vector2i(32, 96),
+                        new Vector2i(0, 96),
+                        new Vector2i(0, 96),
+                        new Vector2i(0, 96),
+                        new Vector2i(0, 96),
                         new Vector2i(0, 96),
                         new Vector2i(32, 96),
                         new Vector2i(64, 96),
+                        new Vector2i(96, 192),
+                        new Vector2i(96, 160),
+                        new Vector2i(96, 128),
                         new Vector2i(96, 96),
-                        new Vector2i(64, 96),
-                        new Vector2i(32, 96)
+                        new Vector2i(96, 128),
+                        new Vector2i(96, 160),
+                        new Vector2i(96, 192)
                     );
-                    SetTextureRectanlge(0, 96, 32, 32);
+                    SetTextureRectangle(64, 96);
                     break;
                 }
                 case BlockType.Arrow:
                 {
                     BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(64, 160),
+                        new Vector2i(32, 160),
+                        new Vector2i(0, 160),
+                        new Vector2i(0, 160),
+                        new Vector2i(0, 160),
+                        new Vector2i(0, 160),
                         new Vector2i(0, 160),
                         new Vector2i(32, 160),
                         new Vector2i(64, 160),
+                        new Vector2i(96, 192),
                         new Vector2i(96, 160),
-                        new Vector2i(64, 160),
-                        new Vector2i(32, 160)
+                        new Vector2i(96, 128),
+                        new Vector2i(96, 96),
+                        new Vector2i(96, 128),
+                        new Vector2i(96, 160),
+                        new Vector2i(96, 192)
                     );
-                    SetTextureRectanlge(0, 160, 32, 32);
+                    SetTextureRectangle(64, 160);
                     break;
                 }
                 case BlockType.TripleArrow:
                 {
                     BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(64, 192),
+                        new Vector2i(32, 192),
+                        new Vector2i(0, 192),
+                        new Vector2i(0, 192),
+                        new Vector2i(0, 192),
+                        new Vector2i(0, 192),
                         new Vector2i(0, 192),
                         new Vector2i(32, 192),
                         new Vector2i(64, 192),
                         new Vector2i(96, 192),
-                        new Vector2i(64, 192),
-                        new Vector2i(32, 192)
+                        new Vector2i(96, 160),
+                        new Vector2i(96, 128),
+                        new Vector2i(96, 96),
+                        new Vector2i(96, 128),
+                        new Vector2i(96, 160),
+                        new Vector2i(96, 192)
                     );
-                    SetTextureRectanlge(0, 192, 32, 32);
+                    SetTextureRectangle(64, 192);
                     break;
                 }
                 case BlockType.TripleMana:
                 {
                     BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(64, 288),
+                        new Vector2i(32, 288),
+                        new Vector2i(0, 288),
+                        new Vector2i(0, 288),
+                        new Vector2i(0, 288),
+                        new Vector2i(0, 288),
                         new Vector2i(0, 288),
                         new Vector2i(32, 288),
                         new Vector2i(64, 288),
-                        new Vector2i(96, 288),
-                        new Vector2i(64, 288),
-                        new Vector2i(32, 288)
+                        new Vector2i(96, 192),
+                        new Vector2i(96, 160),
+                        new Vector2i(96, 128),
+                        new Vector2i(96, 96),
+                        new Vector2i(96, 128),
+                        new Vector2i(96, 160),
+                        new Vector2i(96, 192)
                     );
-                    SetTextureRectanlge(0, 288, 32, 32);
+                    SetTextureRectangle(64, 288);
                     break;
                 }
                 case BlockType.Score1000:
                 {
                     BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(64, 224),
+                        new Vector2i(32, 224),
+                        new Vector2i(0, 224),
+                        new Vector2i(0, 224),
+                        new Vector2i(0, 224),
+                        new Vector2i(0, 224),
                         new Vector2i(0, 224),
                         new Vector2i(32, 224),
                         new Vector2i(64, 224),
-                        new Vector2i(96, 224),
-                        new Vector2i(64, 224),
-                        new Vector2i(32, 224)
+                        new Vector2i(96, 192),
+                        new Vector2i(96, 160),
+                        new Vector2i(96, 128),
+                        new Vector2i(96, 96),
+                        new Vector2i(96, 128),
+                        new Vector2i(96, 160),
+                        new Vector2i(96, 192)
                     );
-                    SetTextureRectanlge(0, 224, 32, 32);
+                    SetTextureRectangle(64, 224);
                     break;
                 }
                 case BlockType.Mana:
                 {
                     BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(64, 256),
+                        new Vector2i(32, 256),
+                        new Vector2i(0, 256),
+                        new Vector2i(0, 256),
+                        new Vector2i(0, 256),
+                        new Vector2i(0, 256),
                         new Vector2i(0, 256),
                         new Vector2i(32, 256),
                         new Vector2i(64, 256),
-                        new Vector2i(96, 256),
-                        new Vector2i(64, 256),
-                        new Vector2i(32, 256)
+                        new Vector2i(96, 192),
+                        new Vector2i(96, 160),
+                        new Vector2i(96, 128),
+                        new Vector2i(96, 96),
+                        new Vector2i(96, 128),
+                        new Vector2i(96, 160),
+                        new Vector2i(96, 192)
                     );
-                    SetTextureRectanlge(0, 256, 32, 32);
+                    SetTextureRectangle(64, 256);
                     break;
                 }
                 case BlockType.Score5000:
                 {
                     BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(64, 128),
+                        new Vector2i(32, 128),
+                        new Vector2i(0, 128),
+                        new Vector2i(0, 128),
+                        new Vector2i(0, 128),
+                        new Vector2i(0, 128),
                         new Vector2i(0, 128),
                         new Vector2i(32, 128),
                         new Vector2i(64, 128),
+                        new Vector2i(96, 192),
+                        new Vector2i(96, 160),
                         new Vector2i(96, 128),
-                        new Vector2i(64, 128),
-                        new Vector2i(32, 128)
+                        new Vector2i(96, 96),
+                        new Vector2i(96, 128),
+                        new Vector2i(96, 160),
+                        new Vector2i(96, 192)
                     );
-                    SetTextureRectanlge(0, 128, 32, 32);
+                    SetTextureRectangle(64, 128);
                     break;
                 }
                 case BlockType.Stone:
                 {
-                    SetTextureRectanlge(64, 0, 32, 32);
+                    SetTextureRectangle(64, 0);
                     break;
                 }
                 case BlockType.Illusion:
                 {
-                    SetTextureRectanlge(0, 0, 32, 32);
+                    SetTextureRectangle(0, 0);
                     break;
                 }
                 case BlockType.Wood:
                 {
-                    SetTextureRectanlge(96, 0, 32, 32);
+                    SetTextureRectangle(96, 0);
                     IsDestroyed = false;
                     break;
                 }
                 case BlockType.Trampoline:
                 {
                     DefaultTimer = new Clock();
-                    SetTextureRectanlge(64, 32, 32, 32);
+                    SetTextureRectangle(64, 32);
                     break;
                 }
                 case BlockType.Exit:
@@ -248,13 +319,13 @@ namespace ChendiAdventures
                         new Vector2i(0, 64),
                         new Vector2i(0, 96)
                     );
-                    SetTextureRectanlge(0, 64, 32, 32);
-                        break;
+                    SetTextureRectangle(0, 64);
+                    break;
                 }
                 //doors
                 case BlockType.SilverDoor:
                 {
-                    SetTextureRectanlge(64, 96, 32, 32);
+                    SetTextureRectangle(64, 96);
                     break;
                 }
                 case BlockType.SilverKey:
@@ -263,14 +334,16 @@ namespace ChendiAdventures
                         new Vector2i(0, 32),
                         new Vector2i(32, 32),
                         new Vector2i(64, 32),
-                        new Vector2i(96, 32)
+                        new Vector2i(96, 32),
+                        new Vector2i(64, 32),
+                        new Vector2i(32, 32)
                     );
-                    SetTextureRectanlge(0, 32, 32, 32);
+                    SetTextureRectangle(0, 32);
                     break;
                 }
                 case BlockType.GoldDoor:
                 {
-                    SetTextureRectanlge(96, 96, 32, 32);
+                    SetTextureRectangle(96, 96);
                     break;
                 }
                 case BlockType.GoldenKey:
@@ -279,9 +352,11 @@ namespace ChendiAdventures
                         new Vector2i(0, 64),
                         new Vector2i(32, 64),
                         new Vector2i(64, 64),
-                        new Vector2i(96, 64)
+                        new Vector2i(96, 64),
+                        new Vector2i(64, 64),
+                        new Vector2i(32, 64)
                     );
-                    SetTextureRectanlge(0, 64, 32, 32);
+                    SetTextureRectangle(0, 64);
                     break;
                 }
                 case BlockType.CrystalDoor:
@@ -292,18 +367,20 @@ namespace ChendiAdventures
                         new Vector2i(64, 256),
                         new Vector2i(96, 256)
                     );
-                    SetTextureRectanlge(0, 256, 32, 32);
+                    SetTextureRectangle(0, 256);
                     break;
-                    }
+                }
                 case BlockType.CrystalKey:
                 {
                     BlockAnimation = new Animation(this, 0.05f,
                         new Vector2i(0, 352),
                         new Vector2i(32, 352),
                         new Vector2i(64, 352),
-                        new Vector2i(96, 352)
+                        new Vector2i(96, 352),
+                        new Vector2i(64, 352),
+                        new Vector2i(32, 352)
                     );
-                    SetTextureRectanlge(0, 352, 32, 32);
+                    SetTextureRectangle(0, 352);
                     break;
                 }
                 //teleports
@@ -317,7 +394,7 @@ namespace ChendiAdventures
                         new Vector2i(64, 128),
                         new Vector2i(32, 128)
                     );
-                        SetTextureRectanlge(0, 128, 32, 32);
+                    SetTextureRectangle(0, 128);
                     break;
                 }
                 case BlockType.Teleport2:
@@ -330,8 +407,8 @@ namespace ChendiAdventures
                         new Vector2i(64, 128),
                         new Vector2i(32, 128)
                     );
-                    SetTextureRectanlge(0, 128, 32, 32);
-                        break;
+                    SetTextureRectangle(0, 128);
+                    break;
                 }
                 case BlockType.Teleport3:
                 {
@@ -343,7 +420,7 @@ namespace ChendiAdventures
                         new Vector2i(64, 128),
                         new Vector2i(32, 128)
                     );
-                    SetTextureRectanlge(0, 128, 32, 32);
+                    SetTextureRectangle(0, 128);
                     break;
                 }
                 case BlockType.Teleport4:
@@ -356,30 +433,30 @@ namespace ChendiAdventures
                         new Vector2i(64, 128),
                         new Vector2i(32, 128)
                     );
-                    SetTextureRectanlge(0, 128, 32, 32);
+                    SetTextureRectangle(0, 128);
                     break;
                 }
                 ///////
                 case BlockType.Warning:
                 {
-                    SetTextureRectanlge(0, 0, 32, 32);
+                    SetTextureRectangle(0, 0);
                     break;
                 }
                 case BlockType.Hint:
                 {
                     Hint = new TextLine("", 8, -100, -100, new Color(255, 255, 255, 0));
                     Hint.SetOutlineThickness(0.8f);
-                    SetTextureRectanlge(32, 0, 32, 32);
+                    SetTextureRectangle(32, 0);
                     break;
                 }
                 case BlockType.LSpiderweb:
                 {
-                    SetTextureRectanlge(64, 0, 32, 32);
+                    SetTextureRectangle(64, 0);
                     break;
                 }
                 case BlockType.RSpiderweb:
                 {
-                    SetTextureRectanlge(96, 0, 32, 32);
+                    SetTextureRectangle(96, 0);
                     break;
                 }
                 case BlockType.Torch:
@@ -390,27 +467,31 @@ namespace ChendiAdventures
                         new Vector2i(64, 32),
                         new Vector2i(32, 32)
                     );
-                    SetTextureRectanlge(0, 32, 32, 32);
+                    SetTextureRectangle(0, 32);
                     break;
                 }
                 case BlockType.EvilEyes:
                 {
-                    SetTextureRectanlge(96, 32, 32, 16);
+                    BlockAnimation = new Animation(this, 3f,
+                        new Vector2i(96, 32),
+                        new Vector2i(128, 0)
+                    );
+                    SetTextureRectangle(96, 32);
                     break;
                 }
                 case BlockType.Grass:
                 {
-                    SetTextureRectanlge(128, 32, 32, 32);
+                    SetTextureRectangle(128, 32);
                     break;
-                    }
+                }
                 case BlockType.None:
                 {
-                    SetTextureRectanlge(32, 96, 32, 32);
+                    SetTextureRectangle(32, 96);
                     break;
                 }
                 default:
                 {
-                    SetTextureRectanlge(32, 96, 32, 32);
+                    SetTextureRectangle(32, 96);
                     break;
                 }
             }
@@ -426,13 +507,13 @@ namespace ChendiAdventures
 
             Type = BlockType.None;
             IsDestroyed = true;
-            SetTextureRectanlge(32, 0, 32, 32);
+            SetTextureRectangle(32, 0);
         }
 
         public void DeletePickup()
         {
             Type = BlockType.None;
-            SetTextureRectanlge(128, 128, 32, 32);
+            SetTextureRectangle(128, 128);
         }
 
         public void StoneUpdate()
@@ -454,19 +535,15 @@ namespace ChendiAdventures
         public void HitHardblock(MainCharacter character)
         {
             if (character.IsDownAttacking)
-            {
                 Health -= (int) character.SpeedY;
-            }
             else
-            {
                 Health--;
-            }
 
             if (sHard.Status != SoundStatus.Playing) sHard.Play();
 
-            if (Health < 75) { SetTextureRectanlge(32,192); }
-            if (Health < 50) { SetTextureRectanlge(64, 192); }
-            if (Health < 25) { SetTextureRectanlge(96, 192); }
+            if (Health < 75) SetTextureRectangle(32, 192);
+            if (Health < 50) SetTextureRectangle(64, 192);
+            if (Health < 25) SetTextureRectangle(96, 192);
         }
 
         public static void FlipLever()
@@ -477,46 +554,32 @@ namespace ChendiAdventures
                 LeverTimer.Restart();
                 sLever.Play();
 
-                foreach (Block gate in Level.SteelGates)
-                {
-                    gate.Type = BlockType.None;
-                }
+                foreach (var gate in Level.SteelGates) gate.Type = BlockType.None;
 
-                foreach (Block lever in Level.Levers)
-                {
-                    lever.SetTextureRectanlge(64, 160);
-                }
-
+                foreach (var lever in Level.Levers) lever.SetTextureRectangle(64, 160);
             }
         }
+
         public static void LeverMechanismUpdate()
         {
             if (Level.IsLeverOn == false)
             {
                 foreach (var gate in Level.SteelGates)
-                {
-                    if (gate.Y < gate.OriginalPos.Y) gate.Y += 0.002f;
-                }
+                    if (gate.Y < gate.OriginalPos.Y)
+                        gate.Y += 0.002f;
             }
-            else if (Level.IsLeverOn == true && LeverTimer.ElapsedTime.AsSeconds() < Level.LeverInterval)
+            else if (Level.IsLeverOn && LeverTimer.ElapsedTime.AsSeconds() < Level.LeverInterval)
             {
                 foreach (var gate in Level.SteelGates)
-                {
-                    if (gate.Y > gate.OriginalPos.Y - 32) gate.Y -= 0.002f;
-                }
+                    if (gate.Y > gate.OriginalPos.Y - 32)
+                        gate.Y -= 0.002f;
             }
             else
             {
                 Level.IsLeverOn = false;
                 sLever.Play();
-                foreach (Block gate in Level.SteelGates)
-                {
-                    gate.Type = BlockType.SteelGate;
-                }
-                foreach (var lever in Level.Levers)
-                {
-                    lever.SetTextureRectanlge(32, 160);
-                }
+                foreach (var gate in Level.SteelGates) gate.Type = BlockType.SteelGate;
+                foreach (var lever in Level.Levers) lever.SetTextureRectangle(32, 160);
             }
         }
     }

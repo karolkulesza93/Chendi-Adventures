@@ -6,21 +6,8 @@ namespace ChendiAdventures
 {
     public sealed class Trap : Entity
     {
-        private static readonly Sound sFire = new Sound(new SoundBuffer(@"sfx/fire.wav"));
-        private static readonly Sound sCrush = new Sound(new SoundBuffer(@"sfx/crusher.wav"));
-        private static readonly Sound sGear = new Sound(new SoundBuffer(@"sfx/gear.wav"));
-        private static readonly Sound sSpikes = new Sound(new SoundBuffer(@"sfx/spike.wav"));
-        private readonly Animation AnimFire1;
-        private readonly Animation AnimFire2;
-
         public bool IsUp;
 
-        private int _spikeInterval;
-        private int _crusherInterval;
-        private int _blowtorchInterval;
-
-        //spikes
-        private readonly float startY;
         public Trap(float x, float y, Texture texture, TrapType type) : base(x, y, texture)
         {
             Type = type;
@@ -30,12 +17,12 @@ namespace ChendiAdventures
             {
                 case TrapType.BlowTorchLeft:
                 {
-                    SetTextureRectanlge(32, 32, 32, 32);
+                    SetTextureRectangle(32, 32);
                     Fire1 = new Block(X, Y, TrapsTexture);
                     Fire2 = new Block(X - 32, Y, TrapsTexture);
 
-                    Fire1.SetTextureRectanlge(128, 0, 32, 32);
-                    Fire2.SetTextureRectanlge(128, 0, 32, 32);
+                    Fire1.SetTextureRectangle(128, 0);
+                    Fire2.SetTextureRectangle(128, 0);
 
                     AnimFire1 = new Animation(Fire1, 0.03f,
                         new Vector2i(32, 96),
@@ -55,12 +42,12 @@ namespace ChendiAdventures
                 }
                 case TrapType.BlowTorchRight:
                 {
-                    SetTextureRectanlge(0, 32, 32, 32);
+                    SetTextureRectangle(0, 32);
                     Fire1 = new Block(X, Y, TrapsTexture);
                     Fire2 = new Block(X + 32, Y, TrapsTexture);
 
-                    Fire1.SetTextureRectanlge(128, 0, 32, 32);
-                    Fire2.SetTextureRectanlge(128, 0, 32, 32);
+                    Fire1.SetTextureRectangle(128, 0);
+                    Fire2.SetTextureRectangle(128, 0);
 
                     AnimFire1 = new Animation(Fire1, 0.03f,
                         new Vector2i(0, 64),
@@ -81,13 +68,13 @@ namespace ChendiAdventures
                 }
                 case TrapType.Crusher:
                 {
-                    SetTextureRectanlge(0, 0, 32, 32);
+                    SetTextureRectangle(0, 0);
                     Holder = new Block(X, Y, TrapsTexture);
-                    Holder.SetTextureRectanlge(32, 0, 32, 32);
+                    Holder.SetTextureRectangle(32, 0);
                     Line1 = new Block(X, Y, TrapsTexture);
-                    Line1.SetTextureRectanlge(64, 0, 32, 32);
+                    Line1.SetTextureRectangle(64, 0);
                     Line2 = new Block(X, Y, TrapsTexture);
-                    Line2.SetTextureRectanlge(64, 0, 32, 32);
+                    Line2.SetTextureRectangle(64, 0);
                     SpeedY = 9f;
                     JustCrushed = false;
                     sGear.Volume = 50;
@@ -95,7 +82,7 @@ namespace ChendiAdventures
                 }
                 case TrapType.Spikes:
                 {
-                    SetTextureRectanlge(96, 0, 32, 32);
+                    SetTextureRectangle(96, 0);
                     startY = Y;
                     Y += 32;
                     SpeedY = 1.5f;
@@ -107,19 +94,16 @@ namespace ChendiAdventures
 
             ApplyDifficulty();
         }
+
         public float SpeedY { get; }
         public TrapType Type { get; }
         public Clock DefaultTimer { get; }
 
-        //blowtorch
         public Projectile FlameLeft { get; private set; }
         public Projectile FlameRight { get; private set; }
         public Block Fire1 { get; }
         public Block Fire2 { get; }
-
         public bool IsBlowing { get; private set; }
-
-        //crusher
         public Block Holder { get; }
         public Block Line1 { get; }
         public Block Line2 { get; }
@@ -131,7 +115,8 @@ namespace ChendiAdventures
             {
                 case TrapType.BlowTorchLeft:
                 {
-                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > _blowtorchInterval - 2) SetTextureRectanlge(96, 32, 32, 32);
+                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > _blowtorchInterval - 2)
+                        SetTextureRectangle(96, 32);
                     if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > _blowtorchInterval) IsBlowing = true;
                     if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() < _blowtorchInterval + 2)
                     {
@@ -144,16 +129,17 @@ namespace ChendiAdventures
                     {
                         IsBlowing = false;
                         DefaultTimer.Restart();
-                        SetTextureRectanlge(32, 32, 32, 32);
-                        Fire1.SetTextureRectanlge(128, 0, 32, 32);
-                        Fire2.SetTextureRectanlge(128, 0, 32, 32);
+                        SetTextureRectangle(32, 32);
+                        Fire1.SetTextureRectangle(128, 0);
+                        Fire2.SetTextureRectangle(128, 0);
                     }
 
                     break;
                 }
                 case TrapType.BlowTorchRight:
                 {
-                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > _blowtorchInterval - 2) SetTextureRectanlge(64, 32, 32, 32);
+                    if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > _blowtorchInterval - 2)
+                        SetTextureRectangle(64, 32);
                     if (!IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() > _blowtorchInterval) IsBlowing = true;
                     if (IsBlowing && DefaultTimer.ElapsedTime.AsSeconds() < _blowtorchInterval + 2)
                     {
@@ -166,9 +152,9 @@ namespace ChendiAdventures
                     {
                         IsBlowing = false;
                         DefaultTimer.Restart();
-                        SetTextureRectanlge(0, 32, 32, 32);
-                        Fire1.SetTextureRectanlge(128, 0, 32, 32);
-                        Fire2.SetTextureRectanlge(128, 0, 32, 32);
+                        SetTextureRectangle(0, 32);
+                        Fire1.SetTextureRectangle(128, 0);
+                        Fire2.SetTextureRectangle(128, 0);
                     }
 
                     break;
@@ -329,7 +315,7 @@ namespace ChendiAdventures
                     _spikeInterval = 5;
                     _crusherInterval = 5;
                     _blowtorchInterval = 7;
-                        break;
+                    break;
                 }
                 case Difficulty.Medium:
                 {
@@ -347,5 +333,16 @@ namespace ChendiAdventures
                 }
             }
         }
+
+        private static readonly Sound sFire = new Sound(new SoundBuffer(@"sfx/fire.wav"));
+        private static readonly Sound sCrush = new Sound(new SoundBuffer(@"sfx/crusher.wav"));
+        private static readonly Sound sGear = new Sound(new SoundBuffer(@"sfx/gear.wav"));
+        private static readonly Sound sSpikes = new Sound(new SoundBuffer(@"sfx/spike.wav"));
+        private readonly Animation AnimFire1;
+        private readonly Animation AnimFire2;
+        private readonly float startY;
+        private int _blowtorchInterval;
+        private int _crusherInterval;
+        private int _spikeInterval;
     }
 }

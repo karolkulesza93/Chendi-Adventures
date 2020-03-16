@@ -1,18 +1,18 @@
 ﻿using System;
-using SFML.System;
 using SFML.Graphics;
+using SFML.System;
 
 namespace ChendiAdventures
-{ 
-    public class Golem : Creature
+{
+    public sealed class Golem : Creature
     {
-        public float XMaxPos;
-        public float XMinPos;
+        public Boulder Boulder;
         public Clock DefaultClock;
         public int Health;
-        public Boulder Boulder;
         public int HurlInterval;
-        public float ProcsDistance { get; set; }
+        public float XMaxPos;
+        public float XMinPos;
+
         public Golem(float x, float y, Texture texture) : base(x, y, texture)
         {
             XMinPos = x - 96;
@@ -25,7 +25,7 @@ namespace ChendiAdventures
             SpeedX = 1f;
             SpeedY = 0f;
 
-            Boulder = new Boulder(300,-50, GolemTexture, Movement.None);
+            Boulder = new Boulder(300, -50, GolemTexture, Movement.None);
 
             _animLeft = new Animation(this, 0.1f,
                 new Vector2i(0, 0),
@@ -38,11 +38,13 @@ namespace ChendiAdventures
 
             DefaultClock = new Clock();
 
-            SetTextureRectanlge(0, 0, 32, 32);
+            SetTextureRectangle(0, 0);
             IsDead = false;
 
             ApplyDifficulty();
         }
+
+        public float ProcsDistance { get; set; }
 
         public void UpdateCreature(MainCharacter character, Level level)
         {
@@ -59,17 +61,19 @@ namespace ChendiAdventures
 
             Boulder.Direction = SpeedX > 0 ? Movement.Right : Movement.Left;
 
-            if (DefaultClock.ElapsedTime.AsSeconds() > HurlInterval && (float)Math.Sqrt(Math.Pow(GetCenterPosition().X - character.GetCenterPosition().X, 2) +
-                                                                                        Math.Pow(GetCenterPosition().Y - character.GetCenterPosition().Y, 2)) <
+            if (DefaultClock.ElapsedTime.AsSeconds() > HurlInterval && (float) Math.Sqrt(
+                    Math.Pow(GetCenterPosition().X - character.GetCenterPosition().X, 2) +
+                    Math.Pow(GetCenterPosition().Y - character.GetCenterPosition().Y, 2)) <
                 ProcsDistance)
             {
                 DefaultClock.Restart();
-                Boulder.Attack(X,Y, character.X > X ? Movement.Right : Movement.Left);
+                Boulder.Attack(X, Y, character.X > X ? Movement.Right : Movement.Left);
             }
 
             if (Boulder.isAttacking) Boulder.BoulderUpdate(level);
             UpdateTextures();
         }
+
         public override void UpdateTextures()
         {
             if (SpeedX > 0) _animRight.Animate();
@@ -120,6 +124,5 @@ namespace ChendiAdventures
                 }
             }
         }
-
     }
 }

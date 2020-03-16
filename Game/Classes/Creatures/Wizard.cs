@@ -7,8 +7,6 @@ namespace ChendiAdventures
     public sealed class Wizard : Creature
     {
         public readonly Clock DefaultClock;
-        private int _shootInterval;
-        private float _procsDistance;
         public float XMaxPos;
         public float XMinPos;
 
@@ -35,7 +33,7 @@ namespace ChendiAdventures
                 new Vector2i(32, 32)
             );
 
-            SetTextureRectanlge(0, 0, 32, 32);
+            SetTextureRectangle(0, 0);
             IsDead = false;
 
             ApplyDifficulty();
@@ -49,7 +47,7 @@ namespace ChendiAdventures
             else _animLeft.Animate();
         }
 
-        public new void UpdateCreature(MainCharacter character, Level level)
+        public void UpdateCreature(MainCharacter character, Level level)
         {
             if (!IsDead)
             {
@@ -57,8 +55,8 @@ namespace ChendiAdventures
                 if (Left < XMinPos || Right > XMaxPos) SpeedX *= -1;
 
                 if (DefaultClock.ElapsedTime.AsSeconds() > _shootInterval &&
-                    (float)Math.Sqrt(Math.Pow(GetCenterPosition().X - character.GetCenterPosition().X, 2) + 
-                                     Math.Pow(GetCenterPosition().Y - character.GetCenterPosition().Y, 2)) <
+                    (float) Math.Sqrt(Math.Pow(GetCenterPosition().X - character.GetCenterPosition().X, 2) +
+                                      Math.Pow(GetCenterPosition().Y - character.GetCenterPosition().Y, 2)) <
                     _procsDistance)
                 {
                     EnergyBall.Attack(X + 8, Y + 8);
@@ -116,5 +114,8 @@ namespace ChendiAdventures
                 }
             }
         }
+
+        private float _procsDistance;
+        private int _shootInterval;
     }
 }

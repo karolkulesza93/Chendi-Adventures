@@ -28,6 +28,7 @@ namespace ChendiAdventures
                     break;
                 }
             }
+
             Block obstacle;
             if (TipPosition.X > 0 && TipPosition.X < level.LevelWidth * 32 &&
                 TipPosition.Y > 0 && TipPosition.Y < level.LevelHeight * 32)
@@ -42,6 +43,7 @@ namespace ChendiAdventures
                         Color.Yellow));
                     DeleteArrow();
                 }
+
                 if (level.UnpassableContains(
                     (obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32)).Type)) DeleteArrow();
             }
@@ -74,10 +76,12 @@ namespace ChendiAdventures
                 }
 
             foreach (var golem in level.Golems)
-            {
                 if (GetBoundingBox().Intersects(golem.GetBoundingBox()))
                 {
-                    if (!isEnergized) DeleteArrow();
+                    if (!isEnergized)
+                    {
+                        DeleteArrow();
+                    }
                     else
                     {
                         level.Particles.Add(new ParticleEffect(golem.X, golem.Y,
@@ -89,7 +93,6 @@ namespace ChendiAdventures
                         DeleteArrow();
                     }
                 }
-            }
 
 
             if (isEnergized)

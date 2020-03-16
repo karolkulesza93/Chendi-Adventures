@@ -22,9 +22,6 @@ namespace ChendiAdventures
         public static Texture GameMachineTexture = new Texture(@"img/machine.png");
         public static Texture RewardsTexture = new Texture(@"img/rewards.png");
         public static Texture ShopTexture = new Texture(@"img/merchant.png");
-        private readonly Sprite _entitySprite; //głowny obiekt na ekranie
-
-        private IntRect _textureRectangle;
 
         public Entity(float x = 0, float y = 0, Texture texture = null)
         {
@@ -43,19 +40,16 @@ namespace ChendiAdventures
         }
 
         public Texture LoadedTexture { get; set; } //tekstura ladowana z pliku
-
         public float X //pozycja X
         {
             get => _entitySprite.Position.X;
             set => _entitySprite.Position = new Vector2f(value, _entitySprite.Position.Y);
         }
-
         public float Y //pozycja Y
         {
             get => _entitySprite.Position.Y;
             set => _entitySprite.Position = new Vector2f(_entitySprite.Position.X, value);
         }
-
         public float Left => X;
         public float Right => X + Width;
         public float Top => Y;
@@ -66,31 +60,26 @@ namespace ChendiAdventures
         public virtual void Draw(RenderTarget target, RenderStates states)
         {
             target.Draw(_entitySprite, states);
-        } 
+        }
 
         public virtual void SetPosition(float x, float y)
         {
             X = x;
             Y = y;
-        } 
+        }
 
         public FloatRect GetBoundingBox()
         {
             return _entitySprite.GetGlobalBounds();
         }
 
-        public void SetTextureRectanlge(int x, int y, int width = 32, int height = 32)
+        public void SetTextureRectangle(int x, int y, int width = 32, int height = 32)
         {
             _textureRectangle.Left = x;
             _textureRectangle.Top = y;
             _textureRectangle.Width = width;
             _textureRectangle.Height = height;
             SetTexture();
-        }
-
-        private void SetTexture()
-        {
-            _entitySprite.TextureRect = _textureRectangle;
         }
 
         public void UseTexture()
@@ -117,5 +106,13 @@ namespace ChendiAdventures
         {
             _entitySprite.Color = color;
         }
+
+        private void SetTexture()
+        {
+            _entitySprite.TextureRect = _textureRectangle;
+        }
+
+        private readonly Sprite _entitySprite; //głowny obiekt na ekranie
+        private IntRect _textureRectangle;
     }
 }

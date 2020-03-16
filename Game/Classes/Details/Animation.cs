@@ -6,10 +6,9 @@ namespace ChendiAdventures
     public class Animation
     {
         private readonly Clock _animationTimer;
-        public readonly List<Vector2i> Frames;
         private readonly Entity _entity;
-        public int Frame { get; set; }
         private readonly float _frameTime;
+        public readonly List<Vector2i> Frames;
 
         public Animation(Entity entity, float frameTime, params Vector2i[] frames)
         {
@@ -22,9 +21,11 @@ namespace ChendiAdventures
             _frameTime = frameTime;
         }
 
+        public int Frame { get; set; }
+
         private void SetNextTexture(Vector2i framePos, int size = 32)
         {
-            _entity.SetTextureRectanlge(framePos.X, framePos.Y, size, size);
+            _entity.SetTextureRectangle(framePos.X, framePos.Y, size, size);
         }
 
         public void Animate(int size = 32, int frame = -2)
@@ -42,13 +43,14 @@ namespace ChendiAdventures
             {
                 Frame = frame;
             }
+
             SetNextTexture(Frames[Frame], size);
         }
 
         public void ResetAnimation()
         {
             //Frame = Frames.Count - 1;
-            Frame = - 1;
+            Frame = -1;
         }
     }
 }

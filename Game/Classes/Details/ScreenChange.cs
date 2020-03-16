@@ -3,14 +3,12 @@ using SFML.System;
 
 namespace ChendiAdventures
 {
-    class ScreenChange : Drawable
+    internal class ScreenChange : Drawable
     {
-        private RectangleShape _shader;
         private byte _alpha;
-        private View _view;
         private bool _flag;
-
-        public bool Done { get; private set; }
+        private readonly RectangleShape _shader;
+        private readonly View _view;
 
         public ScreenChange(ref View view)
         {
@@ -20,6 +18,13 @@ namespace ChendiAdventures
             _shader.FillColor = new Color(0, 0, 0, 0);
             _flag = false;
             Done = true;
+        }
+
+        public bool Done { get; private set; }
+
+        public void Draw(RenderTarget target, RenderStates states)
+        {
+            target.Draw(_shader);
         }
 
         public void BlackOut()
@@ -32,8 +37,8 @@ namespace ChendiAdventures
                 Done = false;
             }
 
-            _shader.Size = 2*_view.Size;
-            _shader.Position = new Vector2f(_view.Center.X - _view.Size.X *1.5f, _view.Center.Y - _view.Size.Y *1.5f);
+            _shader.Size = 2 * _view.Size;
+            _shader.Position = new Vector2f(_view.Center.X - _view.Size.X * 1.5f, _view.Center.Y - _view.Size.Y * 1.5f);
             if (_alpha < 255)
             {
                 _alpha += 15;
@@ -57,8 +62,8 @@ namespace ChendiAdventures
                 Done = false;
             }
 
-            _shader.Size = 2*_view.Size;
-            _shader.Position = new Vector2f(_view.Center.X - _view.Size.X * 1.5f, _view.Center.Y - _view.Size.Y *1.5f);
+            _shader.Size = 2 * _view.Size;
+            _shader.Position = new Vector2f(_view.Center.X - _view.Size.X * 1.5f, _view.Center.Y - _view.Size.Y * 1.5f);
             if (_alpha > 0)
             {
                 _alpha -= 15;
@@ -77,11 +82,6 @@ namespace ChendiAdventures
             _shader.FillColor = new Color(0, 0, 0, 0);
             _flag = false;
             Done = false;
-        }
-
-        public void Draw(RenderTarget target, RenderStates states)
-        {
-            target.Draw(_shader);
         }
     }
 }

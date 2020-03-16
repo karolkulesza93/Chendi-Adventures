@@ -1,5 +1,4 @@
-﻿using System;
-using SFML.Audio;
+﻿using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 
@@ -7,13 +6,10 @@ namespace ChendiAdventures
 {
     public sealed class Sword : Entity
     {
-        private readonly Animation _animLeft;
-        private readonly Animation _animRight;
-        private readonly Animation _animUp;
-        private readonly Animation _animDown;
-        private readonly MainCharacter _character;
-        private readonly float _frameTime;
         public Movement LastMove;
+        public Sound sBroke = new Sound(new SoundBuffer(@"sfx/broke.wav"));
+
+        public Sound sWood = new Sound(new SoundBuffer(@"sfx/wood.wav")) {Volume = 50};
 
         public Sword(MainCharacter character) : base(-400, -400, SwordTexture)
         {
@@ -44,18 +40,15 @@ namespace ChendiAdventures
                 new Vector2i(150, 30),
                 new Vector2i(150, 60),
                 new Vector2i(150, 30)
-                );
+            );
         }
-
-        public Sound sWood = new Sound(new SoundBuffer(@"sfx/wood.wav")) {Volume = 50};
-        public Sound sBroke = new Sound(new SoundBuffer(@"sfx/broke.wav"));
 
         public void SwordCollisionCheck(Level level)
         {
             if (_character.IsAttacking)
             {
                 Block obstacle = null;
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                 {
                     switch (i)
                     {
@@ -86,10 +79,12 @@ namespace ChendiAdventures
                         case BlockType.Wood:
                         {
                             obstacle.DeleteObstacle();
-                            if (!_character.IsDownAttacking) level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
-                                new Color(193, 97, 0)));
-                            else level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
-                                new Color(193, 97, 0), 10));
+                            if (!_character.IsDownAttacking)
+                                level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                                    new Color(193, 97, 0)));
+                            else
+                                level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                                    new Color(193, 97, 0), 10));
                             sWood.Play();
                             _character.AddToScore(level, 10, obstacle.X, obstacle.Y);
                             break;
@@ -107,6 +102,7 @@ namespace ChendiAdventures
                                     new Color(57, 65, 81)));
                                 _character.AddToScore(level, 100, obstacle.X, obstacle.Y);
                             }
+
                             break;
                         }
                         case BlockType.EnergyBall:
@@ -115,9 +111,10 @@ namespace ChendiAdventures
                                 Color.Cyan, 10));
                             if (!_character.IsDownAttacking)
                             {
-                                _character.SpeedX = obstacle.GetCenterPosition().X - _character.GetCenterPosition().X < 0
-                                    ? 15f
-                                    : -15f;
+                                _character.SpeedX =
+                                    obstacle.GetCenterPosition().X - _character.GetCenterPosition().X < 0
+                                        ? 15f
+                                        : -15f;
                                 _character.SpeedY = -5f;
                             }
                             else
@@ -125,6 +122,7 @@ namespace ChendiAdventures
                                 _character.IsDownAttacking = false;
                                 _character.SpeedY = -10f;
                             }
+
                             _character.IsAttacking = false;
                             Block.sHard.Play();
                             break;
@@ -157,7 +155,7 @@ namespace ChendiAdventures
                         sBroke.Play();
                     }
                 }
-                    
+
 
                 foreach (var wizard in level.Wizards)
                     if (GetBoundingBox().Intersects(wizard.GetBoundingBox()))
@@ -187,15 +185,12 @@ namespace ChendiAdventures
                             _character.SpeedY = -6f;
                             _character.IsDownAttacking = false;
                         }
-                        
+
                         _character.IsAttacking = false;
                         Block.sHard.Play();
                     }
 
-                    if (GetBoundingBox().Intersects(golem.Boulder.GetBoundingBox()))
-                    {
-                        golem.Boulder.ResetBoulder(level);
-                    }
+                    if (GetBoundingBox().Intersects(golem.Boulder.GetBoundingBox())) golem.Boulder.ResetBoulder(level);
                 }
             }
         }
@@ -244,5 +239,13 @@ namespace ChendiAdventures
         {
             return _animRight.Frame;
         }
+
+        private readonly Animation _animDown;
+        private readonly Animation _animLeft;
+        private readonly Animation _animRight;
+        private readonly Animation _animUp;
+        private readonly MainCharacter _character;
+        private readonly float _frameTime;
+
     }
 }

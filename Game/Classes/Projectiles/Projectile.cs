@@ -10,7 +10,6 @@ namespace ChendiAdventures
         public static Sound sEnergyHit = new Sound(new SoundBuffer(@"sfx/energyhit.wav"));
         public static Sound sDraw = new Sound(new SoundBuffer(@"sfx/draw.wav"));
         public static Sound sEnergyShoot = new Sound(new SoundBuffer(@"sfx/energyshoot.wav"));
-        private readonly Movement _direction;
 
         public Projectile(float x, float y, Texture texture, Movement dir) : base(x, y, texture)
         {
@@ -37,6 +36,7 @@ namespace ChendiAdventures
                     break;
                 }
             }
+
             Block obstacle;
             if (TipPosition.X > 0 && TipPosition.X < level.LevelWidth * 32 &&
                 TipPosition.Y > 0 && TipPosition.Y < level.LevelHeight * 32)
@@ -45,8 +45,6 @@ namespace ChendiAdventures
                 if (level.UnpassableContains(
                     (obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32)).Type)) DeleteArrow();
             }
-
-
         }
 
         public void DeleteArrow()
@@ -55,5 +53,7 @@ namespace ChendiAdventures
             X = -100;
             Y = 400;
         }
+
+        private readonly Movement _direction;
     }
 }

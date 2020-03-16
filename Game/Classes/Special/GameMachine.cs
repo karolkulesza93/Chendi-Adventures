@@ -6,27 +6,22 @@ namespace ChendiAdventures
 {
     public class GameMachine : Entity
     {
-        private readonly Random _rnd;
-        public Block Item { get; set; }
-        private int _loss;
-        private Sound _click;
-        private TextLine _reward;
-        private readonly View _view;
-
         public GameMachine(float x, float y, Texture texture, View view) : base(x, y, texture)
         {
-            SetTextureRectanlge(0, 0, 64, 128);
-            Item = new Block(-100, y+16, Entity.RewardsTexture);
-            Item.SetTextureRectanlge(0,0);
-            _reward = new TextLine("",10,1000, 0, Color.Green);
+            SetTextureRectangle(0, 0, 64, 128);
+            Item = new Block(-100, y + 16, RewardsTexture);
+            Item.SetTextureRectangle(0, 0);
+            _reward = new TextLine("", 10, 1000, 0, Color.Green);
             _reward.SetOutlineThickness(1);
             _rnd = new Random(432);
             _loss = 0;
             _click = new Sound(new SoundBuffer(@"sfx/click.wav"));
             _click.Volume = 30;
             LootedReward = Reward.Nothing;
-            this._view = view;
+            _view = view;
         }
+
+        public Block Item { get; set; }
 
         public Reward LootedReward { get; private set; }
 
@@ -75,44 +70,44 @@ namespace ChendiAdventures
 
         public void GrantReward(MainCharacter character)
         {
-            _reward.MoveText( _view.Center.X - _view.Size.X/2 -300, _view.Center.Y + 180);
+            _reward.MoveText(_view.Center.X - _view.Size.X / 2 - 300, _view.Center.Y + 180);
             _reward.EditText("");
 
             switch (LootedReward)
             {
                 case Reward.Nothing:
-                    {
-                        Creature.sKill.Play();
-                        _reward.EditText("YOU HAVE NOT WON ANYTHING...");
-                        break;
-                    }
+                {
+                    Creature.sKill.Play();
+                    _reward.EditText("YOU HAVE NOT WON ANYTHING...");
+                    break;
+                }
                 case Reward.Coins10:
                 {
                     character.sCoin.Play();
                     character.Coins += 10;
                     _reward.EditText("YOU HAVE WON 10 COINS");
-                        break;
+                    break;
                 }
                 case Reward.Coins100:
                 {
                     character.sCoin.Play();
-                        character.Coins += 100;
+                    character.Coins += 100;
                     _reward.EditText("YOU HAVE WON 100 COINS");
-                        break;
+                    break;
                 }
                 case Reward.Coins1000:
                 {
                     character.sCoin.Play();
-                        character.Coins += 1000;
+                    character.Coins += 1000;
                     _reward.EditText("YOU HAVE WON 1000 COINS!");
-                        break;
+                    break;
                 }
                 case Reward.Jackpot:
                 {
                     MainGameWindow.Victory.Play();
                     character.Coins += 10000;
                     _reward.EditText("JACKPOT! YOU HAVE WON 10000 COINS");
-                        break;
+                    break;
                 }
 
                 case Reward.Arrow3:
@@ -120,63 +115,63 @@ namespace ChendiAdventures
                     character.sPickup.Play();
                     character.ArrowAmount += 1;
                     _reward.EditText("YOU HAVE WON 1 ARROW");
-                        break;
+                    break;
                 }
                 case Reward.Arrow10:
                 {
                     character.sPickup.Play();
-                        character.ArrowAmount += 3;
+                    character.ArrowAmount += 3;
                     _reward.EditText("YOU HAVE WON 3 ARROWS");
-                        break;
+                    break;
                 }
                 case Reward.Arrow25:
                 {
                     character.sPickup.Play();
-                        character.ArrowAmount += 5;
+                    character.ArrowAmount += 5;
                     _reward.EditText("YOU HAVE WON 5 ARROWS");
-                        break;
+                    break;
                 }
 
                 case Reward.Mana3:
                 {
                     character.sPickup.Play();
-                        character.Mana += 1;
+                    character.Mana += 1;
                     _reward.EditText("YOU HAVE WON 1 MANA POTION");
-                        break;
+                    break;
                 }
                 case Reward.Mana10:
                 {
                     character.sPickup.Play();
-                        character.Mana += 2;
+                    character.Mana += 2;
                     _reward.EditText("YOU HAVE WON 2 MANA POTIONS");
-                        break;
+                    break;
                 }
                 case Reward.Mana25:
                 {
                     character.sPickup.Play();
-                        character.Mana += 3;
+                    character.Mana += 3;
                     _reward.EditText("YOU HAVE WON 3 MANA POTIONS");
-                        break;
+                    break;
                 }
 
                 case Reward.Score10000:
                 {
                     character.sPickup.Play();
-                        character.Score += 50000;
+                    character.Score += 50000;
                     _reward.EditText("WOW! YOU HAVE WON 50000 POINTS!");
                     break;
                 }
                 case Reward.Life:
                 {
                     character.sLife.Play();
-                    character.Lives++; 
+                    character.Lives++;
                     _reward.EditText("YOU HAVE WON 1 LIFE");
-                        break;
+                    break;
                 }
                 case Reward.TripleLife:
                 {
                     character.sLife.Play();
-                        character.Lives += 3;
+                    character.Lives += 3;
                     _reward.EditText("YOU HAVE WON 3 LIVES");
                     break;
                 }
@@ -186,61 +181,33 @@ namespace ChendiAdventures
         public void TextureUpdate() // tu zmienic na switch bo bez sensu to to
         {
             if (_loss >= 0 && _loss <= 49)
-            {
-                Item.SetTextureRectanlge(0, 32);
-            }
+                Item.SetTextureRectangle(0, 32);
             else if (_loss >= 50 && _loss <= 99)
-            {
-                Item.SetTextureRectanlge(0, 96);
-            }
+                Item.SetTextureRectangle(0, 96);
             else if (_loss >= 100 && _loss <= 149)
-            {
-                Item.SetTextureRectanlge(0, 64);
-            }
+                Item.SetTextureRectangle(0, 64);
             else if (_loss >= 150 && _loss <= 169)
-            {
-                Item.SetTextureRectanlge(32, 32);
-            }
+                Item.SetTextureRectangle(32, 32);
             else if (_loss >= 170 && _loss <= 189)
-            {
-                Item.SetTextureRectanlge(32, 96);
-            }
+                Item.SetTextureRectangle(32, 96);
             else if (_loss >= 190 && _loss <= 209)
-            {
-                Item.SetTextureRectanlge(32, 64);
-            }
+                Item.SetTextureRectangle(32, 64);
             else if (_loss >= 210 && _loss <= 219)
-            {
-                Item.SetTextureRectanlge(64, 32);
-            }
+                Item.SetTextureRectangle(64, 32);
             else if (_loss >= 220 && _loss <= 229)
-            {
-                Item.SetTextureRectanlge(64, 96);
-            }
+                Item.SetTextureRectangle(64, 96);
             else if (_loss >= 230 && _loss <= 239)
-            {
-                Item.SetTextureRectanlge(64, 64);
-            }
+                Item.SetTextureRectangle(64, 64);
             else if (_loss >= 240 && _loss <= 242)
-            {
-                Item.SetTextureRectanlge(0, 128);
-            }
+                Item.SetTextureRectangle(0, 128);
             else if (_loss >= 243 && _loss <= 245)
-            {
-                Item.SetTextureRectanlge(0, 160);
-            }
+                Item.SetTextureRectangle(0, 160);
             else if (_loss == 246)
-            {
-                Item.SetTextureRectanlge(0, 192);
-            }
+                Item.SetTextureRectangle(0, 192);
             else if (_loss == 247)
-            {
-                Item.SetTextureRectanlge(32, 128);
-            }
+                Item.SetTextureRectangle(32, 128);
             else
-            {
-                Item.SetTextureRectanlge(0, 0);
-            }
+                Item.SetTextureRectangle(0, 0);
         }
 
         public void GameMachineUpdate()
@@ -258,10 +225,7 @@ namespace ChendiAdventures
                 Item.Y = Y + 16;
             }
 
-            if (_reward.X < X - _reward.Width/2 )
-            {
-                _reward.MoveText(_reward.X + 15, _reward.Y);
-            }
+            if (_reward.X < X - _reward.Width / 2) _reward.MoveText(_reward.X + 15, _reward.Y);
         }
 
         public override void Draw(RenderTarget target, RenderStates states)
@@ -273,5 +237,11 @@ namespace ChendiAdventures
                 target.Draw(_reward);
             }
         }
+
+        private readonly Random _rnd;
+        private readonly View _view;
+        private readonly Sound _click;
+        private int _loss;
+        private readonly TextLine _reward;
     }
 }

@@ -6,9 +6,7 @@ namespace ChendiAdventures
 {
     public class EnergyBall : Projectile
     {
-        private readonly Animation _anim;
         public Clock DefaultTimer;
-        private readonly Sound sAtk;
 
         public EnergyBall(float x, float y, Texture texture, Movement dir = Movement.None) : base(x, y, texture, dir)
         {
@@ -49,10 +47,7 @@ namespace ChendiAdventures
                 X += SpeedX;
                 Y += SpeedY;
 
-                if (DefaultTimer.ElapsedTime.AsSeconds() > 5)
-                {
-                    ResetEnergyBall(level);
-                }
+                if (DefaultTimer.ElapsedTime.AsSeconds() > 5) ResetEnergyBall(level);
 
                 _anim.Animate(16);
             }
@@ -72,5 +67,8 @@ namespace ChendiAdventures
             level.Particles.Add(new ParticleEffect(X - 8, Y - 8, Color.Yellow));
             SetPosition(-100, -100);
         }
+
+        private readonly Animation _anim;
+        private readonly Sound sAtk;
     }
 }

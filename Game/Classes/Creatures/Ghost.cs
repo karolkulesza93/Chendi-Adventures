@@ -7,6 +7,8 @@ namespace ChendiAdventures
 {
     public sealed class Ghost : Creature
     {
+        public static Sound sGhost = new Sound(new SoundBuffer(@"sfx/ghost.wav")) {Volume = 40};
+
         public Ghost(float x, float y, Texture texture) : base(x, y, texture)
         {
             Speed = 1f;
@@ -24,14 +26,13 @@ namespace ChendiAdventures
             DefaultClock = new Clock();
 
             IsDead = false;
-            SetTextureRectanlge(0, 0, 32, 32);
+            SetTextureRectangle(0, 0);
 
             ApplyDifficulty();
         }
 
         public float Speed { get; set; }
         public float ProcsDistance { get; set; }
-        public static Sound sGhost = new Sound(new SoundBuffer(@"sfx/ghost.wav")) { Volume = 40 };
         public Clock DefaultClock { get; }
 
         public override void UpdateTextures()
@@ -40,12 +41,13 @@ namespace ChendiAdventures
             else _animRight.Animate();
         }
 
-        public new void UpdateCreature(Level level, MainCharacter character)
+        public void UpdateCreature(Level level, MainCharacter character)
         {
             UpdateTextures();
 
-            if (!IsDead &&  !character.IsDead && (float) Math.Sqrt(Math.Pow(GetCenterPosition().X - character.GetCenterPosition().X, 2) +
-                                             Math.Pow(GetCenterPosition().Y - character.GetCenterPosition().Y, 2)) <
+            if (!IsDead && !character.IsDead && (float) Math.Sqrt(
+                    Math.Pow(GetCenterPosition().X - character.GetCenterPosition().X, 2) +
+                    Math.Pow(GetCenterPosition().Y - character.GetCenterPosition().Y, 2)) <
                 ProcsDistance)
             {
                 if (GetCenterPosition().X >= character.GetCenterPosition().X) SpeedX = -1 * Speed;
@@ -69,7 +71,7 @@ namespace ChendiAdventures
         {
             level.Particles.Add(new ParticleEffect(X, Y, Color.Cyan));
             SetPosition(400, -100);
-            Arrow.sEnergyHit.Play();
+            Projectile.sEnergyHit.Play();
             IsDead = true;
             DefaultClock.Dispose();
         }

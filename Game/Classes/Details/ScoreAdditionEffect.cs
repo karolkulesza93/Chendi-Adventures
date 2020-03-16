@@ -17,7 +17,7 @@ namespace ChendiAdventures
             else
             {
                 Line = new TextLine(msg, 5, x, y - 5, Color.Red);
-                Line.MoveText(Line.X - (float)0.3 * Line.Width, y);
+                Line.MoveText(Line.X - (float) 0.3 * Line.Width, y);
             }
         }
 

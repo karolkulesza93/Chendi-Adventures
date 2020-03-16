@@ -38,15 +38,6 @@ namespace ChendiAdventures
     public class Highscores : Drawable
     {
         public readonly List<HighscoreRecord> Scores;
-        private readonly TextLine _highscores;
-        private readonly int _maxAmountOfRecords;
-        private readonly string _path;
-
-        public float X
-        {
-            get => _highscores.X;
-            set => _highscores.X = value;
-        }
 
         public Highscores()
         {
@@ -58,6 +49,12 @@ namespace ChendiAdventures
             Scores = new List<HighscoreRecord>();
             Scores.Clear();
             LoadHighscores();
+        }
+
+        public float X
+        {
+            get => _highscores.X;
+            set => _highscores.X = value;
         }
 
         public void Draw(RenderTarget target, RenderStates states)
@@ -126,9 +123,14 @@ namespace ChendiAdventures
         {
             var str = new StringBuilder();
 
-            foreach (var record in Scores) str.Append(record.Score + " " + record.Level + " " + record.Difficulty + "\n");
+            foreach (var record in Scores)
+                str.Append(record.Score + " " + record.Level + " " + record.Difficulty + "\n");
 
             File.WriteAllText(_path, str.ToString());
         }
+
+        private readonly TextLine _highscores;
+        private readonly int _maxAmountOfRecords;
+        private readonly string _path;
     }
 }

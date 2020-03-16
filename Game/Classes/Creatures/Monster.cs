@@ -25,7 +25,7 @@ namespace ChendiAdventures
                 new Vector2i(32, 32)
             );
 
-            SetTextureRectanlge(0, 0, 32, 32);
+            SetTextureRectangle(0, 0);
             IsDead = false;
 
             ApplyDifficulty();

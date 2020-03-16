@@ -35,10 +35,7 @@ namespace ChendiAdventures
             set => _text.Color = new Color(255, 255, 255, value);
         }
 
-        public float Width
-        {
-            get => (float)_text.DisplayedString.Length * _text.CharacterSize * 0.8f;
-        }
+        public float Width => (float) _text.DisplayedString.Length * _text.CharacterSize * 0.8f;
 
         public void Draw(RenderTarget target, RenderStates states)
         {

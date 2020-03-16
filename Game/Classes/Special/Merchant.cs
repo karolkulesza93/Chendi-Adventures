@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFML.Graphics;
 using SFML.Audio;
-using SFML.System;
+using SFML.Graphics;
 
 namespace ChendiAdventures
 {
     public class Merchant : Entity
     {
-        public readonly Dictionary<Wares, int> ItemsPrices;
-        public readonly Dictionary<Wares, int> ItemsCount;
-        private MainCharacter _character;
-        private Random _rnd;
-        public TextLine MerchantTalk;
         public static Sound sBuy = new Sound(new SoundBuffer(@"sfx/buy.wav"));
+        public readonly Dictionary<Wares, int> ItemsCount;
+        public readonly Dictionary<Wares, int> ItemsPrices;
 
-        public TextLine Item1 = new TextLine("", 10, -100,-100, Color.White);
-        public TextLine Item2 = new TextLine("", 10, -100,-100, Color.White);
-        public TextLine Item3 = new TextLine("", 10, -100,-100, Color.White);
+        public TextLine Item1 = new TextLine("", 10, -100, -100, Color.White);
+        public TextLine Item2 = new TextLine("", 10, -100, -100, Color.White);
+        public TextLine Item3 = new TextLine("", 10, -100, -100, Color.White);
         public TextLine Item4 = new TextLine("", 10, -100, -100, Color.White);
+        public TextLine MerchantTalk;
 
         public Merchant(float x, float y, Texture texture, MainCharacter character) : base(x, y, texture)
         {
@@ -28,22 +25,21 @@ namespace ChendiAdventures
             MerchantTalk = new TextLine("HELLO! WELCOME TO MY SHOP!", 10, -100, -100, Color.Cyan);
             MerchantTalk.SetOutlineThickness(3);
 
-            ItemsPrices = new Dictionary<Wares, int>()
+            ItemsPrices = new Dictionary<Wares, int>
             {
-                {Wares.Arrow, 100}, 
-                {Wares.Mana, 150}, 
-                {Wares.Life, 500}, 
+                {Wares.Arrow, 100},
+                {Wares.Mana, 150},
+                {Wares.Life, 500},
                 {Wares.Score1000, 250}
             };
 
-            ItemsCount = new Dictionary<Wares, int>()
+            ItemsCount = new Dictionary<Wares, int>
             {
                 {Wares.Arrow, _rnd.Next(10) + 1},
                 {Wares.Mana, _rnd.Next(5) + 1},
                 {Wares.Life, _rnd.Next(3) + 1},
                 {Wares.Score1000, 1000}
             };
-
         }
 
         public void ShopUpdate(int choice)
@@ -55,10 +51,14 @@ namespace ChendiAdventures
             Item3.MoveText(X, Y + 174);
             Item4.MoveText(X, Y + 186);
 
-            Item1.EditText(string.Format("- ARROW '{0}' : {1} COIN:EA",ItemsCount[Wares.Arrow], ItemsPrices[Wares.Arrow]));
-            Item2.EditText(string.Format("- MANA '{0}' : {1} COIN:EA", ItemsCount[Wares.Mana], ItemsPrices[Wares.Mana]));
-            Item3.EditText(string.Format("- LIFE '{0}' : {1} COIN:EA", ItemsCount[Wares.Life], ItemsPrices[Wares.Life]));
-            Item4.EditText(string.Format("- 1000 POINTS '{0}' : {1} COIN:EA", ItemsCount[Wares.Score1000], ItemsPrices[Wares.Score1000]));
+            Item1.EditText(string.Format("- ARROW '{0}' : {1} COIN:EA", ItemsCount[Wares.Arrow],
+                ItemsPrices[Wares.Arrow]));
+            Item2.EditText(string.Format("- MANA '{0}' : {1} COIN:EA", ItemsCount[Wares.Mana],
+                ItemsPrices[Wares.Mana]));
+            Item3.EditText(string.Format("- LIFE '{0}' : {1} COIN:EA", ItemsCount[Wares.Life],
+                ItemsPrices[Wares.Life]));
+            Item4.EditText(string.Format("- 1000 POINTS '{0}' : {1} COIN:EA", ItemsCount[Wares.Score1000],
+                ItemsPrices[Wares.Score1000]));
 
             Item1.ChangeColor(Color.White);
             Item2.ChangeColor(Color.White);
@@ -75,25 +75,24 @@ namespace ChendiAdventures
                 case 2:
                 {
                     Item2.ChangeColor(Color.Green);
-                        break;
+                    break;
                 }
                 case 3:
                 {
                     Item3.ChangeColor(Color.Green);
-                        break;
+                    break;
                 }
                 case 4:
                 {
                     Item4.ChangeColor(Color.Green);
-                        break;
+                    break;
                 }
             }
         }
 
-
         public void SellWares(int choice)
         {
-            Wares ware = Wares.Arrow;
+            var ware = Wares.Arrow;
             switch (choice)
             {
                 case 1:
@@ -141,7 +140,7 @@ namespace ChendiAdventures
                     _character.Coins -= ItemsPrices[ware];
                     ItemsCount[ware]--;
                     sBuy.Play();
-                        break;
+                    break;
                 }
                 case Wares.Mana:
                 {
@@ -149,7 +148,7 @@ namespace ChendiAdventures
                     _character.Coins -= ItemsPrices[ware];
                     ItemsCount[ware]--;
                     sBuy.Play();
-                        break;
+                    break;
                 }
                 case Wares.Life:
                 {
@@ -157,7 +156,7 @@ namespace ChendiAdventures
                     _character.Coins -= ItemsPrices[ware];
                     ItemsCount[ware]--;
                     sBuy.Play();
-                        break;
+                    break;
                 }
                 case Wares.Score1000:
                 {
@@ -165,9 +164,10 @@ namespace ChendiAdventures
                     _character.Coins -= ItemsPrices[ware];
                     ItemsCount[ware]--;
                     sBuy.Play();
-                        break;
+                    break;
                 }
             }
+
             MerchantTalk.EditText("THANK YOU VERY MUCH!");
         }
 
@@ -181,5 +181,8 @@ namespace ChendiAdventures
             target.Draw(Item3);
             target.Draw(Item4);
         }
+
+        private readonly MainCharacter _character;
+        private readonly Random _rnd;
     }
 }

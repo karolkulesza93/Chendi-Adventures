@@ -5,7 +5,6 @@ namespace ChendiAdventures
 {
     public sealed class Archer : Creature
     {
-        private int _shootInterval;
         public Archer(float x, float y, Texture texture, Movement dir) : base(x, y, texture)
         {
             DefaultClock = new Clock();
@@ -22,16 +21,16 @@ namespace ChendiAdventures
             {
                 case Movement.Left:
                 {
-                    SetTextureRectanlge(0, 32, 32, 32);
-                    Arrow.SetTextureRectanlge(0, 14, 32, 7);
+                    SetTextureRectangle(0, 32);
+                    Arrow.SetTextureRectangle(0, 14, 32, 7);
 
                     Arrow.SpeedX = -1 * Arrow.SpeedX;
                     break;
                 }
                 case Movement.Right:
                 {
-                    SetTextureRectanlge(0, 0, 32, 32);
-                    Arrow.SetTextureRectanlge(0, 21, 32, 7);
+                    SetTextureRectangle(0, 0);
+                    Arrow.SetTextureRectangle(0, 21, 32, 7);
                     break;
                 }
             }
@@ -57,12 +56,12 @@ namespace ChendiAdventures
                 {
                     case Movement.Left:
                     {
-                        SetTextureRectanlge(32, 32, 32, 32);
+                        SetTextureRectangle(32, 32);
                         break;
                     }
                     case Movement.Right:
                     {
-                        SetTextureRectanlge(32, 0, 32, 32);
+                        SetTextureRectangle(32, 0);
                         break;
                     }
                 }
@@ -78,12 +77,12 @@ namespace ChendiAdventures
                 {
                     case Movement.Left:
                     {
-                        SetTextureRectanlge(0, 32, 32, 32);
+                        SetTextureRectangle(0, 32);
                         break;
                     }
                     case Movement.Right:
                     {
-                        SetTextureRectanlge(0, 0, 32, 32);
+                        SetTextureRectangle(0, 0);
                         break;
                     }
                 }
@@ -129,5 +128,7 @@ namespace ChendiAdventures
                 }
             }
         }
+
+        private int _shootInterval;
     }
 }

@@ -9,46 +9,38 @@ namespace ChendiAdventures
 {
     public class Level : Drawable
     {
-        public readonly List<Archer> Archers;
-        public readonly List<Ghost> Ghosts;
-        public readonly List<Wizard> Wizards;
-        public readonly List<Monster> Monsters;
-        public readonly List<Golem> Golems;
-        public Boss Argoth;
-
-        public readonly List<Block> LevelObstacles;
-        public readonly List<ParticleEffect> Particles;
-        public readonly List<ScoreAdditionEffect> ScoreAdditionEffects;
-        public readonly List<Trap> Traps;
-       
-        private readonly Sprite _background;
-        private readonly MainCharacter _mainCharacter;
-        private readonly View _view;
-        private readonly Texture _texBackground;
-        private TextLine _levelDescription;
-        private Random rnd;
-
-        public List<BlockType> UnableToPassl;
-        public bool isShopOpened;
-
-        public static bool IsLeverOn { get; set; }
         public static List<Block> SteelGates = new List<Block>();
         public static List<Block> Levers = new List<Block>();
         public static int LeverInterval = 10;
 
-        public static List<BlockType> AnimateableBlocks = new List<BlockType>()
+        public static List<BlockType> AnimateableBlocks = new List<BlockType>
         {
             BlockType.Coin, BlockType.SilverKey, BlockType.GoldenKey, BlockType.Life, BlockType.Score5000,
             BlockType.Arrow, BlockType.TripleArrow, BlockType.Score1000, BlockType.Mana, BlockType.Torch,
             BlockType.TripleMana, BlockType.SackOfGold, BlockType.Exit, BlockType.Teleport1, BlockType.Teleport2,
             BlockType.Purifier, BlockType.Teleport3, BlockType.Teleport4, BlockType.EnergyBall, BlockType.CrystalKey,
-            BlockType.CrystalDoor
+            BlockType.CrystalDoor, BlockType.EvilEyes
         };
+
+        public readonly List<Archer> Archers;
+        public readonly List<Ghost> Ghosts;
+        public readonly List<Golem> Golems;
+
+        public readonly List<Block> LevelObstacles;
+        public readonly List<Monster> Monsters;
+        public readonly List<ParticleEffect> Particles;
+        public readonly List<ScoreAdditionEffect> ScoreAdditionEffects;
+        public readonly List<Trap> Traps;
+        public readonly List<Wizard> Wizards;
+        public Boss Argoth;
+        public bool isShopOpened;
+
+        public List<BlockType> UnableToPassl;
 
         public Level(MainCharacter character, View view)
         {
             _mainCharacter = character;
-            _view = view; 
+            _view = view;
             rnd = new Random();
 
             ScoreAdditionEffects = new List<ScoreAdditionEffect>();
@@ -83,6 +75,8 @@ namespace ChendiAdventures
 
             isShopOpened = false;
         }
+
+        public static bool IsLeverOn { get; set; }
         public Vector2f EnterancePosition { get; private set; }
         public Vector2f ExitPosition { get; private set; }
         public Vector2f tp1Position { get; private set; }
@@ -100,6 +94,7 @@ namespace ChendiAdventures
         public int StartCoins { get; set; }
         public int StartArrows { get; set; }
         public int StartMana { get; set; }
+
         public void Draw(RenderTarget target, RenderStates states)
         {
             target.Draw(_background);
@@ -110,6 +105,7 @@ namespace ChendiAdventures
                 target.Draw(i);
                 if (i.Type == BlockType.Hint) target.Draw(i.Hint);
             }
+
             //monsters
             foreach (var i in Monsters) target.Draw(i);
             foreach (var i in Archers) target.Draw(i);
@@ -127,7 +123,7 @@ namespace ChendiAdventures
         public void LoadLevel(string level)
         {
             Levers.Clear();
-            SteelGates.Clear(); 
+            SteelGates.Clear();
             //Console.WriteLine("Level load start...");
 
             ScoreAdditionEffects.Clear();
@@ -145,8 +141,11 @@ namespace ChendiAdventures
             Golems.Clear();
 
             UnableToPassl = new List<BlockType>
-                {BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor, BlockType.CrystalDoor,
-                    BlockType.TransparentBrick, BlockType.HardBlock, BlockType.SteelGate, BlockType.EnergyBall};
+            {
+                BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor,
+                BlockType.CrystalDoor,
+                BlockType.TransparentBrick, BlockType.HardBlock, BlockType.SteelGate, BlockType.EnergyBall
+            };
 
             //Console.WriteLine("Entity lists cleared");
 
@@ -462,20 +461,14 @@ namespace ChendiAdventures
                     //shop
                     case '+':
                     {
-                        int chance = rnd.Next(3) + 1;
+                        var chance = rnd.Next(3) + 1;
 
                         if (LevelNumber == 20)
-                        {
                             LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
-                        }
                         else if (chance == 2)
-                        {
                             LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
-                        }
                         else
-                        {
                             LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        }
                         break;
                     }
                     //enterance
@@ -509,7 +502,8 @@ namespace ChendiAdventures
             LevelHeight += 1;
             LevelWidth = LevelLenght - 1;
             _background.TextureRect = new IntRect(new Vector2i(0, 0), new Vector2i(LevelWidth * 32, LevelHeight * 32));
-            MonsterCount = Traps.Count * 2 + Monsters.Count * 3 + Archers.Count * 4 + Ghosts.Count * 5 + Wizards.Count * 6;
+            MonsterCount = Traps.Count * 2 + Monsters.Count * 3 + Archers.Count * 4 + Ghosts.Count * 5 +
+                           Wizards.Count * 6;
 
             _mainCharacter.SetStartingPosition(this);
 
@@ -521,18 +515,18 @@ namespace ChendiAdventures
             _mainCharacter.HasSilverKey = false;
             _mainCharacter.HasGoldenKey = false;
 
-            _levelDescription.MoveText(_view.Center.X - _view.Size.X/2 - 1000, _view.Center.Y - 100);
+            _levelDescription.MoveText(_view.Center.X - _view.Size.X / 2 - 1000, _view.Center.Y - 100);
             _levelDescription.EditText($"LEVEL {LevelNumber}");
 
             //Console.WriteLine("Level {0} loaded succesfully ({1}:{2}  MC value: {3})", level, this.LevelWidth, this.LevelHeight, this.MonsterCount);
             //File.AppendAllText("log.txt", string.Format("Level {0} loaded succesfully ({1}:{2}  MC value: {3})\n", level, this.LevelWidth, this.LevelHeight, this.MonsterCount));
 
-            foreach (var archer in Archers) { archer.DefaultClock.Restart(); }
-            foreach (var ghost in Ghosts) { ghost.DefaultClock.Restart();}
-            foreach (var wizard in Wizards) { wizard.DefaultClock.Restart(); }
-            foreach (var golem in Golems) { golem.DefaultClock.Restart();}
-            foreach (var trap in Traps) { trap.DefaultTimer.Restart(); }
-            
+            foreach (var archer in Archers) archer.DefaultClock.Restart();
+            foreach (var ghost in Ghosts) ghost.DefaultClock.Restart();
+            foreach (var wizard in Wizards) wizard.DefaultClock.Restart();
+            foreach (var golem in Golems) golem.DefaultClock.Restart();
+            foreach (var trap in Traps) trap.DefaultTimer.Restart();
+
             LevelTime.Restart();
 
             //Console.WriteLine("Done");
@@ -542,11 +536,11 @@ namespace ChendiAdventures
         {
             try
             {
-                return LevelObstacles[(int)y * LevelLenght + (int)x];
+                return LevelObstacles[(int) y * LevelLenght + (int) x];
             }
             catch (Exception)
             {
-                return new Block(-100,-100, null);
+                return new Block(-100, -100, null);
             }
         }
 
@@ -563,7 +557,8 @@ namespace ChendiAdventures
                 if (AnimateableBlocks.Contains(obstacle.Type))
                     obstacle.BlockAnimation.Animate();
 
-                if (obstacle.Type == BlockType.Hint && !_mainCharacter.GetBoundingBox().Intersects(obstacle.GetBoundingBox())) HideHint(obstacle);
+                if (obstacle.Type == BlockType.Hint &&
+                    !_mainCharacter.GetBoundingBox().Intersects(obstacle.GetBoundingBox())) HideHint(obstacle);
 
                 if (obstacle.Type == BlockType.Stone)
                 {
@@ -577,7 +572,7 @@ namespace ChendiAdventures
 
                 if (obstacle.Type == BlockType.Trampoline)
                     if (obstacle.DefaultTimer.ElapsedTime.AsSeconds() > 0.1f)
-                        obstacle.SetTextureRectanlge(64, 32, 32, 32);
+                        obstacle.SetTextureRectangle(64, 32);
             }
 
             if (isLevelEditor == false)
@@ -598,13 +593,15 @@ namespace ChendiAdventures
             if (isLevelEditor == false)
             {
                 if (LevelTime.ElapsedTime.AsSeconds() > 5)
-                { _levelDescription.MoveText(-100, -100); }
+                    _levelDescription.MoveText(-100, -100);
                 else if (LevelTime.ElapsedTime.AsSeconds() > 4)
-                { _levelDescription.MoveText(_levelDescription.X + 50, _view.Center.Y - 100); }
+                    _levelDescription.MoveText(_levelDescription.X + 50, _view.Center.Y - 100);
                 else if (LevelTime.ElapsedTime.AsSeconds() > 0.5f)
-                { _levelDescription.MoveText(_view.Center.X - 1.2f * _levelDescription.Width / 2, _view.Center.Y - 100); }
-                else if (_levelDescription.X < _view.Center.X - 1.2f * _levelDescription.Width / 2) { _levelDescription.MoveText(_levelDescription.X + 50, _view.Center.Y - 100); }
-            } 
+                    _levelDescription.MoveText(_view.Center.X - 1.2f * _levelDescription.Width / 2,
+                        _view.Center.Y - 100);
+                else if (_levelDescription.X < _view.Center.X - 1.2f * _levelDescription.Width / 2)
+                    _levelDescription.MoveText(_levelDescription.X + 50, _view.Center.Y - 100);
+            }
 
             try
             {
@@ -642,7 +639,7 @@ namespace ChendiAdventures
         public int GetBonusForTime(double time)
         {
             var value = 0f;
-            int points = 100 * (int)(((LevelWidth * LevelWidth) + MonsterCount) / time);
+            var points = 100 * (int) ((LevelWidth * LevelWidth + MonsterCount) / time);
 
             switch (MainGameWindow.GameDifficulty)
             {
@@ -663,7 +660,7 @@ namespace ChendiAdventures
                 }
             }
 
-            points = (int)(points * value);
+            points = (int) (points * value);
             return points < 0 ? 0 : points - points % 10;
         }
 
@@ -678,9 +675,9 @@ namespace ChendiAdventures
                         case 1:
                         {
                             ShowHint(obstacle,
-                                $"AND THERE IS YOUR GOAL!\n" +
+                                "AND THERE IS YOUR GOAL!\n" +
                                 $"PRESS '{MainCharacter.KeyUP.ToString().ToUpper()}' TO INTERACT\n" +
-                                $"WITH DIFFERENT OBJECTS."
+                                "WITH DIFFERENT OBJECTS."
                                 , -60, -26);
                             break;
                         }
@@ -688,26 +685,26 @@ namespace ChendiAdventures
                         {
                             ShowHint(obstacle,
                                 $"PRESS '{MainCharacter.KeyTHUNDER.ToString().ToUpper()}' TO SHOOT\n" +
-                                $"AN ENCHANTED ARROW, THAT CAN\n" +
-                                $"PIERCE THROUGH FLESH,\n" +
-                                $"MANA POTION IS REQUIRED"
+                                "AN ENCHANTED ARROW, THAT CAN\n" +
+                                "PIERCE THROUGH FLESH,\n" +
+                                "MANA POTION IS REQUIRED"
                                 , -50, -34);
                             break;
                         }
                         case 3:
                         {
                             ShowHint(obstacle,
-                                $"MANA CAN ALSO BE USED\n" +
-                                $"TO MAKE YOU IMMORTAL FOR\n" +
+                                "MANA CAN ALSO BE USED\n" +
+                                "TO MAKE YOU IMMORTAL FOR\n" +
                                 $"SEVERAL SECONDS BY PRESSING '{MainCharacter.KeyIMMORTALITY.ToString().ToUpper()}'.\n" +
-                                $"IT CONSUMES 3 MANA POTIONS,"
+                                "IT CONSUMES 3 MANA POTIONS,"
                                 , -60, -34);
                             break;
                         }
                         case 4:
                         {
                             ShowHint(obstacle,
-                                $"IF YOU SOMEHOW GET STUCK,\n" +
+                                "IF YOU SOMEHOW GET STUCK,\n" +
                                 $"PRESS '{MainCharacter.KeyDIE.ToString().ToUpper()}' TO KILL YOURSELF."
                                 , -80, -18);
                             break;
@@ -715,70 +712,70 @@ namespace ChendiAdventures
                         case 5:
                         {
                             ShowHint(obstacle,
-                                $"FURTHER LEVELS WILL REVEAL\n" +
-                                $"MORE INTERESTING MECHANICS."
+                                "FURTHER LEVELS WILL REVEAL\n" +
+                                "MORE INTERESTING MECHANICS."
                                 , -50, -18);
                             break;
                         }
                         case 6:
                         {
                             ShowHint(obstacle,
-                                $"THERE ARE A LOT OF DIFFERENT\n" +
-                                $"CREATURES. THOSE KNIGHTS JUST WALK AROUND\n" +
-                                $"FOR NO REASON... THIS ONE IS TO FAR FROM YOU\n" +
+                                "THERE ARE A LOT OF DIFFERENT\n" +
+                                "CREATURES. THOSE KNIGHTS JUST WALK AROUND\n" +
+                                "FOR NO REASON... THIS ONE IS TO FAR FROM YOU\n" +
                                 $"TO USE YOUR SWORD, SO PRESS '{MainCharacter.KeyARROW.ToString().ToUpper()}'\n" +
-                                $"TO SHOT AN ARROW."
+                                "TO SHOT AN ARROW."
                                 , -40, -34);
                             break;
                         }
                         case 7:
                         {
                             ShowHint(obstacle,
-                                $"STOMPING ON STONES WILL CAUSE\n" +
-                                $"TO CRUMBLE AFTER FEW SECONDS."
+                                "STOMPING ON STONES WILL CAUSE\n" +
+                                "TO CRUMBLE AFTER FEW SECONDS."
                                 , -90, -18);
                             break;
                         }
                         case 8:
                         {
                             ShowHint(obstacle,
-                                $"LET US BE HONEST,\n" +
-                                $"THIS IN NOT A FRIENDLY PLACE,\n" +
-                                $"TRAPS, SPIKES, FLAMES, MONSTERS..."
-                                ,-80, -26);
+                                "LET US BE HONEST,\n" +
+                                "THIS IN NOT A FRIENDLY PLACE,\n" +
+                                "TRAPS, SPIKES, FLAMES, MONSTERS..."
+                                , -80, -26);
                             break;
                         }
                         case 9:
                         {
                             ShowHint(obstacle,
-                                $"SOMETIMES A WALL CAN BE\n" +
-                                $"AN ILLUSION, WHICH LEADS TO SECRET\n" +
-                                $"ROOMS OR TREASURES, OR MADNESS..."
+                                "SOMETIMES A WALL CAN BE\n" +
+                                "AN ILLUSION, WHICH LEADS TO SECRET\n" +
+                                "ROOMS OR TREASURES, OR MADNESS..."
                                 , -80, -26);
                             break;
                         }
                         case 10:
                         {
                             ShowHint(obstacle,
-                                $"THERE ARE A LOT OF PICKUPS.\n" +
-                                $"ONE OF THEM ARE THOSE COINS,\n" +
-                                $"PERHAPS YOU CAN BUY SOMETHING..."
+                                "THERE ARE A LOT OF PICKUPS.\n" +
+                                "ONE OF THEM ARE THOSE COINS,\n" +
+                                "PERHAPS YOU CAN BUY SOMETHING..."
                                 , -80, -26);
                             break;
                         }
                         case 11:
                         {
                             ShowHint(obstacle,
-                                $"WHILE IN MIDAIR,\n" +
+                                "WHILE IN MIDAIR,\n" +
                                 $"PRESS '{MainCharacter.KeyDOWN.ToString().ToUpper()}' AND '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO PERFORM\n" +
-                                $"DOWNWARDS ATTACK."
+                                "DOWNWARDS ATTACK."
                                 , -40, -18);
                             break;
                         }
                         case 12:
                         {
                             ShowHint(obstacle,
-                                $"WELCOME TO THE GAME!\n" +
+                                "WELCOME TO THE GAME!\n" +
                                 $"PRESS '{MainCharacter.KeyLEFT.ToString().ToUpper()}' OR '{MainCharacter.KeyRIGHT.ToString().ToUpper()}' TO MOVE."
                                 , -80, -18);
                             break;
@@ -793,7 +790,7 @@ namespace ChendiAdventures
                         case 14:
                         {
                             ShowHint(obstacle,
-                                $"CRATES CAN BE EASILY DESTROYED.\n" +
+                                "CRATES CAN BE EASILY DESTROYED.\n" +
                                 $"PRESS '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO ATTACK."
                                 , -80, -18);
                             break;
@@ -802,31 +799,19 @@ namespace ChendiAdventures
                         {
                             ShowHint(obstacle,
                                 $"PRESS '{MainCharacter.KeyUP.ToString().ToUpper()}' AND '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO\n" +
-                                $"PERFORM UPWARDS ATTACK."
+                                "PERFORM UPWARDS ATTACK."
                                 , -50, -18);
                             break;
                         }
                         case 16:
                         {
                             ShowHint(obstacle,
-                                $"TO JUMP HIGHER,\n" +
-                                $"USE TRAMPOLINES."
+                                "TO JUMP HIGHER,\n" +
+                                "USE TRAMPOLINES."
                                 , -40, -18);
                             break;
                         }
-
-
-
-
-
-
-
-
-
-
-
-
-                        }
+                    }
 
                     break;
                 }
@@ -860,6 +845,7 @@ namespace ChendiAdventures
                             break;
                         }
                     }
+
                     break;
                 }
                 case 15:
@@ -877,7 +863,7 @@ namespace ChendiAdventures
                     {
                         case 1:
                         {
-                            ShowHint(obstacle, 
+                            ShowHint(obstacle,
                                 "LOOKS LIKE DUNGEON IS HAUNTED!\n" +
                                 "GHOSTS GONNA FOLLOW YOU\n" +
                                 "UNTIL YOU DIE OR...\n" +
@@ -887,7 +873,7 @@ namespace ChendiAdventures
                         }
                         case 2:
                         {
-                            ShowHint(obstacle, 
+                            ShowHint(obstacle,
                                 "WHO WOULD EXPECT A SHOP\n" +
                                 "IN THESE DUNGEONS... "
                                 , -50, -18);
@@ -899,7 +885,7 @@ namespace ChendiAdventures
                 }
                 case 25:
                 {
-                    ShowHint(obstacle, 
+                    ShowHint(obstacle,
                         "WHAT ARE THOSE STRANGE\n" +
                         "PORTALS... NO ONE KNOWS\n" +
                         "WHAT WAITS FOR YOU\n" +
@@ -919,7 +905,7 @@ namespace ChendiAdventures
                                 "STILL WORSK, IT MIGHT OPEN\n" +
                                 "ALL THOSE HEAVY GATES."
                                 , -60, -34);
-                                    break;
+                            break;
                         }
                         case 2:
                         {
@@ -932,7 +918,7 @@ namespace ChendiAdventures
                             break;
                         }
                     }
-                        
+
                     break;
                 }
                 case 35:
@@ -1322,5 +1308,12 @@ namespace ChendiAdventures
                 LoadLevel(string.Format("lvl{0}", LevelNumber));
             }
         }
+
+        private readonly Sprite _background;
+        private readonly MainCharacter _mainCharacter;
+        private readonly Texture _texBackground;
+        private readonly View _view;
+        private readonly TextLine _levelDescription;
+        private readonly Random rnd;
     }
 }

@@ -6,12 +6,6 @@ namespace ChendiAdventures
 {
     public class Boulder : Projectile
     {
-        private readonly Animation _anim;
-        public float SpeedX { get; private set; }
-        public float SpeedY { get; private set; }
-        public bool isAttacking { get; private set; }
-        public Movement Direction { get; set; }
-
         public static Sound sHurl = new Sound(new SoundBuffer(@"sfx/hurl.wav"));
 
         public Boulder(float x, float y, Texture texture, Movement dir) : base(x, y, texture, dir)
@@ -32,6 +26,11 @@ namespace ChendiAdventures
             );
         }
 
+        public float SpeedX { get; private set; }
+        public float SpeedY { get; private set; }
+        public bool isAttacking { get; private set; }
+        public Movement Direction { get; set; }
+
         public void Attack(float x, float y, Movement dir)
         {
             SetPosition(x, y);
@@ -45,7 +44,7 @@ namespace ChendiAdventures
         public void ResetBoulder(Level level)
         {
             isAttacking = false;
-            level.Particles.Add(new ParticleEffect(X - 8, Y - 8, new Color(100,100,100)));
+            level.Particles.Add(new ParticleEffect(X - 8, Y - 8, new Color(100, 100, 100)));
             Block.sDestroy.Play();
             SetPosition(-50, 300);
         }
@@ -59,25 +58,11 @@ namespace ChendiAdventures
                 SpeedY += 0.23f;
                 _anim.Animate(16);
 
-                if (level.UnpassableContains(level.GetObstacle(GetCenterPosition().X / 32, GetCenterPosition().Y / 32).Type))
-                {
-                    ResetBoulder(level);
-                }
+                if (level.UnpassableContains(level.GetObstacle(GetCenterPosition().X / 32, GetCenterPosition().Y / 32)
+                    .Type)) ResetBoulder(level);
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        private readonly Animation _anim;
     }
 }

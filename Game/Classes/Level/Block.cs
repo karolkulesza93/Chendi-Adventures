@@ -284,6 +284,28 @@ namespace ChendiAdventures
                     SetTextureRectanlge(0, 64, 32, 32);
                     break;
                 }
+                case BlockType.CrystalDoor:
+                {
+                    BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(0, 256),
+                        new Vector2i(32, 256),
+                        new Vector2i(64, 256),
+                        new Vector2i(96, 256)
+                    );
+                    SetTextureRectanlge(0, 256, 32, 32);
+                    break;
+                    }
+                case BlockType.CrystalKey:
+                {
+                    BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(0, 352),
+                        new Vector2i(32, 352),
+                        new Vector2i(64, 352),
+                        new Vector2i(96, 352)
+                    );
+                    SetTextureRectanlge(0, 352, 32, 32);
+                    break;
+                }
                 //teleports
                 case BlockType.Teleport1:
                 {
@@ -433,13 +455,12 @@ namespace ChendiAdventures
         {
             if (character.IsDownAttacking)
             {
-                Health -= (int) character.SpeedY * 2;
+                Health -= (int) character.SpeedY;
             }
             else
             {
                 Health--;
             }
-           
 
             if (sHard.Status != SoundStatus.Playing) sHard.Play();
 

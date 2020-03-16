@@ -30,10 +30,11 @@ namespace ChendiAdventures
             Mana = new TextLine("X " + _character.Mana, 10, 0, 0, Color.White); //this.Mana.SetOutlineThickness(0.5f);
             Coins = new TextLine("X " + _character.Coins, 10, 0, 0, Color.Yellow);
 
-            SilverKey = new Sprite(new Texture(@"img/pickups.png",
-                new IntRect(new Vector2i(0, 32), new Vector2i(32, 32))));
-            GoldenKey = new Sprite(new Texture(@"img/pickups.png",
-                new IntRect(new Vector2i(0, 64), new Vector2i(32, 32))));
+            //SilverKey = new Sprite(new Texture(@"img/pickups.png", new IntRect(new Vector2i(0, 32), new Vector2i(32, 32))));
+            SilverKey = new Sprite(Entity.PickupsTexture, new IntRect(0,32,32,32));
+            //GoldenKey = new Sprite(new Texture(@"img/pickups.png", new IntRect(new Vector2i(0, 64), new Vector2i(32, 32))));
+            GoldenKey = new Sprite(Entity.PickupsTexture, new IntRect(0,64,32,32));
+            CrystalKey = new Sprite(Entity.PickupsTexture, new IntRect(0,354,32,32));
             Arrow = new Sprite(new Texture(@"img/arrow.png", new IntRect(new Vector2i(0, 0), new Vector2i(32, 7))));
             ManaBottle =
                 new Sprite(new Texture(@"img/mana.png", new IntRect(new Vector2i(0, 0), new Vector2i(20, 20))));
@@ -50,6 +51,7 @@ namespace ChendiAdventures
         public TextLine Coins { get; }
         public Sprite SilverKey { get; }
         public Sprite GoldenKey { get; }
+        public Sprite CrystalKey { get; }
         public Sprite Arrow { get; }
         public Sprite ManaBottle { get; }
         public Sprite Coins3 { get; }
@@ -66,6 +68,7 @@ namespace ChendiAdventures
 
             if (_character.HasSilverKey) target.Draw(SilverKey);
             if (_character.HasGoldenKey) target.Draw(GoldenKey);
+            if (_character.HasCrystalKey) target.Draw(CrystalKey);
             target.Draw(Arrow);
             target.Draw(ManaBottle);
             target.Draw(Coins3);
@@ -128,6 +131,8 @@ namespace ChendiAdventures
                 new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 20);
             GoldenKey.Position =
                 new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 40);
+            CrystalKey.Position=
+                new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 60);
             Arrow.Position = new Vector2f(_view.Center.X + _view.Size.X / 2 - 342,
                 _view.Center.Y - _view.Size.Y / 2 + 9);
             ManaBottle.Position = new Vector2f(_view.Center.X + _view.Size.X / 2 - 430,

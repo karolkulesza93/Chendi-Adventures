@@ -44,7 +44,7 @@ namespace ChendiAdventures
             Sword = new Sword(this);
             Arrow = new Arrow(-100, -100, ArrowTexture, Movement.Right);
             ArrowAmount = 3;
-            Mana = 0;
+            Mana = 1;
             IsJumping = false;
             IsAttacking = false;
             IsUpAttacking = false;
@@ -55,6 +55,7 @@ namespace ChendiAdventures
 
             HasSilverKey = false;
             HasGoldenKey = false;
+            HasCrystalKey = false;
 
             GotExit = false;
 
@@ -153,6 +154,7 @@ namespace ChendiAdventures
         public bool IsVulnerable { get; private set; }
         public bool HasSilverKey { get; set; }
         public bool HasGoldenKey { get; set; }
+        public bool HasCrystalKey { get; set; }
         public bool OutOfLives { get; set; }
         public bool GotExit { get; set; }
         public int LivesGranted { get; set; }
@@ -682,6 +684,15 @@ namespace ChendiAdventures
                             obstacle.DeletePickup();
                             break;
                         }
+                    case BlockType.CrystalKey:
+                    {
+                        HasCrystalKey = true;
+                        level.UnableToPassl.Remove(BlockType.CrystalDoor);
+                        AddToScore(level, 1000, obstacle.X, obstacle.Y);
+                        sKey.Play();
+                        obstacle.DeletePickup();
+                        break;
+                    }
                     case BlockType.SilverDoor:
                         {
                             if (HasSilverKey)
@@ -689,7 +700,6 @@ namespace ChendiAdventures
                                 obstacle.DeleteObstacle();
                                 sKey.Play();
                             }
-
                             break;
                         }
                     case BlockType.GoldDoor:
@@ -699,9 +709,17 @@ namespace ChendiAdventures
                                 obstacle.DeleteObstacle();
                                 sKey.Play();
                             }
-
                             break;
                         }
+                    case BlockType.CrystalDoor:
+                    {
+                        if (HasCrystalKey)
+                        {
+                                obstacle.DeleteObstacle();
+                                sKey.Play();
+                        }
+                        break;
+                    }
                     case BlockType.Spike:
                         {
                             Die(level);
@@ -711,19 +729,18 @@ namespace ChendiAdventures
                         {
                             if (SpeedY > 5f && !IsDead)
                             {
+                                SetPosition(X, obstacle.Y - Height);
                                 IsDownAttacking = false;
                                 IsAttacking = false;
                                 obstacle.SetTextureRectanlge(96, 32, 32, 32);
                                 obstacle.DefaultTimer.Restart();
 
-                                if (1.2f * SpeedY < 18f)
-                                {
-                                    SpeedY *= -1.2f;
-                                }
-                                else
-                                {
-                                    SpeedY = -18f;
-                                }
+                                
+                                if (Keyboard.IsKeyPressed(KeyJUMP)) SpeedY *= -1.4f;
+                                else SpeedY *= -1.2f;
+
+                                if (SpeedY < -17.3f) SpeedY = -17.3f;
+
 
                                 sTramp.Play();
                             }
@@ -845,6 +862,7 @@ namespace ChendiAdventures
 
                 HasSilverKey = false;
                 HasGoldenKey = false;
+                HasCrystalKey = false;
 
                 if (Lives <= 0)
                 {
@@ -899,7 +917,7 @@ namespace ChendiAdventures
             IsVulnerable = true;
             ArrowAmount = 3;
             Lives = 3;
-            Mana = 0;
+            Mana = 1;
             Score = 0;
             LivesGranted = 0;
             Coins = 0;
@@ -912,6 +930,7 @@ namespace ChendiAdventures
 
             HasSilverKey = false;
             HasGoldenKey = false;
+            HasCrystalKey = false;
         }
 
         public void GrantAdditionalLifeDependingOnScore()

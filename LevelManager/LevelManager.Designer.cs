@@ -33,6 +33,7 @@
             this.nudHeight = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.pGenerateTemplate = new System.Windows.Forms.Panel();
+            this.cbEdit = new System.Windows.Forms.CheckBox();
             this.lGenerateStatus = new System.Windows.Forms.Label();
             this.bGenerate = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -63,7 +64,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.cbEdit = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudHeight)).BeginInit();
             this.pGenerateTemplate.SuspendLayout();
@@ -171,6 +171,20 @@
             this.pGenerateTemplate.Name = "pGenerateTemplate";
             this.pGenerateTemplate.Size = new System.Drawing.Size(474, 53);
             this.pGenerateTemplate.TabIndex = 1;
+            // 
+            // cbEdit
+            // 
+            this.cbEdit.AutoSize = true;
+            this.cbEdit.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbEdit.ForeColor = System.Drawing.Color.White;
+            this.cbEdit.Location = new System.Drawing.Point(241, 29);
+            this.cbEdit.Margin = new System.Windows.Forms.Padding(5);
+            this.cbEdit.Name = "cbEdit";
+            this.cbEdit.Size = new System.Drawing.Size(78, 17);
+            this.cbEdit.TabIndex = 9;
+            this.cbEdit.Text = "EDIT";
+            this.cbEdit.UseVisualStyleBackColor = true;
+            this.cbEdit.CheckedChanged += new System.EventHandler(this.cbEdit_CheckedChanged);
             // 
             // lGenerateStatus
             // 
@@ -615,20 +629,6 @@
             this.label7.TabIndex = 0;
             this.label7.Text = "GENERATE LEVEL";
             // 
-            // cbEdit
-            // 
-            this.cbEdit.AutoSize = true;
-            this.cbEdit.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbEdit.ForeColor = System.Drawing.Color.White;
-            this.cbEdit.Location = new System.Drawing.Point(241, 29);
-            this.cbEdit.Margin = new System.Windows.Forms.Padding(5);
-            this.cbEdit.Name = "cbEdit";
-            this.cbEdit.Size = new System.Drawing.Size(78, 17);
-            this.cbEdit.TabIndex = 9;
-            this.cbEdit.Text = "EDIT";
-            this.cbEdit.UseVisualStyleBackColor = true;
-            this.cbEdit.CheckedChanged += new System.EventHandler(this.cbEdit_CheckedChanged);
-            // 
             // LevelManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -643,6 +643,8 @@
             this.MaximizeBox = false;
             this.Name = "LevelManager";
             this.Text = "LevelManager";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LevelManager_FormClosed);
+            this.Load += new System.EventHandler(this.LevelManager_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudHeight)).EndInit();
             this.pGenerateTemplate.ResumeLayout(false);

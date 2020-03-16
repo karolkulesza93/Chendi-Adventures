@@ -54,72 +54,83 @@ namespace ChendiAdventures
         {
             if (_character.IsAttacking)
             {
-                Block obstacle;
-                if ((obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y)).Type == BlockType.Wood ||
-                    (obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y)).Type ==
-                    BlockType.Wood ||
-                    (obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y + 0.9375f)).Type ==
-                    BlockType.Wood ||
-                    (obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y + 0.9375f)).Type ==
-                    BlockType.Wood)
+                Block obstacle = null;
+                for (int i = 0; i < 4; i++)
                 {
-                    obstacle.DeleteObstacle();
-                    if (!_character.IsDownAttacking) level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
-                        new Color(193, 97, 0)));
-                    else level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
-                        new Color(193, 97, 0), 10));
-                    if (!_character.IsDownAttacking) sWood.Play();
-                    else if (sWood.Status != SoundStatus.Playing) sWood.Play();
-                    _character.AddToScore(level, 10, obstacle.X, obstacle.Y);
-                }
-
-                if ((obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y)).Type == BlockType.HardBlock ||
-                    (obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y)).Type ==
-                    BlockType.HardBlock ||
-                    (obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y + 0.9375f)).Type ==
-                    BlockType.HardBlock ||
-                    (obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y + 0.9375f)).Type ==
-                    BlockType.HardBlock)
-                {
-                    level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
-                        new Color(57, 65, 81), 1));
-                    obstacle.HitHardblock(_character);
-                    if (obstacle.Health <= 0)
+                    switch (i)
                     {
-                        obstacle.DeleteObstacle();
-                        Block.sDestroy.Play();
-                        level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
-                            new Color(57, 65, 81)));
-                        _character.AddToScore(level, 100, obstacle.X, obstacle.Y);
+                        case 0:
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y);
+                            break;
+                        }
+                        case 1:
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y);
+                            break;
+                        }
+                        case 2:
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y + 0.9375f);
+                            break;
+                        }
+                        case 3:
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y + 0.9375f);
+                            break;
+                        }
+                    }
+
+                    switch (obstacle.Type)
+                    {
+                        case BlockType.Wood:
+                        {
+                            obstacle.DeleteObstacle();
+                            if (!_character.IsDownAttacking) level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                                new Color(193, 97, 0)));
+                            else level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                                new Color(193, 97, 0), 10));
+                            sWood.Play();
+                            _character.AddToScore(level, 10, obstacle.X, obstacle.Y);
+                            break;
+                        }
+                        case BlockType.HardBlock:
+                        {
+                            level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                                new Color(57, 65, 81), 1));
+                            obstacle.HitHardblock(_character);
+                            if (obstacle.Health <= 0)
+                            {
+                                obstacle.DeleteObstacle();
+                                Block.sDestroy.Play();
+                                level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                                    new Color(57, 65, 81)));
+                                _character.AddToScore(level, 100, obstacle.X, obstacle.Y);
+                            }
+                            break;
+                        }
+                        case BlockType.EnergyBall:
+                        {
+                            level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                                Color.Cyan, 10));
+                            if (!_character.IsDownAttacking)
+                            {
+                                _character.SpeedX = obstacle.GetCenterPosition().X - _character.GetCenterPosition().X < 0
+                                    ? 15f
+                                    : -15f;
+                                _character.SpeedY = -5f;
+                            }
+                            else
+                            {
+                                _character.IsDownAttacking = false;
+                                _character.SpeedY = -10f;
+                            }
+                            _character.IsAttacking = false;
+                            Block.sHard.Play();
+                            break;
+                        }
                     }
                 }
-
-                if ((obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y)).Type == BlockType.EnergyBall ||
-                    (obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y)).Type ==
-                    BlockType.EnergyBall ||
-                    (obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y + 0.9375f)).Type ==
-                    BlockType.EnergyBall ||
-                    (obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y + 0.9375f)).Type ==
-                    BlockType.EnergyBall)
-                {
-                    level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
-                        Color.Cyan, 10));
-                    if (!_character.IsDownAttacking)
-                    {
-                        _character.SpeedX = obstacle.GetCenterPosition().X - _character.GetCenterPosition().X < 0
-                            ? 15f
-                            : -15f;
-                        _character.SpeedY = -5f;
-                    }
-                    else
-                    {
-                        _character.IsDownAttacking = false;
-                        _character.SpeedY = -10f;
-                    }
-                    _character.IsAttacking = false;
-                    Block.sHard.Play();
-                }
-
 
                 foreach (var monster in level.Monsters)
                     if (GetBoundingBox().Intersects(monster.GetBoundingBox()))

@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelManager", "LevelManager\LevelManager.csproj", "{574BFEC6-FE32-4493-8DB0-CCF870BBC7B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyGen", "KeyGen\KeyGen.csproj", "{CABF38E5-52C7-476A-BCB2-A3468E9B21DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{574BFEC6-FE32-4493-8DB0-CCF870BBC7B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{574BFEC6-FE32-4493-8DB0-CCF870BBC7B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{574BFEC6-FE32-4493-8DB0-CCF870BBC7B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CABF38E5-52C7-476A-BCB2-A3468E9B21DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CABF38E5-52C7-476A-BCB2-A3468E9B21DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CABF38E5-52C7-476A-BCB2-A3468E9B21DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CABF38E5-52C7-476A-BCB2-A3468E9B21DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

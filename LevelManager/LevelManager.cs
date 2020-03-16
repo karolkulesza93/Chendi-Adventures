@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LevelManager.Properties;
 
 namespace LevelManager
 {
@@ -52,6 +53,37 @@ namespace LevelManager
         private void cbEdit_CheckedChanged(object sender, EventArgs e)
         {
             lGenerateStatus.Visible = false;
+        }
+        //==//==//==// SETTINGS //==//==//==//
+        private void LoadSettings()
+        {
+            cbEdit.Checked = Settings.Default.Edit;
+            tbName.Text = Settings.Default.Name;
+            nudWidth.Value = Settings.Default.tempX;
+            nudHeight.Value = Settings.Default.tempY;
+            nudLevelWidth.Value = Settings.Default.levX;
+            nudLevelHeight.Value = Settings.Default.levY;
+        }
+
+        private void SaveSettings()
+        {
+            Settings.Default.Edit = cbEdit.Checked;
+            Settings.Default.Name = tbName.Text;
+            Settings.Default.tempX = nudWidth.Value;
+            Settings.Default.tempY = nudHeight.Value;
+            Settings.Default.levX = nudLevelWidth.Value;
+            Settings.Default.levY = nudLevelHeight.Value;
+            Settings.Default.Save();
+        }
+        //==//==//==// OPEN/CLOSE EVENTS //==//==//==//
+        private void LevelManager_Load(object sender, EventArgs e)
+        {
+            LoadSettings();
+        }
+
+        private void LevelManager_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            SaveSettings();
         }
     }
 }

@@ -38,8 +38,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tb4 = new System.Windows.Forms.TextBox();
             this.lGenerateStatus = new System.Windows.Forms.Label();
-            this.bLevelGenerate = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.bGenerate = new System.Windows.Forms.Button();
+            this.bCopy = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,7 +48,6 @@
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
             this.pictureBox1.Name = "pictureBox1";
@@ -65,6 +64,7 @@
             this.tb1.ReadOnly = true;
             this.tb1.Size = new System.Drawing.Size(87, 20);
             this.tb1.TabIndex = 25;
+            this.tb1.TabStop = false;
             this.tb1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label8
@@ -89,6 +89,7 @@
             this.tb2.ReadOnly = true;
             this.tb2.Size = new System.Drawing.Size(87, 20);
             this.tb2.TabIndex = 27;
+            this.tb2.TabStop = false;
             this.tb2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label1
@@ -113,6 +114,7 @@
             this.tb3.ReadOnly = true;
             this.tb3.Size = new System.Drawing.Size(87, 20);
             this.tb3.TabIndex = 29;
+            this.tb3.TabStop = false;
             this.tb3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label2
@@ -137,6 +139,7 @@
             this.tb4.ReadOnly = true;
             this.tb4.Size = new System.Drawing.Size(87, 20);
             this.tb4.TabIndex = 31;
+            this.tb4.TabStop = false;
             this.tb4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lGenerateStatus
@@ -151,32 +154,34 @@
             this.lGenerateStatus.TabIndex = 32;
             this.lGenerateStatus.Text = "CHENDI ADVENTURES KEY GENERATOR";
             this.lGenerateStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lGenerateStatus.Visible = false;
             // 
-            // bLevelGenerate
+            // bGenerate
             // 
-            this.bLevelGenerate.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.bLevelGenerate.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.bLevelGenerate.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bLevelGenerate.Location = new System.Drawing.Point(12, 204);
-            this.bLevelGenerate.Name = "bLevelGenerate";
-            this.bLevelGenerate.Size = new System.Drawing.Size(210, 20);
-            this.bLevelGenerate.TabIndex = 33;
-            this.bLevelGenerate.Text = "GENERATE";
-            this.bLevelGenerate.UseVisualStyleBackColor = false;
-            this.bLevelGenerate.Click += new System.EventHandler(this.bLevelGenerate_Click);
+            this.bGenerate.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.bGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.bGenerate.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bGenerate.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.bGenerate.Location = new System.Drawing.Point(12, 204);
+            this.bGenerate.Name = "bGenerate";
+            this.bGenerate.Size = new System.Drawing.Size(210, 20);
+            this.bGenerate.TabIndex = 1;
+            this.bGenerate.Text = "GENERATE";
+            this.bGenerate.UseVisualStyleBackColor = false;
+            this.bGenerate.Click += new System.EventHandler(this.bGenerate_Click);
             // 
-            // button1
+            // bCopy
             // 
-            this.button1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button1.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(258, 204);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(211, 20);
-            this.button1.TabIndex = 34;
-            this.button1.Text = "COPY";
-            this.button1.UseVisualStyleBackColor = false;
+            this.bCopy.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.bCopy.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.bCopy.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bCopy.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.bCopy.Location = new System.Drawing.Point(258, 204);
+            this.bCopy.Name = "bCopy";
+            this.bCopy.Size = new System.Drawing.Size(211, 20);
+            this.bCopy.TabIndex = 2;
+            this.bCopy.Text = "COPY";
+            this.bCopy.UseVisualStyleBackColor = false;
+            this.bCopy.Click += new System.EventHandler(this.Copy_Click);
             // 
             // KeyGen
             // 
@@ -184,8 +189,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(481, 231);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.bLevelGenerate);
+            this.Controls.Add(this.bCopy);
+            this.Controls.Add(this.bGenerate);
             this.Controls.Add(this.lGenerateStatus);
             this.Controls.Add(this.tb4);
             this.Controls.Add(this.label2);
@@ -218,8 +223,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox tb4;
         private System.Windows.Forms.Label lGenerateStatus;
-        private System.Windows.Forms.Button bLevelGenerate;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button bGenerate;
+        private System.Windows.Forms.Button bCopy;
     }
 }
 

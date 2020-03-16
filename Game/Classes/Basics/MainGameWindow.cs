@@ -140,6 +140,130 @@ namespace ChendiAdventures
             }
         }
 
+        private void LicenceCheck()
+        {
+            string[] key;
+            string msg = "";
+            bool isValid;
+            try
+            {
+                key = File.ReadAllLines(@"licence.txt");
+                isValid = LicenceValidation(key[0]);
+                if (!isValid) msg = "LICENCE ERROR:\nINVALID LICENCE NUMBER";
+                else _licence = key[0];
+            }
+            catch (FileNotFoundException)
+            {
+                isValid = false;
+                msg = "LICENCE ERROR:\nCOULD NOT FIND LICENCE FILE";
+            }
+            catch (Exception)
+            {
+                isValid = false;
+                msg = "LICENCE ERROR:\nINVALID FORMAT OF LICENCE NUMBER";
+            }
+
+
+            if (isValid) return;
+            else
+            {
+                _isMenu = false;
+                TextLine message = new TextLine(msg, 50, 50, _view.Center.Y + _view.Size.Y/2 - 130, Color.Red);
+                message.SetOutlineThickness(5);
+                _chendi.sError.Play();
+                while (_window.IsOpen)
+                {
+                    ResetWindow();
+                    _screenChange.AppearIn();
+
+                    if (Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+                    {
+                        _chendi.sPickup.Play();
+                        break;
+                    }
+
+                    AnimateBackground();
+                    _window.Draw(_background);
+                    _window.Draw(message);
+                    _window.Display();
+                }
+            }
+        }
+
+        private bool LicenceValidation(string key)
+        {
+            try
+            {
+                var parts = key.Split('-');
+                List<char> part1 = new List<char>();
+                List<char> part2 = new List<char>();
+                List<char> part3 = new List<char>();
+                List<char> part4 = new List<char>();
+
+                List<char> chars = new List<char>() { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
+                var indx1 = chars.IndexOf(parts[0][0]);
+                var indx2 = chars.IndexOf(parts[1][0]);
+                var indx3 = chars.IndexOf(parts[2][0]);
+                var indx4 = chars.IndexOf(parts[3][0]);
+
+                part1.Add(chars[indx1]);
+                part2.Add(chars[indx2]);
+                part3.Add(chars[indx3]);
+                part4.Add(chars[indx4]);
+
+                indx1 += indx3; indx1 = indx1 >= chars.Count ? indx1 - chars.Count : indx1;
+                indx2 -= indx4; indx2 = indx2 < 0 ? indx2 + chars.Count : indx2;
+                indx3 += indx1; indx3 = indx3 >= chars.Count ? indx3 - chars.Count : indx3;
+                indx4 -= indx2; indx4 = indx4 < 0 ? indx4 + chars.Count : indx4;
+                part1.Add(chars[indx1]);
+                part2.Add(chars[indx2]);
+                part3.Add(chars[indx3]);
+                part4.Add(chars[indx4]);
+
+                indx1 += indx2; indx1 = indx1 >= chars.Count ? indx1 - chars.Count : indx1;
+                indx2 += indx3; indx2 = indx2 >= chars.Count ? indx2 - chars.Count : indx2;
+                indx3 += indx4; indx3 = indx3 >= chars.Count ? indx3 - chars.Count : indx3;
+                indx4 += indx1; indx4 = indx4 >= chars.Count ? indx4 - chars.Count : indx4;
+                part1.Add(chars[indx1]);
+                part2.Add(chars[indx2]);
+                part3.Add(chars[indx3]);
+                part4.Add(chars[indx4]);
+
+                indx1 -= indx3; indx1 = indx1 < 0 ? indx1 + chars.Count : indx1;
+                indx2 += indx4; indx2 = indx2 >= chars.Count ? indx2 - chars.Count : indx2;
+                indx3 -= indx1; indx3 = indx3 < 0 ? indx3 + chars.Count : indx3;
+                indx4 += indx2; indx4 = indx4 >= chars.Count ? indx4 - chars.Count : indx4;
+                part1.Add(chars[indx1]);
+                part2.Add(chars[indx2]);
+                part3.Add(chars[indx3]);
+                part4.Add(chars[indx4]);
+
+                indx1 -= indx2; indx1 = indx1 < 0 ? indx1 + chars.Count : indx1;
+                indx2 -= indx3; indx2 = indx2 < 0 ? indx2 + chars.Count : indx2;
+                indx3 -= indx4; indx3 = indx3 < 0 ? indx3 + chars.Count : indx3;
+                indx4 -= indx1; indx4 = indx4 < 0 ? indx4 + chars.Count : indx4;
+                part1.Add(chars[indx1]);
+                part2.Add(chars[indx2]);
+                part3.Add(chars[indx3]);
+                part4.Add(chars[indx4]);
+
+                for (int i = 0; i < 5; i++)
+                {
+                    if (part1[i] != parts[0][i]) return false;
+                    if (part2[i] != parts[1][i]) return false;
+                    if (part3[i] != parts[2][i]) return false;
+                    if (part4[i] != parts[3][i]) return false;
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         private void LoadContents()
         {
             _menuTheme = new Music("sfx/menutheme.wav");
@@ -178,6 +302,8 @@ namespace ChendiAdventures
 
         private void MainLoop()
         {
+            LicenceCheck();
+
             while (_isGame || _isLevelSelection || _isMenu || _isHighscore || _isSettigs)
             {
                 if (_isMenu) MainMenuLoop();
@@ -233,6 +359,9 @@ namespace ChendiAdventures
 
         private void SettingsLoop()
         {
+            //licence
+            var licence = new TextLine("LICENCE NUMBER: " + _licence, 10, _view.Center.X + _view.Size.X/2 - 400, _view.Center.Y + _view.Size.Y/2 - 15, new Color(70,70,70));
+            licence.SetOutlineThickness(1);
             //resolution - auto
             var resolution = new TextLine("RESOLUTION: 1920x1080", 50, -1000, _view.Center.Y + _view.Size.Y / 2 - 290,
                 Color.Green);
@@ -404,6 +533,7 @@ namespace ChendiAdventures
                 _window.Draw(vsync);
                 _window.Draw(difficulty);
                 _window.Draw(keyBindings);
+                _window.Draw(licence);
 
                 _window.Display();
             }
@@ -1804,5 +1934,6 @@ namespace ChendiAdventures
         private readonly Styles _windowStyle = Styles.Fullscreen;
         private readonly int _windowWidth;
         private TextLine _yes;
+        private string _licence;
     }
 }

@@ -31,7 +31,7 @@ namespace ChendiAdventures
             }
             catch (Exception e)
             {
-                string message = $"ERROR: {e.Message}\nSource: {e.Source}\n"; 
+                string message = $"ERROR: {e.Message}\nSource: {e.Source}\nStack:\n{e.StackTrace}\nIt is advised to contact developer."; 
                 MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally

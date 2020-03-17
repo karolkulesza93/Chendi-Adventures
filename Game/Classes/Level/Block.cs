@@ -535,7 +535,9 @@ namespace ChendiAdventures
         public void HitHardblock(MainCharacter character)
         {
             if (character.IsDownAttacking)
+            {
                 Health -= (int) character.SpeedY * 3;
+            }
             else
                 Health--;
 

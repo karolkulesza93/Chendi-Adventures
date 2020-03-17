@@ -1,4 +1,5 @@
-﻿using SFML.Audio;
+﻿using System;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 
@@ -38,11 +39,10 @@ namespace ChendiAdventures
         {
             if (isAttacking)
             {
-                if (GetCenterPosition().X >= character.GetCenterPosition().X) SpeedX = -1 * Speed;
-                else SpeedX = Speed;
-
-                if (GetCenterPosition().Y >= character.GetCenterPosition().Y) SpeedY = -1 * Speed;
-                else SpeedY = Speed;
+                _speed = new Vector2f(character.X - X, character.Y - Y);
+                float wersor = (float)1 / (float)Math.Sqrt(_speed.X * _speed.X + _speed.Y * _speed.Y);
+                SpeedX = _speed.X * wersor * Speed;
+                SpeedY = _speed.Y * wersor * Speed;
 
                 X += SpeedX;
                 Y += SpeedY;
@@ -70,5 +70,6 @@ namespace ChendiAdventures
 
         private readonly Animation _anim;
         private readonly Sound sAtk;
+        private Vector2f _speed;
     }
 }

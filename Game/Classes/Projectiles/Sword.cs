@@ -6,9 +6,9 @@ namespace ChendiAdventures
 {
     public sealed class Sword : Entity
     {
-        public Movement LastMove;
+        public Movement LastMove { get; set; }
+        public float BounceSpeed { get; set; }
         public Sound sBroke = new Sound(new SoundBuffer(@"sfx/broke.wav"));
-
         public Sound sWood = new Sound(new SoundBuffer(@"sfx/wood.wav")) {Volume = 50};
 
         public Sword(MainCharacter character) : base(-400, -400, SwordTexture)
@@ -16,6 +16,7 @@ namespace ChendiAdventures
             _character = character;
             LastMove = Movement.Right;
             _frameTime = 0.05f;
+            BounceSpeed = -3f;
 
             _animLeft = new Animation(this, _frameTime,
                 new Vector2i(0, 30),
@@ -87,7 +88,7 @@ namespace ChendiAdventures
                                     new Color(193, 97, 0), 10));
                             sWood.Play();
                             _character.AddToScore(level, 10, obstacle.X, obstacle.Y);
-                            if (_character.IsDownAttacking) _character.SpeedY -= 1f;
+                            if (_character.IsDownAttacking) _character.SpeedY -= 1.2f;
                             break;
                         }
                         case BlockType.HardBlock:
@@ -102,12 +103,6 @@ namespace ChendiAdventures
                                 level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
                                     new Color(57, 65, 81)));
                                 _character.AddToScore(level, 100, obstacle.X, obstacle.Y);
-                                if (_character.IsDownAttacking) 
-                                {
-                                    _character.SpeedY = -5f;
-                                    _character.IsDownAttacking = false;
-                                    _character.IsAttacking = false;
-                                }
                             }
 
                             break;
@@ -122,12 +117,12 @@ namespace ChendiAdventures
                                     obstacle.GetCenterPosition().X - _character.GetCenterPosition().X < 0
                                         ? 15f
                                         : -15f;
-                                _character.SpeedY = -5f;
+                                _character.SpeedY = BounceSpeed;
                             }
                             else
                             {
                                 _character.IsDownAttacking = false;
-                                _character.SpeedY = -10f;
+                                _character.SpeedY = BounceSpeed * 4;
                             }
 
                             _character.IsAttacking = false;
@@ -145,7 +140,7 @@ namespace ChendiAdventures
                         monster.Die(level);
                         if (_character.IsDownAttacking)
                         {
-                            _character.SpeedY = -5f;
+                            _character.SpeedY = BounceSpeed;
                             _character.IsDownAttacking = false;
                             _character.IsAttacking = false;
                         }
@@ -160,7 +155,7 @@ namespace ChendiAdventures
                         archer.Die(level);
                         if (_character.IsDownAttacking)
                         {
-                            _character.SpeedY = -5f;
+                            _character.SpeedY = BounceSpeed;
                             _character.IsDownAttacking = false;
                             _character.IsAttacking = false;
                         }
@@ -184,7 +179,7 @@ namespace ChendiAdventures
                         wizard.Die(level);
                         if (_character.IsDownAttacking)
                         {
-                            _character.SpeedY = -5f;
+                            _character.SpeedY = BounceSpeed;
                             _character.IsDownAttacking = false;
                             _character.IsAttacking = false;
                         }
@@ -203,11 +198,11 @@ namespace ChendiAdventures
                             _character.SpeedX = golem.GetCenterPosition().X - _character.GetCenterPosition().X < 0
                                 ? 10f
                                 : -10f;
-                            _character.SpeedY = -5f;
+                            _character.SpeedY = BounceSpeed;
                         }
                         else
                         {
-                            _character.SpeedY = -6f;
+                            _character.SpeedY = BounceSpeed * 2.5f;
                             _character.IsDownAttacking = false;
                         }
 

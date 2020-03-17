@@ -41,9 +41,11 @@ namespace ChendiAdventures
             }
             else
             {
+                //if (frame < 0 || frame > Frames.Count) Frame = 0;
                 Frame = frame;
             }
 
+            if (Frame < 0) Frame = 0; 
             SetNextTexture(Frames[Frame], size);
         }
 

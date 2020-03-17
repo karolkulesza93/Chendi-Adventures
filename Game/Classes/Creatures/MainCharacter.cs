@@ -859,13 +859,21 @@ namespace ChendiAdventures
         {
             if (!IsDead && IsVulnerable && !GotExit)
             {
+                sJump.Stop();
+                sAtk.Stop();
+
                 sDie.Play();
                 sKill.Play();
+
                 level.AddParticleEffect(new ParticleEffect(X, Y, Color.Red));
                 Sword.Reset();
                 DefaultClock.Restart();
                 IsDead = true;
                 SpeedY = -6f;
+
+                IsAttacking = false;
+                IsDownAttacking = false;
+                IsUpAttacking = false;
 
                 //this.Lives--;
 

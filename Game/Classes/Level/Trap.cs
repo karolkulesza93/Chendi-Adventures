@@ -264,6 +264,7 @@ namespace ChendiAdventures
                     if (DefaultTimer.ElapsedTime.AsSeconds() > _blowerInterval + 0.15f && IsBlowing)
                     {
                         IsBlowing = false;
+                        _blow.ResetAnimation();
                         DefaultTimer.Restart();
                         SetTextureRectangle(192, 64);
                     }
@@ -283,6 +284,7 @@ namespace ChendiAdventures
                     if (DefaultTimer.ElapsedTime.AsSeconds() > _blowerInterval + 0.15f && IsBlowing)
                     {
                         IsBlowing = false;
+                        _blow.ResetAnimation();
                         DefaultTimer.Restart();
                         SetTextureRectangle(192, 96);
                     }
@@ -314,7 +316,7 @@ namespace ChendiAdventures
                 }
                 case TrapType.Crusher:
                 {
-                    return new FloatRect(X, Top + 17, 32, 15);
+                    return new FloatRect(X+2, Top + 17, 28, 15);
                 }
                 case TrapType.Spikes:
                 {
@@ -420,7 +422,7 @@ namespace ChendiAdventures
         private static readonly Sound sCrush = new Sound(new SoundBuffer(@"sfx/crusher.wav"));
         private static readonly Sound sGear = new Sound(new SoundBuffer(@"sfx/gear.wav"));
         private static readonly Sound sSpikes = new Sound(new SoundBuffer(@"sfx/spike.wav"));
-        private static readonly Sound sBlow = new Sound(new SoundBuffer(@"sfx/blow.wav")) {Volume = 200};
+        private static readonly Sound sBlow = new Sound(new SoundBuffer(@"sfx/blow.wav")) {Volume = 230};
         private readonly Animation AnimFire1;
         private readonly Animation AnimFire2;
         private readonly Animation _blow;

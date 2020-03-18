@@ -11,6 +11,7 @@ namespace ChendiAdventures
         public static Sound sHard = new Sound(new SoundBuffer(@"sfx/hard.wav"));
         public static Sound sDestroy = new Sound(new SoundBuffer(@"sfx/destroyed.wav")) {Volume = 60};
         public static Sound sLever = new Sound(new SoundBuffer(@"sfx/lever.wav"));
+        public static Sound sShatter = new Sound(new SoundBuffer(@"sfx/shatter.wav")) {Volume = 70};
         public static Clock LeverTimer;
         public Clock DefaultTimer;
 
@@ -29,6 +30,7 @@ namespace ChendiAdventures
         public TextLine Hint { get; set; }
         public int HintNumber { get; set; }
         public bool IsDestroyed { get; private set; }
+        public bool IsShattered { get; private set; }
         public bool IsStomped { get; set; }
         public int Health { get; set; }
         public BlockType Type { get; set; }
@@ -40,11 +42,13 @@ namespace ChendiAdventures
                 case BlockType.Brick:
                 {
                     SetTextureRectangle(0, 0);
+                    SetColor(Level.LevelColor);
                     break;
                 }
                 case BlockType.TransparentBrick:
                 {
                     SetTextureRectangle(0, 160);
+                    SetColor(Level.LevelColor);
                     break;
                 }
                 case BlockType.HardBlock:
@@ -85,6 +89,11 @@ namespace ChendiAdventures
                     SetTextureRectangle(0, 32);
                     break;
                 }
+                case BlockType.WoodenSpike:
+                {
+                    SetTextureRectangle(32, 288);
+                    break;
+                    }
                 case BlockType.Enterance:
                 {
                     SetTextureRectangle(32, 64);
@@ -102,6 +111,12 @@ namespace ChendiAdventures
                         new Vector2i(96, 64)
                     );
                     SetTextureRectangle(64, 64);
+                    break;
+                }
+                case BlockType.BrokenBrick:
+                {
+                    SetTextureRectangle(0,288);
+                    SetColor(Level.LevelColor);
                     break;
                 }
                 case BlockType.Coin:
@@ -294,11 +309,13 @@ namespace ChendiAdventures
                 case BlockType.Stone:
                 {
                     SetTextureRectangle(64, 0);
+                    SetColor(Level.LevelColor);
                     break;
                 }
                 case BlockType.Illusion:
                 {
                     SetTextureRectangle(0, 0);
+                    SetColor(Level.LevelColor);
                     break;
                 }
                 case BlockType.Wood:
@@ -499,15 +516,9 @@ namespace ChendiAdventures
 
         public void DeleteObstacle()
         {
-            if (Type == BlockType.Stone)
-            {
-                sCrush.Play();
-                DefaultTimer.Dispose();
-            }
-
             Type = BlockType.None;
             IsDestroyed = true;
-            SetTextureRectangle(32, 0);
+            SetTextureRectangle(32, 96);
         }
 
         public void DeletePickup()
@@ -516,11 +527,33 @@ namespace ChendiAdventures
             SetTextureRectangle(128, 128);
         }
 
-        public void StoneUpdate()
+        public void BlockUpdate(Level level)
         {
             if (Type == BlockType.Stone && IsStomped)
                 if (DefaultTimer.ElapsedTime.AsSeconds() > 1)
+                {
                     DeleteObstacle();
+                    sCrush.Play();
+                    DefaultTimer.Dispose();
+                    level.Particles.Add(new ParticleEffect(OriginalPos.X, OriginalPos.Y,
+                        new Color(150, 150, 150)));
+                }
+            if (Type == BlockType.EnergyBall && IsShattered)
+                if (DefaultTimer.ElapsedTime.AsSeconds() > 0.17f)
+                {
+                    Block obstacle;
+                    if ((obstacle = level.GetObstacle(X/32 - 0.5f, Y/32)).Type == BlockType.EnergyBall) obstacle.Shatter();
+                    if ((obstacle = level.GetObstacle( X/32+ 1.5f, Y/32)).Type == BlockType.EnergyBall) obstacle.Shatter();
+                    if ((obstacle = level.GetObstacle(X/32, Y/32- 0.5f)).Type == BlockType.EnergyBall) obstacle.Shatter();
+                    if ((obstacle = level.GetObstacle(X/32, Y/32+ 1.5f)).Type == BlockType.EnergyBall) obstacle.Shatter();
+
+                    SetColor(Color.White);
+                    DeleteObstacle();
+                    sShatter.Play();
+                    DefaultTimer.Dispose();
+                    level.Particles.Add(new ParticleEffect(OriginalPos.X, OriginalPos.Y,
+                        Color.Cyan,  15));
+                }
         }
 
         public void Stomp()
@@ -528,6 +561,16 @@ namespace ChendiAdventures
             if (Type == BlockType.Stone && !IsStomped)
             {
                 IsStomped = true;
+                DefaultTimer = new Clock();
+            }
+        }
+
+        public void Shatter()
+        {
+            if (Type == BlockType.EnergyBall && !IsShattered)
+            {
+                IsShattered = true;
+                SetColor(Color.Cyan);
                 DefaultTimer = new Clock();
             }
         }

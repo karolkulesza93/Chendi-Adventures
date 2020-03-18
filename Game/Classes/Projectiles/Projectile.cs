@@ -42,8 +42,8 @@ namespace ChendiAdventures
                 TipPosition.Y > 0 && TipPosition.Y < level.LevelHeight * 32)
             {
                 X += SpeedX;
-                if (level.UnpassableContains(
-                    (obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32)).Type)) DeleteArrow();
+                obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32);
+                if (level.UnpassableContains(obstacle.Type) && obstacle.Type != BlockType.BrokenBrick) DeleteArrow();
             }
         }
 

@@ -13,7 +13,7 @@ namespace ChendiAdventures
         public Animation(Entity entity, float frameTime, params Vector2i[] frames)
         {
             _animationTimer = new Clock();
-            Frame = 0;
+            Frame = -1;
             Frames = new List<Vector2i>();
             foreach (var frame in frames) Frames.Add(frame);
             _animationTimer.Restart();

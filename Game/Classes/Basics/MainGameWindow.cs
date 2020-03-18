@@ -1120,13 +1120,13 @@ namespace ChendiAdventures
 
             //tiles 
             var t1 = 1;
-            var t2 = 22;
+            var t2 = 24;
             //pickups
-            var p1 = 23;
-            var p2 = 34;
+            var p1 = 25;
+            var p2 = 36;
             //details
-            var d1 = 35;
-            var d2 = 41;
+            var d1 = 37;
+            var d2 = 43;
 
             while (_window.IsOpen)
             {

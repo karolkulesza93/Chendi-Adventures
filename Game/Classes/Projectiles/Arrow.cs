@@ -37,15 +37,16 @@ namespace ChendiAdventures
                 if ((obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32)).Type ==
                     BlockType.EnergyBall && isEnergized)
                 {
-                    obstacle.DeleteObstacle();
-                    sEnergyHit.Play();
+                    character.AddToScore(level, 250, obstacle.X, obstacle.Y);
+                    obstacle.Shatter();
+                    sHit.Play();
                     level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
-                        Color.Yellow));
+                        Color.Yellow, 10));
                     DeleteArrow();
                 }
 
-                if (level.UnpassableContains(
-                    (obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32)).Type)) DeleteArrow();
+                obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32);
+                if (level.UnpassableContains(obstacle.Type) && obstacle.Type != BlockType.BrokenBrick) DeleteArrow();
             }
 
             foreach (var monster in level.Monsters)

@@ -12,6 +12,7 @@ namespace ChendiAdventures
         public static List<Block> SteelGates = new List<Block>();
         public static List<Block> Levers = new List<Block>();
         public static int LeverInterval = 10;
+        public static Color LevelColor { get; set; }
 
         public static List<BlockType> AnimateableBlocks = new List<BlockType>
         {
@@ -124,7 +125,13 @@ namespace ChendiAdventures
         {
             Levers.Clear();
             SteelGates.Clear();
-            //Console.WriteLine("Level load start...");
+
+            if (LevelNumber >= 40) LevelColor = Color.Magenta;
+            else if (LevelNumber >= 30) LevelColor = Color.Red;
+            else if (LevelNumber >= 20) LevelColor = Color.Blue;
+            else if (LevelNumber >= 10) LevelColor = Color.Yellow;
+            else LevelColor = Color.White;
+            _background.Color = LevelColor;
 
             ScoreAdditionEffects.Clear();
             Particles.Clear();
@@ -142,7 +149,7 @@ namespace ChendiAdventures
             {
                 BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor,
                 BlockType.CrystalDoor,
-                BlockType.TransparentBrick, BlockType.HardBlock, BlockType.SteelGate, BlockType.EnergyBall
+                BlockType.TransparentBrick, BlockType.HardBlock, BlockType.SteelGate, BlockType.EnergyBall, BlockType.BrokenBrick
             };
 
             //Console.WriteLine("Entity lists cleared");
@@ -199,6 +206,12 @@ namespace ChendiAdventures
                         LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Spike));
                         break;
                     }
+                    case 'x':
+                    {
+                        MonsterCount++;
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.WoodenSpike));
+                        break;
+                    }
                     case 'X':
                     {
                         LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Stone));
@@ -217,6 +230,11 @@ namespace ChendiAdventures
                     case '=':
                     {
                         LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Illusion));
+                        break;
+                    }
+                    case '~':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.BrokenBrick));
                         break;
                     }
                     case '|':
@@ -569,13 +587,7 @@ namespace ChendiAdventures
                 if (obstacle.Type == BlockType.Hint &&
                     !_mainCharacter.GetBoundingBox().Intersects(obstacle.GetBoundingBox())) HideHint(obstacle);
 
-                if (obstacle.Type == BlockType.Stone)
-                {
-                    obstacle.StoneUpdate();
-                    if (obstacle.IsDestroyed)
-                        Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
-                            new Color(150, 150, 150)));
-                }
+                obstacle.BlockUpdate(this);
 
                 Block.LeverMechanismUpdate();
 
@@ -1105,6 +1117,11 @@ namespace ChendiAdventures
                         level.Append("#");
                         break;
                     }
+                    case BlockType.WoodenSpike:
+                    {
+                        level.Append("x");
+                        break;
+                    }
                     case BlockType.HardBlock:
                     {
                         level.Append("Z");
@@ -1173,6 +1190,11 @@ namespace ChendiAdventures
                     case BlockType.Illusion:
                     {
                         level.Append("=");
+                        break;
+                    }
+                    case BlockType.BrokenBrick:
+                    {
+                        level.Append("~");
                         break;
                     }
                     case BlockType.Purifier:

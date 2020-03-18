@@ -91,6 +91,20 @@ namespace ChendiAdventures
                             if (_character.IsDownAttacking) _character.SpeedY -= 1.2f;
                             break;
                         }
+                        case BlockType.WoodenSpike:
+                        {
+                            obstacle.DeleteObstacle();
+                            if (!_character.IsDownAttacking)
+                                level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                                    new Color(193, 97, 0)));
+                            else
+                                level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                                    new Color(193, 97, 0), 10));
+                            sWood.Play();
+                            _character.AddToScore(level, 20, obstacle.X, obstacle.Y);
+                            if (_character.IsDownAttacking) _character.SpeedY -= 1.2f;
+                            break;
+                        }
                         case BlockType.HardBlock:
                         {
                             level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
@@ -125,6 +139,7 @@ namespace ChendiAdventures
                                 _character.SpeedY = BounceSpeed * 4;
                             }
 
+                            Reset();
                             _character.IsAttacking = false;
                             Block.sHard.Play();
                             break;

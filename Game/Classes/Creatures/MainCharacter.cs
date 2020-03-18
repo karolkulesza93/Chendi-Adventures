@@ -426,8 +426,6 @@ namespace ChendiAdventures
                 MovementDirection = Movement.Right;
             else MovementDirection = Movement.None;
 
-            //==//==//==//==//==//==//==//==//==//==//==//==//==//==//==//==//==//==//
-
             if (IsStandingOnBlocks)
             {
                 if (IsShooting)
@@ -491,8 +489,6 @@ namespace ChendiAdventures
                     }
                 }
             }
-
-            //==//==//==//==//==//==//==//==//==//==//==//==//==//==//==//==//==//==//
 
             if (IsDead)
             {
@@ -713,9 +709,14 @@ namespace ChendiAdventures
                         Die(level);
                         break;
                     }
+                    case BlockType.WoodenSpike:
+                    {
+                        Die(level);
+                        break;
+                    }
                     case BlockType.Trampoline:
                     {
-                        if (SpeedY > 5f && !IsDead)
+                        if (SpeedY > 4f && !IsDead)
                         {
                             SetPosition(X, obstacle.Y - Height);
                             IsDownAttacking = false;
@@ -723,12 +724,17 @@ namespace ChendiAdventures
                             obstacle.SetTextureRectangle(96, 32);
                             obstacle.DefaultTimer.Restart();
 
-
-                            if (Keyboard.IsKeyPressed(KeyJUMP)) SpeedY *= -1.4f;
-                            else SpeedY *= -1.2f;
+                            if (Keyboard.IsKeyPressed(KeyJUMP) && SpeedY >= MaxSpeedY)
+                            {
+                                SpeedY *= -1.2f;
+                                sJump.Play();
+                            }
+                            else
+                            {
+                                SpeedY = -1 * MaxSpeedY - 1.5f;
+                            }
 
                             if (SpeedY < -17.3f) SpeedY = -17.3f;
-
 
                             sTramp.Play();
                         }

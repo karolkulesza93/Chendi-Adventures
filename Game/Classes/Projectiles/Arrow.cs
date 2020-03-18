@@ -8,6 +8,7 @@ namespace ChendiAdventures
         public Arrow(float x, float y, Texture texture, Movement dir) : base(x, y, texture, dir)
         {
             isEnergized = false;
+            LastMove = Movement.Right;
         }
 
         public bool isEnergized { get; set; }
@@ -29,23 +30,20 @@ namespace ChendiAdventures
                 }
             }
 
-            Block obstacle;
+            Block obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32);
             if (TipPosition.X > 0 && TipPosition.X < level.LevelWidth * 32 &&
                 TipPosition.Y > 0 && TipPosition.Y < level.LevelHeight * 32)
             {
                 X += SpeedX;
-                if ((obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32)).Type ==
-                    BlockType.EnergyBall && isEnergized)
+                if (obstacle.Type == BlockType.EnergyBall && isEnergized)
                 {
                     character.AddToScore(level, 250, obstacle.X, obstacle.Y);
                     obstacle.Shatter();
-                    sHit.Play();
                     level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
                         Color.Yellow, 10));
                     DeleteArrow();
                 }
 
-                obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32);
                 if (level.UnpassableContains(obstacle.Type) && obstacle.Type != BlockType.BrokenBrick) DeleteArrow();
             }
 
@@ -54,7 +52,6 @@ namespace ChendiAdventures
                 {
                     character.AddToScore(level, monster.Points, monster.X, monster.Y);
                     monster.Die(level);
-                    sHit.Play();
                     if (!isEnergized) DeleteArrow();
                 }
 
@@ -63,7 +60,6 @@ namespace ChendiAdventures
                 {
                     character.AddToScore(level, archer.Points, archer.X, archer.Y);
                     archer.Die(level);
-                    sHit.Play();
                     if (!isEnergized) DeleteArrow();
                 }
 
@@ -72,7 +68,6 @@ namespace ChendiAdventures
                 {
                     character.AddToScore(level, wizard.Points, wizard.X, wizard.Y);
                     wizard.Die(level);
-                    sHit.Play();
                     if (!isEnergized) DeleteArrow();
                 }
 
@@ -95,7 +90,6 @@ namespace ChendiAdventures
                     }
                 }
 
-
             if (isEnergized)
                 foreach (var ghost in level.Ghosts)
                     if (GetBoundingBox().Intersects(ghost.GetBoundingBox()))
@@ -106,20 +100,23 @@ namespace ChendiAdventures
                     }
         }
 
-        public void ArrowDirectionDefine()
+        public void ArrowDirectionDefine(Movement dir)
         {
+            LastMove = dir;
             switch (LastMove)
             {
                 case Movement.Left:
                 {
                     TipPosition = new Vector2f(X, Y + Height / 2);
                     SpeedX = -13f;
+                    SetTextureRectangle(0, !isEnergized ? 0 : 28, 32, 7);
                     break;
                 }
-                default:
+                case Movement.Right:
                 {
                     TipPosition = new Vector2f(X + Width, Y + Height / 2);
                     SpeedX = 13f;
+                    SetTextureRectangle(0, !isEnergized ? 7 : 35, 32, 7);
                     break;
                 }
             }

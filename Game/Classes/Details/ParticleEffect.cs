@@ -9,12 +9,12 @@ namespace ChendiAdventures
     {
         public readonly List<Particle> _particles;
         private readonly Random _rnd;
-        public Clock Timer;
+        public bool ToDestroy { get; private set; }
 
         public ParticleEffect(float x, float y, Color color, int howMany = 30)
         {
             _rnd = new Random();
-            Timer = new Clock();
+            ToDestroy = false;
             _particles = new List<Particle>();
             for (var i = 0; i < howMany; i++)
                 _particles.Add(new Particle((float) _rnd.Next(400) / 100 - 2, -1 * (float) (_rnd.Next(400) / 100 + 2),
@@ -30,6 +30,7 @@ namespace ChendiAdventures
         public void MakeParticles()
         {
             foreach (var particle in _particles) particle.Update();
+            if (_particles[0].ToDestroy) ToDestroy = true;
         }
     }
 }

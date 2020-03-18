@@ -69,10 +69,11 @@ namespace ChendiAdventures
             LevelLenght = 0;
             LevelHeight = 0;
             LevelNumber = 1;
+
             StartScore = 0;
-            StartArrows = 0;
-            StartMana = 0;
+            StartArrow = 0;
             StartCoins = 0;
+            StartMana = 0;
 
             isShopOpened = false;
         }
@@ -93,8 +94,8 @@ namespace ChendiAdventures
         public int LevelNumber { get; set; }
         public int StartScore { get; set; }
         public int StartCoins { get; set; }
-        public int StartArrows { get; set; }
         public int StartMana { get; set; }
+        public int StartArrow { get; set; }
 
         public void Draw(RenderTarget target, RenderStates states)
         {
@@ -152,8 +153,6 @@ namespace ChendiAdventures
                 BlockType.TransparentBrick, BlockType.HardBlock, BlockType.SteelGate, BlockType.EnergyBall, BlockType.BrokenBrick
             };
 
-            //Console.WriteLine("Entity lists cleared");
-
             isShopOpened = false;
 
             LevelHeight = 0;
@@ -176,8 +175,6 @@ namespace ChendiAdventures
 
             var X = 0;
             var Y = 0;
-
-            //Console.WriteLine("Level txt loaded, generating level...");
 
             foreach (var tile in Content)
             {
@@ -524,8 +521,6 @@ namespace ChendiAdventures
                 X++;
             }
 
-            //Console.WriteLine("Done. Calculating additional values...");
-
             LevelHeight += 1;
             LevelWidth = LevelLenght - 1;
             _background.TextureRect = new IntRect(new Vector2i(0, 0), new Vector2i(LevelWidth * 32, LevelHeight * 32));
@@ -533,10 +528,11 @@ namespace ChendiAdventures
                            Wizards.Count * 6;
 
             _mainCharacter.SetStartingPosition(this);
+            _mainCharacter.SafePosition = EnterancePosition;
 
             StartScore = _mainCharacter.Score;
             StartCoins = _mainCharacter.Coins;
-            StartArrows = _mainCharacter.ArrowAmount;
+            StartArrow = _mainCharacter.ArrowAmount;
             StartMana = _mainCharacter.Mana;
 
             _mainCharacter.HasSilverKey = false;
@@ -545,9 +541,6 @@ namespace ChendiAdventures
             _levelDescription.MoveText(_view.Center.X - _view.Size.X / 2 - 1000, _view.Center.Y - 100);
             _levelDescription.EditText($"LEVEL {LevelNumber}");
 
-            //Console.WriteLine("Level {0} loaded succesfully ({1}:{2}  MC value: {3})", level, this.LevelWidth, this.LevelHeight, this.MonsterCount);
-            //File.AppendAllText("log.txt", string.Format("Level {0} loaded succesfully ({1}:{2}  MC value: {3})\n", level, this.LevelWidth, this.LevelHeight, this.MonsterCount));
-
             foreach (var archer in Archers) archer.DefaultClock.Restart();
             foreach (var ghost in Ghosts) ghost.DefaultClock.Restart();
             foreach (var wizard in Wizards) wizard.DefaultClock.Restart();
@@ -555,8 +548,6 @@ namespace ChendiAdventures
             foreach (var trap in Traps) trap.DefaultTimer.Restart();
 
             LevelTime.Restart();
-
-            //Console.WriteLine("Done");
         }
 
         public Block GetObstacle(float x, float y)
@@ -573,8 +564,7 @@ namespace ChendiAdventures
 
         public bool UnpassableContains(BlockType type)
         {
-            if (UnableToPassl.Contains(type)) return true;
-            return false;
+            return UnableToPassl.Contains(type);
         }
 
         public void LevelUpdate(bool isLevelEditor = false)
@@ -586,6 +576,7 @@ namespace ChendiAdventures
 
                 if (obstacle.Type == BlockType.Hint &&
                     !_mainCharacter.GetBoundingBox().Intersects(obstacle.GetBoundingBox())) HideHint(obstacle);
+
 
                 obstacle.BlockUpdate(this);
 
@@ -627,7 +618,7 @@ namespace ChendiAdventures
             try
             {
                 for (var i = 0; i < Particles.Count; i++)
-                    if (Particles[i].Timer.ElapsedTime.AsSeconds() > 5)
+                    if (Particles[i].ToDestroy)
                     {
                         Particles.RemoveAt(i);
                         if (i > 0) i--;
@@ -726,8 +717,9 @@ namespace ChendiAdventures
                         {
                             ShowHint(obstacle,
                                 "IF YOU SOMEHOW GET STUCK,\n" +
-                                $"PRESS '{MainCharacter.KeyDIE.ToString().ToUpper()}' TO KILL YOURSELF."
-                                , -80, -18);
+                                $"IT IS ALWAYS POSSIBLE TO\n" +
+                                $"RESTART A LEVEL."
+                                , -80, -26);
                             break;
                         }
                         case 5:
@@ -1338,19 +1330,6 @@ namespace ChendiAdventures
             File.WriteAllText("levels/edit.dat", level.ToString());
             File.WriteAllText("levels/lvl0.dat", level.ToString());
             LevelNumber = 0;
-        }
-
-        public void ReloadLevelUponDeath()
-        {
-            if (!_mainCharacter.OutOfLives && _mainCharacter.IsDead) //death
-            {
-                _mainCharacter.Score = StartScore;
-                _mainCharacter.ArrowAmount = StartArrows;
-                _mainCharacter.Mana = StartMana;
-                _mainCharacter.Coins = StartCoins;
-                _mainCharacter.Respawn(this);
-                LoadLevel(string.Format("lvl{0}", LevelNumber));
-            }
         }
 
         private readonly Sprite _background;

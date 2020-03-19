@@ -39,6 +39,11 @@ namespace ChendiAdventures
         {
             switch (type)
             {
+                case BlockType.Dirt:
+                {
+                    SetTextureRectangle(64,288);
+                    break;
+                }
                 case BlockType.Brick:
                 {
                     SetTextureRectangle(0, 0);
@@ -96,7 +101,14 @@ namespace ChendiAdventures
                     }
                 case BlockType.Enterance:
                 {
-                    SetTextureRectangle(32, 64);
+                    if (Level.LevelNumber < 3)
+                    {
+                        SetTextureRectangle(0,320);
+                    }
+                    else
+                    {
+                        SetTextureRectangle(32, 64);
+                    }
                     break;
                 }
                 case BlockType.Shop:
@@ -314,8 +326,15 @@ namespace ChendiAdventures
                 }
                 case BlockType.Illusion:
                 {
-                    SetTextureRectangle(0, 0);
-                    SetColor(Level.LevelColor);
+                    if (Level.LevelNumber < 3)
+                    {
+                        SetTextureRectangle(64, 288);
+                    }
+                    else
+                    {
+                        SetTextureRectangle(0, 0);
+                        SetColor(Level.LevelColor);
+                    }
                     break;
                 }
                 case BlockType.Wood:
@@ -332,11 +351,22 @@ namespace ChendiAdventures
                 }
                 case BlockType.Exit:
                 {
-                    BlockAnimation = new Animation(this, 0.05f,
-                        new Vector2i(0, 64),
-                        new Vector2i(0, 96)
-                    );
-                    SetTextureRectangle(0, 64);
+                    if (Level.LevelNumber < 2)
+                    {
+                        BlockAnimation = new Animation(this, 0.05f,
+                            new Vector2i(32, 320),
+                            new Vector2i(64, 320)
+                            );
+                        SetTextureRectangle(0, 64);
+                    }
+                    else
+                    {
+                        BlockAnimation = new Animation(this, 0.05f,
+                            new Vector2i(0, 64),
+                            new Vector2i(0, 96)
+                        );
+                        SetTextureRectangle(0, 64);
+                    }
                     break;
                 }
                 //doors
@@ -496,9 +526,34 @@ namespace ChendiAdventures
                     SetTextureRectangle(96, 32);
                     break;
                 }
-                case BlockType.Grass:
+                case BlockType.Grass1:
                 {
                     SetTextureRectangle(128, 32);
+                    break;
+                }
+                case BlockType.Grass2:
+                {
+                    SetTextureRectangle(0, 64);
+                    break;
+                }
+                case BlockType.SmallTree:
+                {
+                    SetTextureRectangle(64, 64);
+                    break;
+                }
+                case BlockType.Rock:
+                {
+                    SetTextureRectangle(32, 64);
+                    break;
+                }
+                case BlockType.Bush:
+                {
+                    SetTextureRectangle(96, 64);
+                    break;
+                }
+                case BlockType.Stalactite:
+                {
+                    SetTextureRectangle(0, 96);
                     break;
                 }
                 case BlockType.None:

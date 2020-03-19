@@ -12,6 +12,7 @@ namespace ChendiAdventures
         public static List<Block> SteelGates = new List<Block>();
         public static List<Block> Levers = new List<Block>();
         public static int LeverInterval = 10;
+        public static bool IsUnderground = true;
         public static Color LevelColor { get; set; }
 
         public static List<BlockType> AnimateableBlocks = new List<BlockType>
@@ -43,6 +44,7 @@ namespace ChendiAdventures
             _mainCharacter = character;
             _view = view;
             rnd = new Random();
+            IsUnderground = true;
 
             ScoreAdditionEffects = new List<ScoreAdditionEffect>();
             Particles = new List<ParticleEffect>();
@@ -91,7 +93,7 @@ namespace ChendiAdventures
         public int LevelLenght { get; private set; }
         public int LevelWidth { get; private set; }
         public int LevelHeight { get; private set; }
-        public int LevelNumber { get; set; }
+        public static int LevelNumber;
         public int StartScore { get; set; }
         public int StartCoins { get; set; }
         public int StartMana { get; set; }
@@ -127,10 +129,21 @@ namespace ChendiAdventures
             Levers.Clear();
             SteelGates.Clear();
 
-            if (LevelNumber >= 40) LevelColor = Color.Magenta;
-            else if (LevelNumber >= 30) LevelColor = Color.Red;
-            else if (LevelNumber >= 20) LevelColor = Color.Blue;
-            else if (LevelNumber >= 10) LevelColor = Color.Yellow;
+            if (LevelNumber < 3)
+            {
+                _texBackground = new Texture(@"img/tiles.png", new IntRect(new Vector2i(98, 288), new Vector2i(32, 32)));
+                _texBackground.Repeated = true;
+                _background = new Sprite(_texBackground);
+            }
+            else
+            {
+                _texBackground = new Texture(@"img/tiles.png", new IntRect(new Vector2i(32, 0), new Vector2i(32, 32)));
+                _texBackground.Repeated = true;
+                _background = new Sprite(_texBackground);
+            }
+
+            if (LevelNumber >= 45) LevelColor = Color.Magenta;
+            else if (LevelNumber >= 40) LevelColor = Color.Red;
             else LevelColor = Color.White;
             _background.Color = LevelColor;
 
@@ -148,7 +161,7 @@ namespace ChendiAdventures
 
             UnableToPassl = new List<BlockType>
             {
-                BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor,
+                BlockType.Dirt, BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor,
                 BlockType.CrystalDoor,
                 BlockType.TransparentBrick, BlockType.HardBlock, BlockType.SteelGate, BlockType.EnergyBall, BlockType.BrokenBrick
             };
@@ -192,6 +205,11 @@ namespace ChendiAdventures
                 switch (tile)
                 {
                     //standard blocks
+                    case 'D':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Dirt));
+                        break;
+                    }
                     case 'W':
                     {
                         LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Brick));
@@ -479,7 +497,32 @@ namespace ChendiAdventures
                     }
                     case '-':
                     {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Grass));
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Grass1));
+                        break;
+                    }
+                    case 'r':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Grass2));
+                        break;
+                    }
+                    case 'Y':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.SmallTree));
+                        break;
+                    }
+                    case 'O':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Rock));
+                        break;
+                    }
+                    case 'b':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Bush));
+                        break;
+                    }
+                    case 'V':
+                    {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Stalactite));
                         break;
                     }
                     //shop
@@ -684,16 +727,7 @@ namespace ChendiAdventures
                 {
                     switch (obstacle.HintNumber)
                     {
-                        case 1:
-                        {
-                            ShowHint(obstacle,
-                                "AND THERE IS YOUR GOAL!\n" +
-                                $"PRESS '{MainCharacter.KeyUP.ToString().ToUpper()}' TO INTERACT\n" +
-                                "WITH DIFFERENT OBJECTS."
-                                , -60, -26);
-                            break;
-                        }
-                        case 2:
+                        case 6:
                         {
                             ShowHint(obstacle,
                                 $"PRESS '{MainCharacter.KeyTHUNDER.ToString().ToUpper()}' TO SHOOT\n" +
@@ -703,7 +737,7 @@ namespace ChendiAdventures
                                 , -50, -34);
                             break;
                         }
-                        case 3:
+                        case 5:
                         {
                             ShowHint(obstacle,
                                 "MANA CAN ALSO BE USED\n" +
@@ -713,7 +747,7 @@ namespace ChendiAdventures
                                 , -60, -34);
                             break;
                         }
-                        case 4:
+                        case 3:
                         {
                             ShowHint(obstacle,
                                 "IF YOU SOMEHOW GET STUCK,\n" +
@@ -722,26 +756,28 @@ namespace ChendiAdventures
                                 , -80, -26);
                             break;
                         }
-                        case 5:
+                        case 2:
                         {
                             ShowHint(obstacle,
                                 "FURTHER LEVELS WILL REVEAL\n" +
-                                "MORE INTERESTING MECHANICS."
-                                , -50, -18);
+                                "MORE INTERESTING MECHANICS.\n" +
+                                "HERE IS AN EXIT!\n" +
+                                 $"PRESS '{MainCharacter.KeyUP.ToString().ToUpper()}' TO INTERACT\n" +
+                                 "WITH DIFFERENT OBJECTS."
+                                , -50, -42);
                             break;
                         }
-                        case 6:
+                        case 7:
                         {
                             ShowHint(obstacle,
                                 "THERE ARE A LOT OF DIFFERENT\n" +
                                 "CREATURES. THOSE KNIGHTS JUST WALK AROUND\n" +
-                                "FOR NO REASON... THIS ONE IS TO FAR FROM YOU\n" +
-                                $"TO USE YOUR SWORD, SO PRESS '{MainCharacter.KeyARROW.ToString().ToUpper()}'\n" +
-                                "TO SHOT AN ARROW."
+                                "FOR NO REASON... USE YOUR SWORD\n" +
+                                $"OR PRESS '{MainCharacter.KeyARROW.ToString().ToUpper()}' TO SHOT AN ARROW."
                                 , -40, -34);
                             break;
                         }
-                        case 7:
+                        case 1:
                         {
                             ShowHint(obstacle,
                                 "STOMPING ON STONES WILL CAUSE\n" +
@@ -749,16 +785,7 @@ namespace ChendiAdventures
                                 , -90, -18);
                             break;
                         }
-                        case 8:
-                        {
-                            ShowHint(obstacle,
-                                "LET US BE HONEST,\n" +
-                                "THIS IN NOT A FRIENDLY PLACE,\n" +
-                                "TRAPS, SPIKES, FLAMES, MONSTERS..."
-                                , -80, -26);
-                            break;
-                        }
-                        case 9:
+                        case 14:
                         {
                             ShowHint(obstacle,
                                 "SOMETIMES A WALL CAN BE\n" +
@@ -767,16 +794,17 @@ namespace ChendiAdventures
                                 , -80, -26);
                             break;
                         }
-                        case 10:
+                        case 12:
                         {
                             ShowHint(obstacle,
                                 "THERE ARE A LOT OF PICKUPS.\n" +
                                 "ONE OF THEM ARE THOSE COINS,\n" +
-                                "PERHAPS YOU CAN BUY SOMETHING..."
-                                , -80, -26);
+                                "PERHAPS YOU CAN BUY SOMETHING...\n" +
+                                "DO NOT FORGET ABOUT TRAPS!"
+                                , -80, -34);
                             break;
                         }
-                        case 11:
+                        case 4:
                         {
                             ShowHint(obstacle,
                                 "WHILE IN MIDAIR,\n" +
@@ -785,7 +813,7 @@ namespace ChendiAdventures
                                 , -40, -18);
                             break;
                         }
-                        case 12:
+                        case 10:
                         {
                             ShowHint(obstacle,
                                 "WELCOME TO THE GAME!\n" +
@@ -793,14 +821,14 @@ namespace ChendiAdventures
                                 , -80, -18);
                             break;
                         }
-                        case 13:
+                        case 11:
                         {
                             ShowHint(obstacle,
                                 $"PRESS '{MainCharacter.KeyJUMP.ToString().ToUpper()}' TO JUMP."
                                 , -50, -10);
                             break;
                         }
-                        case 14:
+                        case 8:
                         {
                             ShowHint(obstacle,
                                 "CRATES CAN BE EASILY DESTROYED.\n" +
@@ -808,7 +836,7 @@ namespace ChendiAdventures
                                 , -80, -18);
                             break;
                         }
-                        case 15:
+                        case 9:
                         {
                             ShowHint(obstacle,
                                 $"PRESS '{MainCharacter.KeyUP.ToString().ToUpper()}' AND '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO\n" +
@@ -816,7 +844,7 @@ namespace ChendiAdventures
                                 , -50, -18);
                             break;
                         }
-                        case 16:
+                        case 13:
                         {
                             ShowHint(obstacle,
                                 $"TO JUMP HIGHER,\n" +
@@ -1094,6 +1122,11 @@ namespace ChendiAdventures
 
                 switch (type)
                 {
+                    case BlockType.Dirt:
+                    {
+                        level.Append("D");
+                        break;
+                    }
                     case BlockType.Brick:
                     {
                         level.Append("W");
@@ -1295,9 +1328,14 @@ namespace ChendiAdventures
                         level.Append("\\");
                         break;
                     }
-                    case BlockType.Grass:
+                    case BlockType.Grass1:
                     {
                         level.Append('-');
+                        break;
+                    }
+                    case BlockType.Grass2:
+                    {
+                        level.Append("r");
                         break;
                     }
                     case BlockType.Torch:
@@ -1308,6 +1346,26 @@ namespace ChendiAdventures
                     case BlockType.EvilEyes:
                     {
                         level.Append(",");
+                        break;
+                    }
+                    case BlockType.SmallTree:
+                    {
+                        level.Append("Y");
+                        break;
+                    }
+                    case BlockType.Rock:
+                    {
+                        level.Append("O");
+                        break;
+                    }
+                    case BlockType.Bush:
+                    {
+                        level.Append("b");
+                        break;
+                    }
+                    case BlockType.Stalactite:
+                    {
+                        level.Append("V");
                         break;
                     }
                     case BlockType.None:
@@ -1332,9 +1390,9 @@ namespace ChendiAdventures
             LevelNumber = 0;
         }
 
-        private readonly Sprite _background;
+        private Sprite _background;
         private readonly MainCharacter _mainCharacter;
-        private readonly Texture _texBackground;
+        private Texture _texBackground;
         private readonly View _view;
         private readonly TextLine _levelDescription;
         private readonly Random rnd;

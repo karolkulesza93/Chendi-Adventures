@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
@@ -663,8 +662,7 @@ namespace ChendiAdventures
                     flag = true;
                     choice++;
                 }
-                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) ||
-                                           Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
+                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
                 {
                     flag = true;
                     _chendi.sPickup.Play();
@@ -672,7 +670,7 @@ namespace ChendiAdventures
                     {
                         case 1:
                         {
-                            if (Settings.Default.HighestLevel >= 5 && _level.LevelNumber != 0)
+                            if (Settings.Default.HighestLevel >= 5 && Level.LevelNumber != 0)
                             {
                                 _isMenu = false;
                                 _isLevelSelection = true;
@@ -683,7 +681,7 @@ namespace ChendiAdventures
                                 Thread.Sleep(200);
                                 _isMenu = false;
                                 _isGame = true;
-                                if (_level.LevelNumber != 0) _level.LevelNumber = 1;
+                                if (Level.LevelNumber != 0) Level.LevelNumber = 1;
                                 _chendi.ResetMainCharacter();
                                 _menuTheme.Stop();
                             }
@@ -807,7 +805,7 @@ namespace ChendiAdventures
                     Thread.Sleep(200);
                     _isLevelSelection = false;
                     _isGame = true;
-                    if (_level.LevelNumber != 0) _level.LevelNumber = choice == 0 ? 1 : choice * 5;
+                    if (Level.LevelNumber != 0) Level.LevelNumber = choice == 0 ? 1 : choice * 5;
                     _chendi.ResetMainCharacter();
                     _menuTheme.Stop();
                 }
@@ -839,7 +837,7 @@ namespace ChendiAdventures
             SetView(new Vector2f(_windowWidth / 2, _windowHeight / 2), _view.Center);
             _screenChange.Reset();
 
-            _level.LoadLevel($"lvl{_level.LevelNumber}");
+            _level.LoadLevel($"lvl{Level.LevelNumber}");
 
             _mainTheme.Play();
 
@@ -899,7 +897,7 @@ namespace ChendiAdventures
                 _isGame = false;
                 _isMenu = true;
                 _chendi.Continues = 2;
-                _level.LevelNumber = 1;
+                Level.LevelNumber = 1;
                 _chendi.ResetMainCharacter();
                 _screenChange.Reset();
 
@@ -1094,13 +1092,13 @@ namespace ChendiAdventures
 
             //tiles 
             var t1 = 1;
-            var t2 = 24;
+            var t2 = 25;
             //pickups
-            var p1 = 25;
-            var p2 = 36;
+            var p1 = 26;
+            var p2 = 37;
             //details
-            var d1 = 37;
-            var d2 = 43;
+            var d1 = 38;
+            var d2 = 49;
 
             while (_window.IsOpen)
             {
@@ -1878,7 +1876,7 @@ namespace ChendiAdventures
             _chendi.ArrowAmount = _level.StartArrow;
             _chendi.Mana = _level.StartMana;
 
-            _level.LoadLevel($"lvl{_level.LevelNumber}"); 
+            _level.LoadLevel($"lvl{Level.LevelNumber}"); 
             _mainTheme.Play(); 
             
             SetView(new Vector2f(_windowWidth / 2, _windowHeight / 2), _view.Center);
@@ -1891,11 +1889,11 @@ namespace ChendiAdventures
         {
             if (_chendi.OutOfLives) //game over
             {
-                _highscoreValues.AddNewRecord(new HighscoreRecord(_chendi.Score, _level.LevelNumber,
+                _highscoreValues.AddNewRecord(new HighscoreRecord(_chendi.Score, Level.LevelNumber,
                     GameDifficulty.ToString().ToUpper()));
-                if (_level.LevelNumber > Settings.Default.HighestLevel)
+                if (Level.LevelNumber > Settings.Default.HighestLevel)
                 {
-                    Settings.Default.HighestLevel = _level.LevelNumber;
+                    Settings.Default.HighestLevel = Level.LevelNumber;
                     Settings.Default.Save();
                 }
 
@@ -1916,7 +1914,7 @@ namespace ChendiAdventures
                 var bonus = _level.GetBonusForTime(time);
 
                 _chendi.Score += bonus;
-                if (_level.LevelNumber == 0) _chendi.Score = 0;
+                if (Level.LevelNumber == 0) _chendi.Score = 0;
 
                 _levelSummary.EditText(string.Format(
                     "LEVEL COMPLETED!\n" +
@@ -1939,9 +1937,9 @@ namespace ChendiAdventures
             timer.Restart();
             _chendi.sImmortality.Stop();
             bool isLottery;
-            if (_level.LevelNumber < 51 && _level.LevelNumber > 5 && Randomizer.Next(100) + 1 > 66)
+            if (Level.LevelNumber < 51 && Level.LevelNumber > 5 && Randomizer.Next(100) + 1 > 66)
                 isLottery = true;
-            else if (_level.LevelNumber == 5)
+            else if (Level.LevelNumber == 5)
                 isLottery = true;
             else
                 isLottery = false;
@@ -1967,7 +1965,7 @@ namespace ChendiAdventures
 
                 if (timer.ElapsedTime.AsSeconds() > 6)
                 {
-                    _level.LevelNumber++;
+                    Level.LevelNumber++;
                     //lottery
                     if (isLottery) LotteryLoop();
                     _chendi.GotExit = false;

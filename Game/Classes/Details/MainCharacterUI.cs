@@ -23,7 +23,7 @@ namespace ChendiAdventures
                 Color.White); //this.Score.SetOutlineThickness(0.5f);
             Time = new TextLine("TIME: ", 10, 0, 0, Color.White);
             CurrentLevel =
-                new TextLine("LEVEL: " + _level.LevelNumber, 10, 0, 0,
+                new TextLine("LEVEL: " + Level.LevelNumber, 10, 0, 0,
                     Color.White); //this.CurrentLevel.SetOutlineThickness(0.5f);
             Arrows = new TextLine("X " + _character.ArrowAmount, 10, 0, 0,
                 Color.White); //this.Arrows.SetOutlineThickness(0.5f);
@@ -83,7 +83,7 @@ namespace ChendiAdventures
 
             Score.EditText("SCORE: " + _character.Score);
             Time.EditText("TIME: " + Math.Round(_level.LevelTime.ElapsedTime.AsSeconds(), 2));
-            CurrentLevel.EditText("LEVEL: " + _level.LevelNumber);
+            CurrentLevel.EditText("LEVEL: " + Level.LevelNumber);
             Arrows.EditText("X " + _character.ArrowAmount);
             Coins.EditText("X " + _character.Coins);
             if (_character.ArrowAmount == 0) Arrows.ChangeColor(Color.Red);

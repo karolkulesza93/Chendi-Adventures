@@ -557,7 +557,7 @@ namespace ChendiAdventures
                     NewY = (int)Get32NextPosition().Y;
                     IsStandingOnBlocks = true;
 
-                    if (SafePositionClock.ElapsedTime.AsSeconds() > 5 && obstacle.Type == BlockType.Brick && !IsDead && IsVulnerable)
+                    if (SafePositionClock.ElapsedTime.AsSeconds() > 5 && (obstacle.Type == BlockType.Brick || obstacle.Type == BlockType.Dirt) && !IsDead && IsVulnerable)
                     {
                         SafePosition = new Vector2f(obstacle.X, obstacle.Y - 32);
                         SafePositionClock.Restart();

@@ -103,7 +103,7 @@ namespace ChendiAdventures
 
             _background = new Sprite(tmp);
             _background.Scale = new Vector2f(2f, 2f);
-            _background.TextureRect = new IntRect(new Vector2i(0, 0), new Vector2i(1000, 600));
+            _background.TextureRect = new IntRect(new Vector2i(0, 0), new Vector2i(_windowWidth/2 + 100, _windowHeight/2 + 100));
 
             _gameLogo = new Sprite(new Texture(@"img/logo.png"));
             _gameLogo.Position = new Vector2f((_windowWidth - _gameLogo.Texture.Size.X) / 2, -300);
@@ -328,6 +328,7 @@ namespace ChendiAdventures
 
             IsVsync = Settings.Default.Vsync;
             _window.SetVerticalSyncEnabled(IsVsync);
+
 
             //key bindings
         }
@@ -991,12 +992,18 @@ namespace ChendiAdventures
             var y = _view.Center.Y;
 
             x += (_chendi.GetCenterPosition().X - _view.Center.X) / 10;
-            if (x - _view.Size.X / 2 <= 0) x = _view.Size.X / 2;
-            else if (x + _view.Size.X / 2 >= level.LevelWidth * 32) x = level.LevelWidth * 32 - _view.Size.X / 2;
+            if (level.LevelWidth*64 >= _windowWidth)
+            {
+                if (x - _view.Size.X / 2 <= 0) x = _view.Size.X / 2;
+                else if (x + _view.Size.X / 2 >= level.LevelWidth * 32) x = level.LevelWidth * 32 - _view.Size.X / 2; 
+            }
 
             y += (_chendi.GetCenterPosition().Y - _view.Center.Y) / 10;
-            if (y - _view.Size.Y / 2 <= 0) y = _view.Size.Y / 2;
-            else if (y + _view.Size.Y / 2 >= level.LevelHeight * 32) y = level.LevelHeight * 32 - _view.Size.Y / 2;
+            if (level.LevelHeight*64 >= _windowHeight)
+            {
+                if (y - _view.Size.Y / 2 <= 0) y = _view.Size.Y / 2;
+                else if (y + _view.Size.Y / 2 >= level.LevelHeight * 32) y = level.LevelHeight * 32 - _view.Size.Y / 2; 
+            }
 
             _view.Center = new Vector2f(x, y);
             _window.SetView(_view);

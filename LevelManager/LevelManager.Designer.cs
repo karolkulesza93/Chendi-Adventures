@@ -77,11 +77,6 @@
             this.nudWidth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.nudWidth.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nudWidth.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.nudWidth.Increment = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
             this.nudWidth.InterceptArrowKeys = false;
             this.nudWidth.Location = new System.Drawing.Point(37, 26);
             this.nudWidth.Margin = new System.Windows.Forms.Padding(5);
@@ -91,7 +86,7 @@
             0,
             0});
             this.nudWidth.Minimum = new decimal(new int[] {
-            31,
+            30,
             0,
             0,
             0});
@@ -113,11 +108,6 @@
             this.nudHeight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.nudHeight.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nudHeight.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.nudHeight.Increment = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
             this.nudHeight.InterceptArrowKeys = false;
             this.nudHeight.Location = new System.Drawing.Point(151, 26);
             this.nudHeight.Margin = new System.Windows.Forms.Padding(5);
@@ -526,11 +516,6 @@
             this.nudLevelHeight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.nudLevelHeight.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nudLevelHeight.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.nudLevelHeight.Increment = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
             this.nudLevelHeight.InterceptArrowKeys = false;
             this.nudLevelHeight.Location = new System.Drawing.Point(151, 26);
             this.nudLevelHeight.Margin = new System.Windows.Forms.Padding(5);
@@ -562,11 +547,6 @@
             this.nudLevelWidth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.nudLevelWidth.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nudLevelWidth.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.nudLevelWidth.Increment = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
             this.nudLevelWidth.InterceptArrowKeys = false;
             this.nudLevelWidth.Location = new System.Drawing.Point(37, 26);
             this.nudLevelWidth.Margin = new System.Windows.Forms.Padding(5);
@@ -576,7 +556,7 @@
             0,
             0});
             this.nudLevelWidth.Minimum = new decimal(new int[] {
-            31,
+            30,
             0,
             0,
             0});

@@ -41,12 +41,12 @@ namespace LevelManager
             if (!edit)
             {
                 Title = string.Format("{0}x{1}", width, height);
-                File.WriteAllText(string.Format(@"levels/templates/{0}.dat", Title), generatedTemplate.ToString());
+                File.WriteAllText(string.Format(@"C:\Users\Karol Kulesza\source\repos\Game\Game\bin\Chendi Adventures\levels\templates\{0}.dat", Title), generatedTemplate.ToString());
             }
             else
             {
                 Title = "edit";
-                File.WriteAllText(string.Format(@"levels/{0}.dat", Title), generatedTemplate.ToString());
+                File.WriteAllText(string.Format(@"C:\Users\Karol Kulesza\source\repos\Game\Game\bin\Chendi Adventures\levels\{0}.dat", Title), generatedTemplate.ToString());
             }
 
 
@@ -112,7 +112,7 @@ namespace LevelManager
             //==//==//==//==//==//==//==//==//==//==//==//==//
 
             Title = string.Format("{0}_{1}x{2}", title, width, height);
-            File.WriteAllText(string.Format(@"levels/generated/{0}.dat", Title), List2dToString(level));
+            File.WriteAllText(string.Format(@"C:\Users\Karol Kulesza\source\repos\Game\Game\bin\Chendi Adventures\levels\generated\{0}.dat", Title), List2dToString(level));
             return List2dToString(level);
         }
 

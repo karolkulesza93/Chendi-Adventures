@@ -101,14 +101,7 @@ namespace ChendiAdventures
                     }
                 case BlockType.Enterance:
                 {
-                    if (Level.LevelNumber < 3)
-                    {
-                        SetTextureRectangle(0,320);
-                    }
-                    else
-                    {
-                        SetTextureRectangle(32, 64);
-                    }
+                    SetTextureRectangle(32, 64);
                     break;
                 }
                 case BlockType.Shop:
@@ -326,15 +319,8 @@ namespace ChendiAdventures
                 }
                 case BlockType.Illusion:
                 {
-                    if (Level.LevelNumber < 3)
-                    {
-                        SetTextureRectangle(64, 288);
-                    }
-                    else
-                    {
-                        SetTextureRectangle(0, 0);
-                        SetColor(Level.LevelColor);
-                    }
+                    SetTextureRectangle(0, 0);
+                    SetColor(Level.LevelColor);
                     break;
                 }
                 case BlockType.Wood:
@@ -351,22 +337,12 @@ namespace ChendiAdventures
                 }
                 case BlockType.Exit:
                 {
-                    if (Level.LevelNumber < 2)
-                    {
-                        BlockAnimation = new Animation(this, 0.05f,
-                            new Vector2i(32, 320),
-                            new Vector2i(64, 320)
-                            );
-                        SetTextureRectangle(0, 64);
-                    }
-                    else
-                    {
-                        BlockAnimation = new Animation(this, 0.05f,
-                            new Vector2i(0, 64),
-                            new Vector2i(0, 96)
+                   
+                    BlockAnimation = new Animation(this, 0.05f,
+                        new Vector2i(0, 64),
+                        new Vector2i(0, 96)
                         );
-                        SetTextureRectangle(0, 64);
-                    }
+                    SetTextureRectangle(0, 64);
                     break;
                 }
                 //doors

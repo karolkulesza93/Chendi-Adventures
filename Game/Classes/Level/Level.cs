@@ -129,19 +129,6 @@ namespace ChendiAdventures
             Levers.Clear();
             SteelGates.Clear();
 
-            if (LevelNumber < 3)
-            {
-                _texBackground = new Texture(@"img/tiles.png", new IntRect(new Vector2i(98, 288), new Vector2i(32, 32)));
-                _texBackground.Repeated = true;
-                _background = new Sprite(_texBackground);
-            }
-            else
-            {
-                _texBackground = new Texture(@"img/tiles.png", new IntRect(new Vector2i(32, 0), new Vector2i(32, 32)));
-                _texBackground.Repeated = true;
-                _background = new Sprite(_texBackground);
-            }
-
             if (LevelNumber >= 45) LevelColor = Color.Magenta;
             else if (LevelNumber >= 40) LevelColor = Color.Red;
             else LevelColor = Color.White;
@@ -724,265 +711,280 @@ namespace ChendiAdventures
             switch (LevelNumber)
             {
                 case 1: // LEVEL 1
-                {
-                    switch (obstacle.HintNumber)
                     {
-                        case 6:
+                        switch (obstacle.HintNumber)
                         {
-                            ShowHint(obstacle,
-                                $"PRESS '{MainCharacter.KeyTHUNDER.ToString().ToUpper()}' TO SHOOT\n" +
-                                "AN ENCHANTED ARROW, THAT CAN\n" +
-                                "PIERCE THROUGH FLESH,\n" +
-                                "MANA POTION IS REQUIRED"
-                                , -50, -34);
-                            break;
+                            case 1:
+                                {
+                                    ShowHint(obstacle,
+                                        "AND THERE IS YOUR GOAL!\n" +
+                                        $"PRESS '{MainCharacter.KeyUP.ToString().ToUpper()}' TO INTERACT\n" +
+                                        "WITH DIFFERENT OBJECTS."
+                                        , -60, -26);
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    ShowHint(obstacle,
+                                        $"PRESS '{MainCharacter.KeyTHUNDER.ToString().ToUpper()}' TO SHOOT\n" +
+                                        "AN ENCHANTED ARROW, THAT CAN\n" +
+                                        "PIERCE THROUGH FLESH,\n" +
+                                        "MANA POTION IS REQUIRED"
+                                        , -50, -34);
+                                    break;
+                                }
+                            case 3:
+                                {
+                                    ShowHint(obstacle,
+                                        "MANA CAN ALSO BE USED\n" +
+                                        "TO MAKE YOU IMMORTAL FOR\n" +
+                                        $"SEVERAL SECONDS BY PRESSING '{MainCharacter.KeyIMMORTALITY.ToString().ToUpper()}'.\n" +
+                                        "IT CONSUMES 3 MANA POTIONS,"
+                                        , -60, -34);
+                                    break;
+                                }
+                            case 4:
+                                {
+                                    ShowHint(obstacle,
+                                        "IF YOU SOMEHOW GET STUCK,\n" +
+                                        $"IT IS ALWAYS POSSIBLE TO\n" +
+                                        $"RESTART ANY LEVEL."
+                                        , -80, -26);
+                                    break;
+                                }
+                            case 5:
+                                {
+                                    ShowHint(obstacle,
+                                        "FURTHER LEVELS WILL REVEAL\n" +
+                                        "MORE INTERESTING MECHANICS."
+                                        , -50, -18);
+                                    break;
+                                }
+                            case 6:
+                                {
+                                    ShowHint(obstacle,
+                                        "THERE ARE A LOT OF DIFFERENT\n" +
+                                        "CREATURES. THOSE KNIGHTS JUST WALK AROUND\n" +
+                                        "FOR NO REASON... THIS ONE IS TO FAR FROM YOU\n" +
+                                        $"TO USE YOUR SWORD, SO PRESS '{MainCharacter.KeyARROW.ToString().ToUpper()}'\n" +
+                                        "TO SHOT AN ARROW."
+                                        , -40, -42);
+                                    break;
+                                }
+                            case 7:
+                                {
+                                    ShowHint(obstacle,
+                                        "STOMPING ON STONES WILL CAUSE\n" +
+                                        "TO CRUMBLE AFTER FEW SECONDS."
+                                        , -90, -18);
+                                    break;
+                                }
+                            case 8:
+                                {
+                                    ShowHint(obstacle,
+                                        "LET US BE HONEST,\n" +
+                                        "THIS IN NOT A FRIENDLY PLACE,\n" +
+                                        "TRAPS, SPIKES, FLAMES, MONSTERS..."
+                                        , -80, -26);
+                                    break;
+                                }
+                            case 9:
+                                {
+                                    ShowHint(obstacle,
+                                        "SOMETIMES A WALL CAN BE\n" +
+                                        "AN ILLUSION, WHICH LEADS TO SECRET\n" +
+                                        "ROOMS OR TREASURES, OR MADNESS..."
+                                        , -80, -26);
+                                    break;
+                                }
+                            case 10:
+                                {
+                                    ShowHint(obstacle,
+                                        "THERE ARE A LOT OF PICKUPS.\n" +
+                                        "ONE OF THEM ARE THOSE COINS,\n" +
+                                        "PERHAPS YOU CAN BUY SOMETHING..."
+                                        , -80, -26);
+                                    break;
+                                }
+                            case 11:
+                                {
+                                    ShowHint(obstacle,
+                                        "WHILE IN MIDAIR,\n" +
+                                        $"PRESS '{MainCharacter.KeyDOWN.ToString().ToUpper()}' AND '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO PERFORM\n" +
+                                        "DOWNWARDS ATTACK."
+                                        , -40, -18);
+                                    break;
+                                }
+                            case 12:
+                                {
+                                    ShowHint(obstacle,
+                                        "WELCOME TO THE GAME!\n" +
+                                        $"PRESS '{MainCharacter.KeyLEFT.ToString().ToUpper()}' OR '{MainCharacter.KeyRIGHT.ToString().ToUpper()}' TO MOVE."
+                                        , -80, -18);
+                                    break;
+                                }
+                            case 13:
+                                {
+                                    ShowHint(obstacle,
+                                        $"PRESS '{MainCharacter.KeyJUMP.ToString().ToUpper()}' TO JUMP."
+                                        , -50, -10);
+                                    break;
+                                }
+                            case 14:
+                                {
+                                    ShowHint(obstacle,
+                                        "CRATES CAN BE EASILY DESTROYED.\n" +
+                                        $"PRESS '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO ATTACK."
+                                        , -80, -18);
+                                    break;
+                                }
+                            case 15:
+                                {
+                                    ShowHint(obstacle,
+                                        $"PRESS '{MainCharacter.KeyUP.ToString().ToUpper()}' AND '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO\n" +
+                                        "PERFORM UPWARDS ATTACK."
+                                        , -50, -18);
+                                    break;
+                                }
+                            case 16:
+                                {
+                                    ShowHint(obstacle,
+                                        $"TO JUMP HIGHER,\n" +
+                                        $"USE TRAMPOLINES.\n" +
+                                        $"HOLD '{MainCharacter.KeyJUMP}' TO JUMP HIGHER."
+                                        , -40, -26);
+                                    break;
+                                }
                         }
-                        case 5:
-                        {
-                            ShowHint(obstacle,
-                                "MANA CAN ALSO BE USED\n" +
-                                "TO MAKE YOU IMMORTAL FOR\n" +
-                                $"SEVERAL SECONDS BY PRESSING '{MainCharacter.KeyIMMORTALITY.ToString().ToUpper()}'.\n" +
-                                "IT CONSUMES 3 MANA POTIONS,"
-                                , -60, -34);
-                            break;
-                        }
-                        case 3:
-                        {
-                            ShowHint(obstacle,
-                                "IF YOU SOMEHOW GET STUCK,\n" +
-                                $"IT IS ALWAYS POSSIBLE TO\n" +
-                                $"RESTART A LEVEL."
-                                , -80, -26);
-                            break;
-                        }
-                        case 2:
-                        {
-                            ShowHint(obstacle,
-                                "FURTHER LEVELS WILL REVEAL\n" +
-                                "MORE INTERESTING MECHANICS.\n" +
-                                "HERE IS AN EXIT!\n" +
-                                 $"PRESS '{MainCharacter.KeyUP.ToString().ToUpper()}' TO INTERACT\n" +
-                                 "WITH DIFFERENT OBJECTS."
-                                , -50, -42);
-                            break;
-                        }
-                        case 7:
-                        {
-                            ShowHint(obstacle,
-                                "THERE ARE A LOT OF DIFFERENT\n" +
-                                "CREATURES. THOSE KNIGHTS JUST WALK AROUND\n" +
-                                "FOR NO REASON... USE YOUR SWORD\n" +
-                                $"OR PRESS '{MainCharacter.KeyARROW.ToString().ToUpper()}' TO SHOT AN ARROW."
-                                , -40, -34);
-                            break;
-                        }
-                        case 1:
-                        {
-                            ShowHint(obstacle,
-                                "STOMPING ON STONES WILL CAUSE\n" +
-                                "TO CRUMBLE AFTER FEW SECONDS."
-                                , -90, -18);
-                            break;
-                        }
-                        case 14:
-                        {
-                            ShowHint(obstacle,
-                                "SOMETIMES A WALL CAN BE\n" +
-                                "AN ILLUSION, WHICH LEADS TO SECRET\n" +
-                                "ROOMS OR TREASURES, OR MADNESS..."
-                                , -80, -26);
-                            break;
-                        }
-                        case 12:
-                        {
-                            ShowHint(obstacle,
-                                "THERE ARE A LOT OF PICKUPS.\n" +
-                                "ONE OF THEM ARE THOSE COINS,\n" +
-                                "PERHAPS YOU CAN BUY SOMETHING...\n" +
-                                "DO NOT FORGET ABOUT TRAPS!"
-                                , -80, -34);
-                            break;
-                        }
-                        case 4:
-                        {
-                            ShowHint(obstacle,
-                                "WHILE IN MIDAIR,\n" +
-                                $"PRESS '{MainCharacter.KeyDOWN.ToString().ToUpper()}' AND '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO PERFORM\n" +
-                                "DOWNWARDS ATTACK."
-                                , -40, -18);
-                            break;
-                        }
-                        case 10:
-                        {
-                            ShowHint(obstacle,
-                                "WELCOME TO THE GAME!\n" +
-                                $"PRESS '{MainCharacter.KeyLEFT.ToString().ToUpper()}' OR '{MainCharacter.KeyRIGHT.ToString().ToUpper()}' TO MOVE."
-                                , -80, -18);
-                            break;
-                        }
-                        case 11:
-                        {
-                            ShowHint(obstacle,
-                                $"PRESS '{MainCharacter.KeyJUMP.ToString().ToUpper()}' TO JUMP."
-                                , -50, -10);
-                            break;
-                        }
-                        case 8:
-                        {
-                            ShowHint(obstacle,
-                                "CRATES CAN BE EASILY DESTROYED.\n" +
-                                $"PRESS '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO ATTACK."
-                                , -80, -18);
-                            break;
-                        }
-                        case 9:
-                        {
-                            ShowHint(obstacle,
-                                $"PRESS '{MainCharacter.KeyUP.ToString().ToUpper()}' AND '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO\n" +
-                                "PERFORM UPWARDS ATTACK."
-                                , -50, -18);
-                            break;
-                        }
-                        case 13:
-                        {
-                            ShowHint(obstacle,
-                                $"TO JUMP HIGHER,\n" +
-                                $"USE TRAMPOLINES.\n" +
-                                $"HOLD '{MainCharacter.KeyJUMP}' TO JUMP HIGHER."
-                                , -40, -26);
-                            break;
-                        }
-                    }
 
-                    break;
-                }
+                        break;
+                    }
                 case 5:
-                {
-                    ShowHint(obstacle,
-                        "THOSE BLOCKS REQUIRE\n" +
-                        "MORE EFFORT TO DESTROY..."
-                        , -50, -18);
-                    break;
-                }
+                    {
+                        ShowHint(obstacle,
+                            "THOSE BLOCKS REQUIRE\n" +
+                            "MORE EFFORT TO DESTROY..."
+                            , -50, -18);
+                        break;
+                    }
                 case 10:
-                {
-                    switch (obstacle.HintNumber)
                     {
-                        case 1:
+                        switch (obstacle.HintNumber)
                         {
-                            ShowHint(obstacle,
-                                "BE CAREFUL, THOSE ARCHERS\n" +
-                                "GONNA HUNT YOU DOWN!"
-                                , -60, -18);
-                            break;
+                            case 1:
+                                {
+                                    ShowHint(obstacle,
+                                        "BE CAREFUL, THOSE ARCHERS\n" +
+                                        "GONNA HUNT YOU DOWN!"
+                                        , -60, -18);
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    ShowHint(obstacle,
+                                        "POWERFUL MAGICAL BARRIERS,\n" +
+                                        "ONLY STRONG MAGIC CAN\n" +
+                                        "SHATTER THEM..."
+                                        , -60, -26);
+                                    break;
+                                }
                         }
-                        case 2:
-                        {
-                            ShowHint(obstacle,
-                                "POWERFUL MAGICAL BARRIERS,\n" +
-                                "ONLY STRONG MAGIC CAN\n" +
-                                "SHATTER THEM..."
-                                , -60, -26);
-                            break;
-                        }
-                    }
 
-                    break;
-                }
+                        break;
+                    }
                 case 15:
-                {
-                    ShowHint(obstacle,
-                        "SOME PARTS OF DUNGEON\n" +
-                        "MAY BE LOCKED, BUT PROPER\n" +
-                        "KEY CAN UNLOCK THEM."
-                        , -60, -24);
-                    break;
-                }
+                    {
+                        ShowHint(obstacle,
+                            "SOME PARTS OF DUNGEON\n" +
+                            "MAY BE LOCKED, BUT PROPER\n" +
+                            "KEY CAN UNLOCK THEM."
+                            , -60, -24);
+                        break;
+                    }
                 case 20:
-                {
-                    switch (obstacle.HintNumber)
                     {
-                        case 1:
+                        switch (obstacle.HintNumber)
                         {
-                            ShowHint(obstacle,
-                                "LOOKS LIKE DUNGEON IS HAUNTED!\n" +
-                                "GHOSTS GONNA FOLLOW YOU\n" +
-                                "UNTIL YOU DIE OR...\n" +
-                                "STRONG MAGIC MIGHT HELP..."
-                                , -60, -34);
-                            break;
+                            case 1:
+                                {
+                                    ShowHint(obstacle,
+                                        "LOOKS LIKE DUNGEON IS HAUNTED!\n" +
+                                        "GHOSTS GONNA FOLLOW YOU\n" +
+                                        "UNTIL YOU DIE OR...\n" +
+                                        "STRONG MAGIC MIGHT HELP..."
+                                        , -60, -34);
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    ShowHint(obstacle,
+                                        "WHO WOULD EXPECT A SHOP\n" +
+                                        "IN THESE DUNGEONS... "
+                                        , -50, -18);
+                                    break;
+                                }
                         }
-                        case 2:
-                        {
-                            ShowHint(obstacle,
-                                "WHO WOULD EXPECT A SHOP\n" +
-                                "IN THESE DUNGEONS... "
-                                , -50, -18);
-                            break;
-                        }
-                    }
 
-                    break;
-                }
+                        break;
+                    }
                 case 25:
-                {
-                    ShowHint(obstacle,
-                        "WHAT ARE THOSE STRANGE\n" +
-                        "PORTALS... NO ONE KNOWS\n" +
-                        "WHAT WAITS FOR YOU\n" +
-                        "ON THE OTHER SIDE."
-                        , -60, -34);
-                    break;
-                }
-                case 30:
-                {
-                    switch (obstacle.HintNumber)
                     {
-                        case 1:
-                        {
-                            ShowHint(obstacle,
-                                "OLD STEEL GATES AND\n" +
-                                "RUSTY LEVERS, IF MECHANISM\n" +
-                                "STILL WORSK, IT MIGHT OPEN\n" +
-                                "ALL THOSE HEAVY GATES."
-                                , -60, -34);
-                            break;
-                        }
-                        case 2:
-                        {
-                            ShowHint(obstacle,
-                                "YOU ARE NOT THE ONLY\n" +
-                                "ONE WHO CAN USE STRONG MAGIC.\n" +
-                                "POWERFUL MAGICIANS, MIGHTY WIZARDS\n" +
-                                "AND THEIR DREADFUL SPELLS..."
-                                , -70, -34);
-                            break;
-                        }
+                        ShowHint(obstacle,
+                            "WHAT ARE THOSE STRANGE\n" +
+                            "PORTALS... NO ONE KNOWS\n" +
+                            "WHAT WAITS FOR YOU\n" +
+                            "ON THE OTHER SIDE."
+                            , -60, -34);
+                        break;
                     }
+                case 30:
+                    {
+                        switch (obstacle.HintNumber)
+                        {
+                            case 1:
+                                {
+                                    ShowHint(obstacle,
+                                        "OLD STEEL GATES AND\n" +
+                                        "RUSTY LEVERS, IF MECHANISM\n" +
+                                        "STILL WORSK, IT MIGHT OPEN\n" +
+                                        "ALL THOSE HEAVY GATES."
+                                        , -60, -34);
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    ShowHint(obstacle,
+                                        "YOU ARE NOT THE ONLY\n" +
+                                        "ONE WHO CAN USE STRONG MAGIC.\n" +
+                                        "POWERFUL MAGICIANS, MIGHTY WIZARDS\n" +
+                                        "AND THEIR DREADFUL SPELLS..."
+                                        , -70, -34);
+                                    break;
+                                }
+                        }
 
-                    break;
-                }
+                        break;
+                    }
                 case 35:
-                {
-                    ShowHint(obstacle,
-                        "THOSE GATES WILL NOT\n" +
-                        "HELP EITHER... FROM A DISTANCE\n" +
-                        "IT FEELS LIKE IT IS GOING TO\n" +
-                        "TAKE EVERYTHING FROM YOU..."
-                        , -70, -34);
-                    break;
-                }
+                    {
+                        ShowHint(obstacle,
+                            "THOSE GATES WILL NOT\n" +
+                            "HELP EITHER... FROM A DISTANCE\n" +
+                            "IT FEELS LIKE IT IS GOING TO\n" +
+                            "TAKE EVERYTHING FROM YOU..."
+                            , -70, -34);
+                        break;
+                    }
                 case 40:
-                {
-                    ShowHint(obstacle,
-                        "GOLEMS ARE RESPONSIBLE FOR\n" +
-                        "THAT EARTH QUAKE! THE STRONGEST\n" +
-                        "CREATURE THAT LIVES HERE...\n" +
-                        "BUT WHO HAS SUMMONED THEM?"
-                        , -70, -34);
-                    break;
-                }
+                    {
+                        ShowHint(obstacle,
+                            "GOLEMS ARE RESPONSIBLE FOR\n" +
+                            "THAT EARTH QUAKE! THE STRONGEST\n" +
+                            "CREATURE THAT LIVES HERE...\n" +
+                            "BUT WHO HAS SUMMONED THEM?"
+                            , -70, -34);
+                        break;
+                    }
             }
         }
 

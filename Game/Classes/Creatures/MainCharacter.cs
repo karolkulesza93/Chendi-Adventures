@@ -791,6 +791,8 @@ namespace ChendiAdventures
                             if (Keyboard.IsKeyPressed(KeyJUMP))
                             {
                                 SpeedY *= -1.2f;
+                                if (SpeedY > -1 * MaxSpeedY - 1.5f) 
+                                    SpeedY = -1 * MaxSpeedY - 1.5f;
                                 sJump.Play();
                             }
                             else

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms.VisualStyles;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
@@ -31,8 +32,25 @@ namespace ChendiAdventures
         {
             Title = title;
             _window = new RenderWindow(VideoMode.DesktopMode, Title, _windowStyle);
-            _windowWidth = (int) _window.Size.X;
-            _windowHeight = (int) _window.Size.Y;
+
+            if (Math.Round((double)_window.Size.Y / (double)_window.Size.X, 4) == 0.5625)
+            {
+                _windowWidth = 1920;
+                _windowHeight = 1080;
+            }
+
+            if (_window.Size.X > 1920)
+            {
+                _window = new RenderWindow(new VideoMode(1920, 1080), Title, _windowStyle);
+                _windowWidth = 1920;
+                _windowHeight = 1080;
+            }
+            else
+            {
+                _windowWidth = (int)_window.Size.X;
+                _windowHeight = (int)_window.Size.Y;
+            }
+            
             _window.SetFramerateLimit(60);
             _window.SetVisible(true);
 
@@ -992,17 +1010,23 @@ namespace ChendiAdventures
             var y = _view.Center.Y;
 
             x += (_chendi.GetCenterPosition().X - _view.Center.X) / 10;
-            if (level.LevelWidth*64 >= _windowWidth)
+            
+            if (x - _view.Size.X / 2 <= 0) x = _view.Size.X / 2;
+            else if (x + _view.Size.X / 2 >= level.LevelWidth * 32) x = level.LevelWidth * 32 - _view.Size.X / 2; 
+            
+            if (level.LevelWidth * 64 < _windowWidth)
             {
-                if (x - _view.Size.X / 2 <= 0) x = _view.Size.X / 2;
-                else if (x + _view.Size.X / 2 >= level.LevelWidth * 32) x = level.LevelWidth * 32 - _view.Size.X / 2; 
+                x = level.LevelWidth * 16;
             }
 
             y += (_chendi.GetCenterPosition().Y - _view.Center.Y) / 10;
-            if (level.LevelHeight*64 >= _windowHeight)
+            
+            if (y - _view.Size.Y / 2 <= 0) y = _view.Size.Y / 2;
+            else if (y + _view.Size.Y / 2 >= level.LevelHeight * 32) y = level.LevelHeight * 32 - _view.Size.Y / 2; 
+            
+            if (level.LevelHeight * 64 < _windowHeight)
             {
-                if (y - _view.Size.Y / 2 <= 0) y = _view.Size.Y / 2;
-                else if (y + _view.Size.Y / 2 >= level.LevelHeight * 32) y = level.LevelHeight * 32 - _view.Size.Y / 2; 
+                y = level.LevelHeight * 16;
             }
 
             _view.Center = new Vector2f(x, y);

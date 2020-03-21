@@ -231,7 +231,7 @@ namespace ChendiAdventures
         public override void Draw(RenderTarget target, RenderStates states)
         {
             base.Draw(target, states);
-            //if (X == (int)_view.Center.X - 32)
+            //if (X == (int)MainView.Center.X - 32)
             {
                 target.Draw(Item);
                 target.Draw(_reward);

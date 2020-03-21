@@ -38,8 +38,7 @@ namespace ChendiAdventures
                 _windowWidth = 1920;
                 _windowHeight = 1080;
             }
-
-            if (_window.Size.X > 1920)
+            else if (_window.Size.X > 1920)
             {
                 _window = new RenderWindow(new VideoMode(1920, 1080), Title, _windowStyle);
                 _windowWidth = 1920;
@@ -54,16 +53,24 @@ namespace ChendiAdventures
             _window.SetFramerateLimit(60);
             _window.SetVisible(true);
 
+            Joystick.Update();
+            if (Joystick.IsConnected(0))
+            {
+                IsControllerConnected = true;
+            }
+
             //events
             _window.Closed += OnClosed;
             _window.KeyPressed += OnKeyPress;
+            _window.JoystickConnected += OnControllerConnection;
+            _window.JoystickDisconnected += OnControllerDisconnection;
             //
 
             _window.SetMouseCursorVisible(false);
             _window.SetKeyRepeatEnabled(false);
             _window.SetVerticalSyncEnabled(true);
-            _view = new View(new FloatRect(0, 0, _windowWidth, _windowHeight));
-            _screenChange = new ScreenChange(ref _view);
+            MainView = new View(new FloatRect(0, 0, _windowWidth, _windowHeight));
+            _screenChange = new ScreenChange(ref MainView);
         }
 
         public static MainGameWindow Instance
@@ -101,7 +108,6 @@ namespace ChendiAdventures
             _isQuit = false;
         }
 
-        [Obsolete]
         private void OnKeyPress(object sender, EventArgs e)
         {
             if (Keyboard.IsKeyPressed(Keyboard.Key.Q))
@@ -109,6 +115,18 @@ namespace ChendiAdventures
                 var img = _window.Capture();
                 img.SaveToFile(string.Format(@"screenshots/img_{0}.png", DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss")));
             }
+        }
+
+        private void OnControllerConnection(object sender, EventArgs e)
+        {
+            IsControllerConnected = true;
+            sChoice.Play();
+        }
+
+        private void OnControllerDisconnection(object sender, EventArgs e)
+        {
+            IsControllerConnected = false;
+            sChoice.Play();
         }
 
         public void GameStart()
@@ -128,22 +146,49 @@ namespace ChendiAdventures
 
             DrawLoadingScreen();
             LoadContents();
+            ProductionInfoLoop();
             MainLoop();
         }
 
-        private void ProductionInfoLoop() //do poprawy/zrobienia
+        private void ProductionInfoLoop()
         {
-            var author = new TextLine("KAROL KULESZA XD PRODUCTIONS", 50, _view.Center.X - 500, _view.Center.Y - 50,
+            var author = new TextLine("CREATED BY KAROL KULESZA", 50, MainView.Center.X - 600, MainView.Center.Y - 50,
                 Color.White);
-
+            var timer = new Clock();
             while (_window.IsOpen)
             {
                 ResetWindow();
-                _screenChange.AppearIn();
+
+                if (timer.ElapsedTime.AsSeconds() > 6)
+                {
+                    break;
+                }
+                
+                if (timer.ElapsedTime.AsSeconds() > 5)
+                {
+                    _screenChange.BlackOut();
+
+                }
+                else
+                {
+                    _screenChange.AppearIn();
+                }
+
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(Keyboard.Key.Escape) ||
+                    Keyboard.IsKeyPressed(Keyboard.Key.Return) || Keyboard.IsKeyPressed(Keyboard.Key.Z) ||
+                    Joystick.IsButtonPressed(0, 7) || Joystick.IsButtonPressed(0, 0))
+                {
+                    _chendi.sPickup.Play();
+                    break;
+                }
+
 
                 _window.Draw(author);
+                _window.Draw(_screenChange);
                 _window.Display();
             }
+            DrawLoadingScreen();
+            Thread.Sleep(100);
         }
 
         private void LicenceCheck()
@@ -174,7 +219,7 @@ namespace ChendiAdventures
             else
             {
                 _isMenu = false;
-                TextLine message = new TextLine(msg, 50, 50, _view.Center.Y + _view.Size.Y/2 - 130, Color.Red);
+                TextLine message = new TextLine(msg, 50, 50, MainView.Center.Y + MainView.Size.Y/2 - 130, Color.Red);
                 message.SetOutlineThickness(5);
                 _chendi.sError.Play();
                 while (_window.IsOpen)
@@ -297,8 +342,8 @@ namespace ChendiAdventures
             _no = new TextLine("NO", 25, 0,0, Color.White); _no.SetOutlineThickness(2.5f);
 
             _chendi = new MainCharacter(-100, -100, Entity.MainCharacterTexture);
-            _level = new Level(_chendi, _view);
-            _chendiUi = new MainCharacterUI(_chendi, _view, _level);
+            _level = new Level(_chendi, MainView);
+            _chendiUi = new MainCharacterUI(_chendi, MainView, _level);
 
             _highscoreValues = new Highscores();
             LoadSettings();
@@ -365,16 +410,16 @@ namespace ChendiAdventures
         private void SettingsLoop()
         {
             //licence
-            var licence = new TextLine("LICENCE NUMBER: " + _licence, 10, _view.Center.X + _view.Size.X/2 - 400, _view.Center.Y + _view.Size.Y/2 - 15, new Color(70,70,70));
+            var licence = new TextLine("LICENCE NUMBER: " + _licence, 10, MainView.Center.X + MainView.Size.X/2 - 400, MainView.Center.Y + MainView.Size.Y/2 - 15, new Color(70,70,70));
             licence.SetOutlineThickness(1);
             //resolution - auto
-            var resolution = new TextLine("RESOLUTION: 1920x1080", 50, -1000, _view.Center.Y + _view.Size.Y / 2 - 290,
+            var resolution = new TextLine("RESOLUTION: 1920x1080", 50, -1000, MainView.Center.Y + MainView.Size.Y / 2 - 290,
                 Color.Green);
             resolution.SetOutlineThickness(5);
             var vsync = new TextLine($"VSYNC: {(IsVsync ? "ON" : "OFF")}", 50, -1100,
-                _view.Center.Y + _view.Size.Y / 2 - 230, Color.White);
+                MainView.Center.Y + MainView.Size.Y / 2 - 230, Color.White);
             vsync.SetOutlineThickness(5);
-            var difficulty = new TextLine("DIFFICULTY: MEDIUM", 50, -1200, _view.Center.Y + _view.Size.Y / 2 - 170,
+            var difficulty = new TextLine("DIFFICULTY: MEDIUM", 50, -1200, MainView.Center.Y + MainView.Size.Y / 2 - 170,
                 Color.White);
             difficulty.SetOutlineThickness(5);
             switch (GameDifficulty)
@@ -396,7 +441,7 @@ namespace ChendiAdventures
                 }
             }
 
-            var keyBindings = new TextLine("KEY BINDINGS", 50, -1300, _view.Center.Y + _view.Size.Y / 2 - 110,
+            var keyBindings = new TextLine("KEY BINDINGS", 50, -1300, MainView.Center.Y + MainView.Size.Y / 2 - 110,
                 Color.White);
             keyBindings.SetOutlineThickness(5);
 
@@ -427,19 +472,19 @@ namespace ChendiAdventures
                     flag = false;
                 }
 
-                if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Up))
+                if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5 || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50))
                 {
                     sChoice.Play();
                     flag = true;
                     choice--;
                 }
-                else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Down))
+                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Down) || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) < -5 || Joystick.GetAxisPosition(0, Joystick.Axis.Y) > 50))
                 {
                     sChoice.Play();
                     flag = true;
                     choice++;
                 }
-                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
+                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP) || Joystick.IsButtonPressed(0, 0)))
                 {
                     flag = true;
                     switch (choice)
@@ -524,7 +569,7 @@ namespace ChendiAdventures
                     }
                 }
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER))
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Joystick.IsButtonPressed(0, 1))
                 {
                     _chendi.sPickup.Play();
                     SaveSettings();
@@ -548,20 +593,37 @@ namespace ChendiAdventures
 
         private void KeyBindingConfig()
         {
-            var keys = new TextLine("", 50, -1000, _view.Center.Y + _windowHeight / 2 - 500, new Color(150, 150, 150));
+            var keys = new TextLine("", 50, -1000, MainView.Center.Y + MainView.Size.Y / 2 - 430, new Color(150, 150, 150));
             keys.SetOutlineThickness(5);
 
             var str = new StringBuilder();
-            str.Append($"'{MainCharacter.KeyLEFT.ToString().ToUpper()}' : MOVE LEFT\n");
-            str.Append($"'{MainCharacter.KeyRIGHT.ToString().ToUpper()}' : MOVE RIGHT\n");
-            str.Append($"'{MainCharacter.KeyUP.ToString().ToUpper()}' : ACTION OR LOOK UP\n");
-            str.Append($"'{MainCharacter.KeyJUMP.ToString().ToUpper()}' : JUMP\n");
-            str.Append($"'{MainCharacter.KeyATTACK.ToString().ToUpper()}' : SWORD ATTACK\n");
-            str.Append($"'{MainCharacter.KeyARROW.ToString().ToUpper()}' : SHOOT AN ARROW\n");
-            str.Append($"'{MainCharacter.KeyTHUNDER.ToString().ToUpper()}' : SHOOT AN ENERGIZED ARROW\n");
-            str.Append($"'{MainCharacter.KeyIMMORTALITY.ToString().ToUpper()}' : BECOME IMMORTAL\n");
+
+            if (IsControllerConnected)
+            {
+                str.Append($"'{MainCharacter.KeyLEFT.ToString().ToUpper()}' : MOVE LEFT\n");
+                str.Append($"'{MainCharacter.KeyRIGHT.ToString().ToUpper()}' : MOVE RIGHT\n");
+                str.Append($"'{MainCharacter.KeyUP.ToString().ToUpper()}' : ACTION OR LOOK UP\n");
+                str.Append("'A' : JUMP\n");
+                str.Append($"'X' : SWORD ATTACK\n");
+                str.Append($"'Y' : SHOOT AN ARROW\n");
+                str.Append($"'B' : SHOOT AN ENERGIZED ARROW\n");
+                str.Append($"'L1' OR 'R1' : BECOME IMMORTAL\n");
+            }
+            else
+            {
+                str.Append($"'{MainCharacter.KeyLEFT.ToString().ToUpper()}' : MOVE LEFT\n");
+                str.Append($"'{MainCharacter.KeyRIGHT.ToString().ToUpper()}' : MOVE RIGHT\n");
+                str.Append($"'{MainCharacter.KeyUP.ToString().ToUpper()}' : ACTION OR LOOK UP\n");
+                str.Append($"'{MainCharacter.KeyJUMP.ToString().ToUpper()}' : JUMP\n");
+                str.Append($"'{MainCharacter.KeyATTACK.ToString().ToUpper()}' : SWORD ATTACK\n");
+                str.Append($"'{MainCharacter.KeyARROW.ToString().ToUpper()}' : SHOOT AN ARROW\n");
+                str.Append($"'{MainCharacter.KeyTHUNDER.ToString().ToUpper()}' : SHOOT AN ENERGIZED ARROW\n");
+                str.Append($"'{MainCharacter.KeyIMMORTALITY.ToString().ToUpper()}' : BECOME IMMORTAL\n");
+            }
 
             keys.EditText(str.ToString());
+
+            var joy = new TextLine("CONTROLLER CONNECTED", 20, MainView.Center.X + MainView.Size.X / 2 - 450, MainView.Center.Y + MainView.Size.Y / 2 - 25, Color.Green);
 
             while (_window.IsOpen && _isSettigs)
             {
@@ -570,20 +632,24 @@ namespace ChendiAdventures
                 //slide text effect
                 if (keys.X < 50) keys.MoveText(keys.X + 50, keys.Y);
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) ||
-                    Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER)) break;
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Joystick.IsButtonPressed(0, 1))
+                {
+                    _chendi.sPickup.Play();
+                    break;
+                }
                 AnimateBackground();
                 _window.Draw(_background);
 
                 //draw settings
                 _window.Draw(keys);
+                if (IsControllerConnected) _window.Draw(joy);
                 _window.Display();
             }
         }
 
         private void HighScoreLoop()
         {
-            var hs = new TextLine("HIGHSCORES", 50, _view.Center.X - 250, -400, Color.Green);
+            var hs = new TextLine("HIGHSCORES", 50, MainView.Center.X - 250, -400, Color.Green);
             hs.SetOutlineThickness(5);
             _highscoreValues.X = -900;
 
@@ -593,9 +659,9 @@ namespace ChendiAdventures
 
                 //slide text effect
                 if (hs.Y < 5) hs.MoveText(hs.X, hs.Y + 10);
-                if (_highscoreValues.X < _view.Center.X - 750) _highscoreValues.X += 50;
+                if (_highscoreValues.X < MainView.Center.X - 750) _highscoreValues.X += 50;
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER))
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Joystick.IsButtonPressed(0, 1))
                 {
                     _chendi.sPickup.Play();
                     _isHighscore = false;
@@ -613,14 +679,16 @@ namespace ChendiAdventures
 
         private void MainMenuLoop()
         {
-            _start = new TextLine("NEW GAME", 50, -500, _view.Center.Y + _view.Size.Y / 2 - 290, Color.Green); //790
+            _start = new TextLine("ADVENTURE MODE", 50, -500, MainView.Center.Y + MainView.Size.Y / 2 - 290, Color.Green); //790
             _start.SetOutlineThickness(5);
-            _highscores =
-                new TextLine("HIGHSCORES", 50, -600, _view.Center.Y + _view.Size.Y / 2 - 230, Color.White); //850
+
+            //_genericGame = new TextLine("",50,-600, MainView.Center.Y + MainView.Size.Y / 2 - 230, Color.White);
+
+            _highscores = new TextLine("HIGHSCORES", 50, -600, MainView.Center.Y + MainView.Size.Y / 2 - 230, Color.White); //850
             _highscores.SetOutlineThickness(5);
-            _settings = new TextLine("SETTINGS", 50, -700, _view.Center.Y + _view.Size.Y / 2 - 170, Color.White); //910
+            _settings = new TextLine("OPTIONS", 50, -700, MainView.Center.Y + MainView.Size.Y / 2 - 170, Color.White); //910
             _settings.SetOutlineThickness(5);
-            _quit = new TextLine("QUIT", 50, -800, _view.Center.Y + _view.Size.Y / 2 - 110, Color.White); //970
+            _quit = new TextLine("QUIT", 50, -800, MainView.Center.Y + MainView.Size.Y / 2 - 110, Color.White); //970
             _quit.SetOutlineThickness(5);
 
             _gameLogo.Position = new Vector2f((_windowWidth - _gameLogo.Texture.Size.X) / 2, -300);
@@ -669,19 +737,19 @@ namespace ChendiAdventures
                     flag = false;
                 }
 
-                if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Up))
+                if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5))
                 {
                     sChoice.Play();
                     flag = true;
                     choice--;
                 }
-                else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Down))
+                else if (flag == false &&  (Keyboard.IsKeyPressed(Keyboard.Key.Down) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) < -5))
                 {
                     sChoice.Play();
                     flag = true;
                     choice++;
                 }
-                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
+                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Joystick.IsButtonPressed(0, 0)))
                 {
                     flag = true;
                     _chendi.sPickup.Play();
@@ -770,7 +838,7 @@ namespace ChendiAdventures
 
             for (var i = 0; i < levels.Count; i++)
             {
-                levels[i].MoveText(levels[i].X, _view.Size.Y - 50 - 60 * (levels.Count - i));
+                levels[i].MoveText(levels[i].X, MainView.Size.Y - 50 - 60 * (levels.Count - i));
                 levels[i].SetOutlineThickness(5);
             }
 
@@ -798,13 +866,13 @@ namespace ChendiAdventures
                     line.ChangeColor(Color.White);
                 }
 
-                if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Up))
+                if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5))
                 {
                     sChoice.Play();
                     flag = true;
                     choice--;
                 }
-                else if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Down))
+                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Down) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) < -5))
                 {
                     sChoice.Play();
                     flag = true;
@@ -816,8 +884,7 @@ namespace ChendiAdventures
 
                 levels[choice].ChangeColor(Color.Green);
 
-                if (!flag && (Keyboard.IsKeyPressed(Keyboard.Key.Space) ||
-                              Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
+                if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Joystick.IsButtonPressed(0, 0)))
                 {
                     _chendi.sPickup.Play();
                     DrawLoadingScreen();
@@ -829,7 +896,7 @@ namespace ChendiAdventures
                     _menuTheme.Stop();
                 }
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER))
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Joystick.IsButtonPressed(0, 1))
                 {
                     _chendi.sPickup.Play();
                     _isLevelSelection = false;
@@ -853,7 +920,7 @@ namespace ChendiAdventures
 
             _levelSummary = new TextLine("", 25, -1000, -1000, Color.White);
 
-            SetView(new Vector2f(_windowWidth / 2, _windowHeight / 2), _view.Center);
+            SetView(new Vector2f(_windowWidth / 2, _windowHeight / 2), MainView.Center);
             _screenChange.Reset();
 
             _level.LoadLevel($"lvl{Level.LevelNumber}");
@@ -891,6 +958,7 @@ namespace ChendiAdventures
         {
             _window.DispatchEvents();
             _window.Clear(Color.Black);
+            if (IsControllerConnected) Joystick.Update();
         }
 
         private void DrawLoadingScreen()
@@ -898,8 +966,8 @@ namespace ChendiAdventures
             SetView(new Vector2f(_windowWidth, _windowHeight), new Vector2f(_windowWidth / 2, _windowHeight / 2));
             ResetWindow();
 
-            _loading.MoveText(_view.Center.X + _view.Size.X / 2 - _loading.Width * 1.3f,
-                _view.Center.Y + _view.Size.Y / 2 - 70);
+            _loading.MoveText(MainView.Center.X + MainView.Size.X / 2 - _loading.Width * 1.3f,
+                MainView.Center.Y + MainView.Size.Y / 2 - 70);
 
             _window.Draw(_loading);
             _window.Display();
@@ -945,7 +1013,7 @@ namespace ChendiAdventures
 
                     _continue.EditText(string.Format("CONTINUE? {0}", 10 - (int) clock.ElapsedTime.AsSeconds()));
 
-                    if (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP))
+                    if (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Joystick.IsButtonPressed(0, 0))
                     {
                         _chendi.sPickup.Play();
                         _chendi.ResetMainCharacter();
@@ -955,7 +1023,7 @@ namespace ChendiAdventures
                         return;
                     }
 
-                    if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER))
+                    if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Joystick.IsButtonPressed(0, 1))
                     {
                         _chendi.sPickup.Play();
                         _chendi.ResetMainCharacter();
@@ -1006,40 +1074,40 @@ namespace ChendiAdventures
 
         private void ViewManipulation(Level level)
         {
-            var x = _view.Center.X;
-            var y = _view.Center.Y;
+            var x = MainView.Center.X;
+            var y = MainView.Center.Y;
 
-            x += (_chendi.GetCenterPosition().X - _view.Center.X) / 10;
+            x += (_chendi.GetCenterPosition().X - MainView.Center.X) / 10;
             
-            if (x - _view.Size.X / 2 <= 0) x = _view.Size.X / 2;
-            else if (x + _view.Size.X / 2 >= level.LevelWidth * 32) x = level.LevelWidth * 32 - _view.Size.X / 2; 
+            if (x - MainView.Size.X / 2 <= 0) x = MainView.Size.X / 2;
+            else if (x + MainView.Size.X / 2 >= level.LevelWidth * 32) x = level.LevelWidth * 32 - MainView.Size.X / 2; 
             
             if (level.LevelWidth * 64 < _windowWidth)
             {
                 x = level.LevelWidth * 16;
             }
 
-            y += (_chendi.GetCenterPosition().Y - _view.Center.Y) / 10;
+            y += (_chendi.GetCenterPosition().Y - MainView.Center.Y) / 10;
             
-            if (y - _view.Size.Y / 2 <= 0) y = _view.Size.Y / 2;
-            else if (y + _view.Size.Y / 2 >= level.LevelHeight * 32) y = level.LevelHeight * 32 - _view.Size.Y / 2; 
+            if (y - MainView.Size.Y / 2 <= 0) y = MainView.Size.Y / 2;
+            else if (y + MainView.Size.Y / 2 >= level.LevelHeight * 32) y = level.LevelHeight * 32 - MainView.Size.Y / 2; 
             
             if (level.LevelHeight * 64 < _windowHeight)
             {
                 y = level.LevelHeight * 16;
             }
 
-            _view.Center = new Vector2f(x, y);
-            _window.SetView(_view);
+            MainView.Center = new Vector2f(x, y);
+            _window.SetView(MainView);
 
             if (!_screenChange.Done) _screenChange.AppearIn();
         }
 
         private void SetView(Vector2f size, Vector2f center)
         {
-            _view.Size = size;
-            _view.Center = center;
-            _window.SetView(_view);
+            MainView.Size = size;
+            MainView.Center = center;
+            _window.SetView(MainView);
         }
 
         private bool CheckForGameBreak()
@@ -1674,30 +1742,29 @@ namespace ChendiAdventures
 
         private void ExitLoop()
         {
-            if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) && !_chendi.IsDead)
+            if ((Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Joystick.IsButtonPressed(0, 6) || Joystick.IsButtonPressed(0, 7)) && !_chendi.IsDead)
             {
                 bool isQuitMenu = true;
-
                 var choice = 1;
                 bool yesNo = false;
                 bool menu = true;
                 var flag = true;
                 var delay = 0;
 
-                _resume.MoveText(_view.Center.X - _view.Size.X / 2 - 450, _view.Center.Y + _view.Size.Y / 2 - 140);
-                _restartLevel.MoveText(_view.Center.X - _view.Size.X / 2 - 500, _view.Center.Y+_view.Size.Y/2 - 110);
-                _gotoMenu.MoveText(_view.Center.X - _view.Size.X / 2 - 550, _view.Center.Y + _view.Size.Y / 2 - 80);
-                _quitGame.MoveText(_view.Center.X - _view.Size.X / 2 - 600, _view.Center.Y + _view.Size.Y / 2 - 50);
+                _resume.MoveText(MainView.Center.X - MainView.Size.X / 2 - 450, MainView.Center.Y + MainView.Size.Y / 2 - 140);
+                _restartLevel.MoveText(MainView.Center.X - MainView.Size.X / 2 - 500, MainView.Center.Y+MainView.Size.Y/2 - 110);
+                _gotoMenu.MoveText(MainView.Center.X - MainView.Size.X / 2 - 550, MainView.Center.Y + MainView.Size.Y / 2 - 80);
+                _quitGame.MoveText(MainView.Center.X - MainView.Size.X / 2 - 600, MainView.Center.Y + MainView.Size.Y / 2 - 50);
 
                 while (_window.IsOpen && _isGame && isQuitMenu)
                 {
                     ResetWindow();
 
                     //textslide effect
-                    if (_resume.X < _view.Center.X - _view.Size.X / 2 + 25) _resume.MoveText(_resume.X + 25, _resume.Y);
-                    if (_restartLevel.X < _view.Center.X - _view.Size.X / 2 + 25) _restartLevel.MoveText(_restartLevel.X + 25, _restartLevel.Y);
-                    if (_gotoMenu.X < _view.Center.X - _view.Size.X / 2 + 25) _gotoMenu.MoveText(_gotoMenu.X + 25, _gotoMenu.Y);
-                    if (_quitGame.X < _view.Center.X - _view.Size.X / 2 + 25) _quitGame.MoveText(_quitGame.X + 25, _quitGame.Y);
+                    if (_resume.X < MainView.Center.X - MainView.Size.X / 2 + 25) _resume.MoveText(_resume.X + 25, _resume.Y);
+                    if (_restartLevel.X < MainView.Center.X - MainView.Size.X / 2 + 25) _restartLevel.MoveText(_restartLevel.X + 25, _restartLevel.Y);
+                    if (_gotoMenu.X < MainView.Center.X - MainView.Size.X / 2 + 25) _gotoMenu.MoveText(_gotoMenu.X + 25, _gotoMenu.Y);
+                    if (_quitGame.X < MainView.Center.X - MainView.Size.X / 2 + 25) _quitGame.MoveText(_quitGame.X + 25, _quitGame.Y);
 
                     _yes.MoveText(-100, 0);
                     _no.MoveText(-100, 0);
@@ -1735,19 +1802,19 @@ namespace ChendiAdventures
                                 }
                         }
 
-                        if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Down))
+                        if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Down) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) < -5))
                         {
                             sChoice.Play();
                             flag = true;
                             choice++;
                         }
-                        else if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Up))
+                        else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5))
                         {
                             sChoice.Play();
                             flag = true;
                             choice--;
                         }
-                        else if (!flag && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
+                        else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Joystick.IsButtonPressed(0, 0)))
                         {
                             _chendi.sPickup.Play();
                             menu = false;
@@ -1782,8 +1849,8 @@ namespace ChendiAdventures
                             }
                             case 2:
                             {
-                                _yes.MoveText(_view.Center.X - _view.Size.X / 2 + 455, _view.Center.Y + _view.Size.Y / 2 - 110);
-                                _no.MoveText(_view.Center.X - _view.Size.X / 2 + 390, _view.Center.Y + _view.Size.Y / 2 - 110);
+                                _yes.MoveText(MainView.Center.X - MainView.Size.X / 2 + 455, MainView.Center.Y + MainView.Size.Y / 2 - 110);
+                                _no.MoveText(MainView.Center.X - MainView.Size.X / 2 + 390, MainView.Center.Y + MainView.Size.Y / 2 - 110);
 
                                 _resume.ChangeColor(new Color(100,100,100));
                                 _restartLevel.ChangeColor(new Color(0, 150, 0));
@@ -1794,8 +1861,8 @@ namespace ChendiAdventures
                             }
                             case 3:
                             {
-                                _yes.MoveText(_view.Center.X - _view.Size.X / 2 + 455, _view.Center.Y + _view.Size.Y / 2 - 80);
-                                _no.MoveText(_view.Center.X - _view.Size.X / 2 + 390, _view.Center.Y + _view.Size.Y / 2 - 80);
+                                _yes.MoveText(MainView.Center.X - MainView.Size.X / 2 + 455, MainView.Center.Y + MainView.Size.Y / 2 - 80);
+                                _no.MoveText(MainView.Center.X - MainView.Size.X / 2 + 390, MainView.Center.Y + MainView.Size.Y / 2 - 80);
 
                                 _resume.ChangeColor(new Color(100, 100, 100));
                                 _restartLevel.ChangeColor(new Color(100, 100, 100));
@@ -1805,8 +1872,8 @@ namespace ChendiAdventures
                             }
                             case 4:
                             {
-                                _yes.MoveText(_view.Center.X - _view.Size.X / 2 + 455, _view.Center.Y + _view.Size.Y / 2 - 50);
-                                _no.MoveText(_view.Center.X - _view.Size.X / 2 + 390, _view.Center.Y + _view.Size.Y / 2 - 50);
+                                _yes.MoveText(MainView.Center.X - MainView.Size.X / 2 + 455, MainView.Center.Y + MainView.Size.Y / 2 - 50);
+                                _no.MoveText(MainView.Center.X - MainView.Size.X / 2 + 390, MainView.Center.Y + MainView.Size.Y / 2 - 50);
 
                                 _resume.ChangeColor(new Color(100, 100, 100));
                                 _restartLevel.ChangeColor(new Color(100, 100, 100));
@@ -1816,19 +1883,19 @@ namespace ChendiAdventures
                             }
                         }
 
-                        if (!flag && yesNo == true && Keyboard.IsKeyPressed(Keyboard.Key.Left))
+                        if (!flag && yesNo == true && (Keyboard.IsKeyPressed(Keyboard.Key.Left) || Joystick.GetAxisPosition(0, Joystick.Axis.X) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5))
                         {
                             flag = true;
                             sChoice.Play();
                             yesNo = !yesNo;
                         }
-                        else if (!flag && yesNo == false && Keyboard.IsKeyPressed(Keyboard.Key.Right))
+                        else if (!flag && yesNo == false && (Keyboard.IsKeyPressed(Keyboard.Key.Right) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5))
                         {
                             flag = true;
                             sChoice.Play();
                             yesNo = !yesNo;
                         }
-                        else if (!flag && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
+                        else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Joystick.IsButtonPressed(0, 0)))
                         {
                             _chendi.sPickup.Play();
                             flag = true;
@@ -1848,12 +1915,29 @@ namespace ChendiAdventures
                                     case 3:
                                         {
                                             DrawLoadingScreen();
+
+                                            _highscoreValues.AddNewRecord(new HighscoreRecord(_chendi.Score, Level.LevelNumber,
+                                                GameDifficulty.ToString().ToUpper()));
+                                            if (Level.LevelNumber > Settings.Default.HighestLevel)
+                                            {
+                                                Settings.Default.HighestLevel = Level.LevelNumber;
+                                                Settings.Default.Save();
+                                            }
+
                                             _isGame = false;
                                             _isMenu = true;
                                             break;
                                         }
                                     case 4:
                                         {
+                                            _highscoreValues.AddNewRecord(new HighscoreRecord(_chendi.Score, Level.LevelNumber,
+                                                GameDifficulty.ToString().ToUpper()));
+                                            if (Level.LevelNumber > Settings.Default.HighestLevel)
+                                            {
+                                                Settings.Default.HighestLevel = Level.LevelNumber;
+                                                Settings.Default.Save();
+                                            }
+
                                             _isGame = false;
                                             break;
                                         }
@@ -1864,7 +1948,7 @@ namespace ChendiAdventures
                                 menu = true;
                             }
                         }
-                        if (!flag && Keyboard.IsKeyPressed(Keyboard.Key.Escape))
+                        if (!flag && (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Joystick.IsButtonPressed(0, 1)))
                         {
                             _chendi.sPickup.Play();
                             flag = true;
@@ -1910,7 +1994,7 @@ namespace ChendiAdventures
             _level.LoadLevel($"lvl{Level.LevelNumber}"); 
             _mainTheme.Play(); 
             
-            SetView(new Vector2f(_windowWidth / 2, _windowHeight / 2), _view.Center);
+            SetView(new Vector2f(_windowWidth / 2, _windowHeight / 2), MainView.Center);
             
             _isGame = true; 
             _isRestarting = false;
@@ -1960,8 +2044,8 @@ namespace ChendiAdventures
                 _chendiUi.UpdateUI();
 
                 //summary to the center
-                _levelSummary.X = _view.Center.X - 1000;
-                _levelSummary.Y = _view.Center.Y - 100;
+                _levelSummary.X = MainView.Center.X - 1000;
+                _levelSummary.Y = MainView.Center.Y - 100;
             }
 
             var timer = new Clock();
@@ -1979,7 +2063,7 @@ namespace ChendiAdventures
             {
                 ResetWindow();
 
-                if (_levelSummary.X < _view.Center.X - 250)
+                if (_levelSummary.X < MainView.Center.X - 250)
                     _levelSummary.MoveText(_levelSummary.X + 35, _levelSummary.Y);
 
                 if (!isLottery && timer.ElapsedTime.AsSeconds() > 5) _screenChange.BlackOut();
@@ -2012,8 +2096,8 @@ namespace ChendiAdventures
         private void LotteryLoop()
         {
             var clock = new Clock();
-            var gameMachine = new GameMachine(_view.Center.X - _view.Size.X / 2 - 70, _view.Center.Y + 80,
-                Entity.GameMachineTexture, _view);
+            var gameMachine = new GameMachine(MainView.Center.X - MainView.Size.X / 2 - 70, MainView.Center.Y + 80,
+                Entity.GameMachineTexture, MainView);
             var isRolling = true;
             var done = false;
             var time = 50;
@@ -2023,8 +2107,7 @@ namespace ChendiAdventures
                 {
                     ResetWindow();
 
-                    if (isRolling && !done && (Keyboard.IsKeyPressed(Keyboard.Key.Space) ||
-                                               Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
+                    if (isRolling && !done && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP) || Joystick.IsButtonPressed(0, 0)))
                     {
                         Creature.sKill.Play();
                         isRolling = false;
@@ -2075,7 +2158,7 @@ namespace ChendiAdventures
 
         private void ShopLoop()
         {
-            var merchant = new Merchant(_view.Center.X - _view.Size.X / 2 - 256, _view.Center.Y - 100,
+            var merchant = new Merchant(MainView.Center.X - MainView.Size.X / 2 - 256, MainView.Center.Y - 100,
                 Entity.ShopTexture, _chendi);
             merchant.SetTextureRectangle(0, 0, 256, 128);
 
@@ -2096,16 +2179,16 @@ namespace ChendiAdventures
                 }
 
 
-                if (merchant.X < _view.Center.X - 128) merchant.X += 32;
-                if (merchant.X > _view.Center.X + _view.Size.X / 2) break;
+                if (merchant.X < MainView.Center.X - 128) merchant.X += 32;
+                if (merchant.X > MainView.Center.X + MainView.Size.X / 2) break;
 
-                if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Up))
+                if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5))
                 {
                     sChoice.Play();
                     flag = true;
                     choice--;
                 }
-                else if (flag == false && Keyboard.IsKeyPressed(Keyboard.Key.Down))
+                else if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Down) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) < -5))
                 {
                     sChoice.Play();
                     flag = true;
@@ -2115,15 +2198,14 @@ namespace ChendiAdventures
                 if (choice == 0) choice = 4;
                 if (choice == 5) choice = 1;
 
-                if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) ||
-                                      Keyboard.IsKeyPressed(MainCharacter.KeyJUMP)))
+                if (flag == false && (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(MainCharacter.KeyJUMP) || Joystick.IsButtonPressed(0, 0)))
                 {
                     merchant.SellWares(choice);
                     flag = true;
                 }
 
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER))
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Escape) || Keyboard.IsKeyPressed(MainCharacter.KeyTHUNDER) || Joystick.IsButtonPressed(0, 1))
                     _level.isShopOpened = false;
                 if (!_level.isShopOpened) merchant.X += 32;
 
@@ -2140,7 +2222,8 @@ namespace ChendiAdventures
         private static MainGameWindow _instance;
         private static readonly object Padlock = new object();
 
-        private readonly View _view;
+        public static bool IsControllerConnected;
+        public static View MainView;
         private readonly RenderWindow _window;
         private Sprite _background;
         private MainCharacter _chendi;
@@ -2167,6 +2250,7 @@ namespace ChendiAdventures
         private readonly ScreenChange _screenChange;
         private TextLine _settings;
         private TextLine _start;
+        private TextLine _genericGame;
         private readonly int _windowHeight;
         private readonly Styles _windowStyle = Styles.Fullscreen;
         private readonly int _windowWidth;

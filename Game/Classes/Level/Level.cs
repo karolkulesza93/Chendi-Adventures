@@ -129,8 +129,10 @@ namespace ChendiAdventures
             Levers.Clear();
             SteelGates.Clear();
 
-            if (LevelNumber >= 45) LevelColor = Color.Magenta;
-            else if (LevelNumber >= 40) LevelColor = Color.Red;
+            if (LevelNumber >= 40) LevelColor = Color.Magenta;
+            else if (LevelNumber >= 30) LevelColor = Color.Red;
+            else if (LevelNumber >= 20) LevelColor = Color.Cyan;
+            else if (LevelNumber >= 10) LevelColor = Color.Yellow;
             else LevelColor = Color.White;
             _background.Color = LevelColor;
 
@@ -724,9 +726,18 @@ namespace ChendiAdventures
                                     break;
                                 }
                             case 2:
-                                {
+                            {
+                                string tmp;
+                                    if (MainGameWindow.IsControllerConnected)
+                                    {
+                                        tmp = "B";
+                                    }
+                                    else
+                                    {
+                                        tmp = MainCharacter.KeyTHUNDER.ToString().ToUpper();
+                                    }
                                     ShowHint(obstacle,
-                                        $"PRESS '{MainCharacter.KeyTHUNDER.ToString().ToUpper()}' TO SHOOT\n" +
+                                        $"PRESS '{tmp}' TO SHOOT\n" +
                                         "AN ENCHANTED ARROW, THAT CAN\n" +
                                         "PIERCE THROUGH FLESH,\n" +
                                         "MANA POTION IS REQUIRED"
@@ -735,10 +746,19 @@ namespace ChendiAdventures
                                 }
                             case 3:
                                 {
+                                    string tmp;
+                                    if (MainGameWindow.IsControllerConnected)
+                                    {
+                                        tmp = "L1 OR R1";
+                                    }
+                                    else
+                                    {
+                                        tmp = MainCharacter.KeyIMMORTALITY.ToString().ToUpper();
+                                    }
                                     ShowHint(obstacle,
                                         "MANA CAN ALSO BE USED\n" +
                                         "TO MAKE YOU IMMORTAL FOR\n" +
-                                        $"SEVERAL SECONDS BY PRESSING '{MainCharacter.KeyIMMORTALITY.ToString().ToUpper()}'.\n" +
+                                        $"SEVERAL SECONDS BY PRESSING '{tmp}'.\n" +
                                         "IT CONSUMES 3 MANA POTIONS,"
                                         , -60, -34);
                                     break;
@@ -762,11 +782,20 @@ namespace ChendiAdventures
                                 }
                             case 6:
                                 {
+                                    string tmp;
+                                    if (MainGameWindow.IsControllerConnected)
+                                    {
+                                        tmp = "Y";
+                                    }
+                                    else
+                                    {
+                                        tmp = MainCharacter.KeyARROW.ToString().ToUpper();
+                                    }
                                     ShowHint(obstacle,
                                         "THERE ARE A LOT OF DIFFERENT\n" +
                                         "CREATURES. THOSE KNIGHTS JUST WALK AROUND\n" +
                                         "FOR NO REASON... THIS ONE IS TO FAR FROM YOU\n" +
-                                        $"TO USE YOUR SWORD, SO PRESS '{MainCharacter.KeyARROW.ToString().ToUpper()}'\n" +
+                                        $"TO USE YOUR SWORD, SO PRESS '{tmp}'\n" +
                                         "TO SHOT AN ARROW."
                                         , -40, -42);
                                     break;
@@ -808,9 +837,18 @@ namespace ChendiAdventures
                                 }
                             case 11:
                                 {
+                                    string tmp;
+                                    if (MainGameWindow.IsControllerConnected)
+                                    {
+                                        tmp = "X";
+                                    }
+                                    else
+                                    {
+                                        tmp = MainCharacter.KeyATTACK.ToString().ToUpper();
+                                    }
                                     ShowHint(obstacle,
                                         "WHILE IN MIDAIR,\n" +
-                                        $"PRESS '{MainCharacter.KeyDOWN.ToString().ToUpper()}' AND '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO PERFORM\n" +
+                                        $"PRESS '{MainCharacter.KeyDOWN.ToString().ToUpper()}' AND '{tmp}' TO PERFORM\n" +
                                         "DOWNWARDS ATTACK."
                                         , -40, -18);
                                     break;
@@ -825,33 +863,69 @@ namespace ChendiAdventures
                                 }
                             case 13:
                                 {
+                                    string tmp;
+                                    if (MainGameWindow.IsControllerConnected)
+                                    {
+                                        tmp = "A";
+                                    }
+                                    else
+                                    {
+                                        tmp = MainCharacter.KeyJUMP.ToString().ToUpper();
+                                    }
                                     ShowHint(obstacle,
-                                        $"PRESS '{MainCharacter.KeyJUMP.ToString().ToUpper()}' TO JUMP."
+                                        $"PRESS '{tmp}' TO JUMP."
                                         , -50, -10);
                                     break;
                                 }
                             case 14:
                                 {
+                                    string tmp;
+                                    if (MainGameWindow.IsControllerConnected)
+                                    {
+                                        tmp = "X";
+                                    }
+                                    else
+                                    {
+                                        tmp = MainCharacter.KeyATTACK.ToString().ToUpper();
+                                    }
                                     ShowHint(obstacle,
                                         "CRATES CAN BE EASILY DESTROYED.\n" +
-                                        $"PRESS '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO ATTACK."
+                                        $"PRESS '{tmp}' TO ATTACK."
                                         , -80, -18);
                                     break;
                                 }
                             case 15:
                                 {
+                                    string tmp;
+                                    if (MainGameWindow.IsControllerConnected)
+                                    {
+                                        tmp = "X";
+                                    }
+                                    else
+                                    {
+                                        tmp = MainCharacter.KeyATTACK.ToString().ToUpper();
+                                    }
                                     ShowHint(obstacle,
-                                        $"PRESS '{MainCharacter.KeyUP.ToString().ToUpper()}' AND '{MainCharacter.KeyATTACK.ToString().ToUpper()}' TO\n" +
+                                        $"PRESS '{MainCharacter.KeyUP.ToString().ToUpper()}' AND '{tmp}' TO\n" +
                                         "PERFORM UPWARDS ATTACK."
                                         , -50, -18);
                                     break;
                                 }
                             case 16:
                                 {
+                                    string tmp;
+                                    if (MainGameWindow.IsControllerConnected)
+                                    {
+                                        tmp = "A";
+                                    }
+                                    else
+                                    {
+                                        tmp = MainCharacter.KeyJUMP.ToString().ToUpper();
+                                    }
                                     ShowHint(obstacle,
                                         $"TO JUMP HIGHER,\n" +
                                         $"USE TRAMPOLINES.\n" +
-                                        $"HOLD '{MainCharacter.KeyJUMP}' TO JUMP HIGHER."
+                                        $"HOLD '{tmp}' TO JUMP HIGHER."
                                         , -40, -26);
                                     break;
                                 }

@@ -181,24 +181,24 @@ namespace ChendiAdventures
             if (!IsDead && !GotExit)
             {
                 //jump
-                if (Keyboard.IsKeyPressed(KeyJUMP) && !IsShooting && !IsAttacking && !IsJumping) Jump();
+                if ((Keyboard.IsKeyPressed(KeyJUMP) || Joystick.IsButtonPressed(0, 0)) && !IsShooting && !IsAttacking && !IsJumping) Jump();
                 IsJumping = Keyboard.IsKeyPressed(KeyJUMP);
                 //attack
-                if (Keyboard.IsKeyPressed(KeyATTACK) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 &&
+                if ((Keyboard.IsKeyPressed(KeyATTACK) || Joystick.IsButtonPressed(0, 2)) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 &&
                     IsVulnerable && !IsAttacking && !IsShooting)
                 {
                     if (sAtk.Status != SoundStatus.Playing) sAtk.Play();
                     Sword.LastMove = _lastMove;
                     IsAttacking = true;
                     sJump.Stop();
-                    if (Keyboard.IsKeyPressed(KeyUP) && !IsDownAttacking) IsUpAttacking = true;
-                    else if (Keyboard.IsKeyPressed(KeyDOWN) && !IsUpAttacking && !IsStandingOnBlocks && SpeedY >= -5f)
+                    if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && !IsDownAttacking) IsUpAttacking = true;
+                    else if ((Keyboard.IsKeyPressed(KeyDOWN) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) < -5) && !IsUpAttacking && !IsStandingOnBlocks && SpeedY >= -5f)
                         IsDownAttacking = true;
                     DefaultClock.Restart();
                 }
 
                 //arrow
-                if (Keyboard.IsKeyPressed(KeyARROW) && DefaultClock.ElapsedTime.AsMilliseconds() > 700 &&
+                if ((Keyboard.IsKeyPressed(KeyARROW) || Joystick.IsButtonPressed(0, 3)) && DefaultClock.ElapsedTime.AsMilliseconds() > 700 &&
                     ArrowAmount > 0 && IsVulnerable && Arrow.X < 0 && IsStandingOnBlocks && !IsShooting && !IsAttacking)
                 {
                     IsShooting = true;
@@ -209,8 +209,8 @@ namespace ChendiAdventures
                     DefaultClock.Restart();
                     Arrow.SetPosition(X, Y + 12);
                 }
-                else if (Keyboard.IsKeyPressed(KeyARROW) && DefaultClock.ElapsedTime.AsMilliseconds() > 700 &&
-                         IsStandingOnBlocks)
+                else if ((Keyboard.IsKeyPressed(KeyARROW) || Joystick.IsButtonPressed(0, 3)) && DefaultClock.ElapsedTime.AsMilliseconds() > 700 &&
+                         IsStandingOnBlocks && !JustRespawned && !IsShooting && !IsAttacking && IsVulnerable)
                 {
                     level.ScoreAdditionEffects.Add(new ScoreAdditionEffect(0, X + 2, Y, "ARROW NEEDED"));
                     DefaultClock.Restart();
@@ -218,7 +218,7 @@ namespace ChendiAdventures
                 }
 
                 //energized arrow
-                if (Keyboard.IsKeyPressed(KeyTHUNDER) && DefaultClock.ElapsedTime.AsMilliseconds() > 1200 &&
+                if ((Keyboard.IsKeyPressed(KeyTHUNDER) || Joystick.IsButtonPressed(0, 1)) && DefaultClock.ElapsedTime.AsMilliseconds() > 1200 &&
                     ArrowAmount > 0 && Mana > 0 && IsVulnerable && IsStandingOnBlocks)
                 {
                     IsShooting = true;
@@ -230,8 +230,8 @@ namespace ChendiAdventures
                     DefaultClock.Restart();
                     Arrow.SetPosition(X, Y + 12);
                 }
-                else if (Keyboard.IsKeyPressed(KeyTHUNDER) && DefaultClock.ElapsedTime.AsMilliseconds() > 1200 &&
-                         IsStandingOnBlocks && !IsShooting && !IsAttacking)
+                else if ((Keyboard.IsKeyPressed(KeyTHUNDER) || Joystick.IsButtonPressed(0, 1)) && DefaultClock.ElapsedTime.AsMilliseconds() > 1200 &&
+                         IsStandingOnBlocks && !IsShooting && !IsAttacking && !JustRespawned && IsVulnerable)
                 {
                     if (Mana == 0 && ArrowAmount == 0)
                         level.ScoreAdditionEffects.Add(new ScoreAdditionEffect(0, X - 10, Y,
@@ -245,7 +245,7 @@ namespace ChendiAdventures
                 }
 
                 //immortality
-                if (Keyboard.IsKeyPressed(KeyIMMORTALITY) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 &&
+                if ((Keyboard.IsKeyPressed(KeyIMMORTALITY) || Joystick.IsButtonPressed(0, 5) || Joystick.IsButtonPressed(0, 4)) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 &&
                     Mana >= 3 && IsVulnerable)
                 {
                     Mana -= 3;
@@ -253,7 +253,7 @@ namespace ChendiAdventures
                     IsVulnerable = false;
                     sImmortality.Play();
                 }
-                else if (Keyboard.IsKeyPressed(KeyIMMORTALITY) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 && IsVulnerable)
+                else if ((Keyboard.IsKeyPressed(KeyIMMORTALITY) || Joystick.IsButtonPressed(0, 5) || Joystick.IsButtonPressed(0, 4)) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 && IsVulnerable && !JustRespawned)
                 {
                     level.ScoreAdditionEffects.Add(new ScoreAdditionEffect(0, X, Y, "MORE POTIONS NEEDED"));
                     DefaultClock.Restart();
@@ -261,7 +261,8 @@ namespace ChendiAdventures
                 }
 
                 //movement left
-                if (Keyboard.IsKeyPressed(KeyLEFT) && !Keyboard.IsKeyPressed(KeyRIGHT) && !IsStandingOnBlocks && !IsDownAttacking)
+                if ((Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) &&
+                    !(Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) && !IsStandingOnBlocks && !IsDownAttacking)
                 {
                     MoveLeft();
                     if (SpeedX <= 0 && !IsAttacking)
@@ -269,7 +270,8 @@ namespace ChendiAdventures
                         _lastMove = Movement.Left;
                     }
                 }
-                else if (Keyboard.IsKeyPressed(KeyLEFT) && !Keyboard.IsKeyPressed(KeyRIGHT) && !IsAttacking && !IsShooting)
+                else if ((Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) <  -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) && 
+                         !(Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) && !IsAttacking && !IsShooting)
                 {
                     MoveLeft();
                     if (SpeedX <= 0)
@@ -285,8 +287,8 @@ namespace ChendiAdventures
                 }
 
                 //movement right
-                if (Keyboard.IsKeyPressed(KeyRIGHT) && !Keyboard.IsKeyPressed(KeyLEFT) && !IsStandingOnBlocks &&
-                    !IsDownAttacking)
+                if ((Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) && 
+                    !(Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) && !IsStandingOnBlocks && !IsDownAttacking)
                 {
                     MoveRight();
                     if (SpeedX >= 0 && !IsAttacking)
@@ -294,7 +296,8 @@ namespace ChendiAdventures
                         _lastMove = Movement.Right;
                     }
                 }
-                else if (Keyboard.IsKeyPressed(KeyRIGHT) && !Keyboard.IsKeyPressed(KeyLEFT) && !IsAttacking && !IsShooting)
+                else if ((Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) &&
+                         !(Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) && !IsAttacking && !IsShooting)
                 {
                     MoveRight();
                     if (SpeedX >= 0)
@@ -403,7 +406,7 @@ namespace ChendiAdventures
                 Sword.Reset();
             }
 
-            if (IsShooting && DefaultClock.ElapsedTime.AsSeconds() > 0.5f)
+            if (IsShooting && DefaultClock.ElapsedTime.AsSeconds() > 0.7f)
             {
                 IsShooting = false;
             }
@@ -439,7 +442,7 @@ namespace ChendiAdventures
                 {
                     if (MovementDirection == Movement.Right) _animRight.Animate();
                     else if (MovementDirection == Movement.Left) _animLeft.Animate();
-                    else if (Keyboard.IsKeyPressed(Keyboard.Key.Up)) SetTextureRectangle(0, 64);
+                    else if (Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) SetTextureRectangle(0, 64);
                     else _standing.Animate();
                 }
             }
@@ -471,7 +474,7 @@ namespace ChendiAdventures
                     {
                         _jumpRight.Animate();
                     }
-                    else if (Keyboard.IsKeyPressed(Keyboard.Key.Up))
+                    else if (Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5)
                     {
                         _jumpBack.Animate();
                     }
@@ -606,7 +609,7 @@ namespace ChendiAdventures
                 {
                     case BlockType.Exit:
                     {
-                        if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
+                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
                         {
                             SpeedX = 0;
                             SetTextureRectangle(128, 64);
@@ -617,14 +620,14 @@ namespace ChendiAdventures
                     }
                     case BlockType.Shop:
                     {
-                        if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
+                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
                             level.isShopOpened = true;
 
                         break;
                     }
                     case BlockType.Lever:
                     {
-                        if (Keyboard.IsKeyPressed(KeyUP) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
+                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
                             Block.FlipLever();
                         break;
                     }
@@ -788,7 +791,7 @@ namespace ChendiAdventures
                             obstacle.SetTextureRectangle(96, 32);
                             obstacle.DefaultTimer.Restart();
 
-                            if (Keyboard.IsKeyPressed(KeyJUMP))
+                            if (Keyboard.IsKeyPressed(KeyJUMP) || Joystick.IsButtonPressed(0, 0))
                             {
                                 SpeedY *= -1.2f;
                                 if (SpeedY > -1 * MaxSpeedY - 1.5f) 
@@ -810,7 +813,7 @@ namespace ChendiAdventures
                     //teleports/////////////////
                     case BlockType.Teleport1:
                     {
-                        if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
+                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
                             IsStandingOnBlocks && !IsDead && SpeedX == 0)
                         {
                             sTp.Play();
@@ -822,7 +825,7 @@ namespace ChendiAdventures
                     }
                     case BlockType.Teleport2:
                     {
-                        if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
+                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
                             IsStandingOnBlocks && !IsDead && SpeedX == 0)
                         {
                             sTp.Play();
@@ -835,7 +838,7 @@ namespace ChendiAdventures
                     //
                     case BlockType.Teleport3:
                     {
-                        if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
+                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
                             IsStandingOnBlocks && !IsDead && SpeedX == 0)
                         {
                             sTp.Play();
@@ -847,7 +850,7 @@ namespace ChendiAdventures
                     }
                     case BlockType.Teleport4:
                     {
-                        if (Keyboard.IsKeyPressed(KeyUP) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
+                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
                             IsStandingOnBlocks && !IsDead && SpeedX == 0)
                         {
                             sTp.Play();

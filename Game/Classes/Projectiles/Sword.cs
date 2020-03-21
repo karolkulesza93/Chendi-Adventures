@@ -49,29 +49,78 @@ namespace ChendiAdventures
             if (_character.IsAttacking)
             {
                 Block obstacle = null;
-                for (var i = 0; i < 4; i++)
+                for (var i = 0; i < 2; i++)
                 {
-                    switch (i)
+                    if (_character.IsDownAttacking)
                     {
-                        case 0:
+                        switch (i)
                         {
-                            obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y);
-                            break;
+                            case 0:
+                            {
+                                obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y + 0.9375f);
+                                    break;
+                            }
+                            case 1:
+                            {
+                                obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y + 0.9375f);
+                                break;
+                            }
                         }
-                        case 1:
+                    }
+                    else if (_character.IsUpAttacking)
+                    {
+                        switch (i)
                         {
-                            obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y);
-                            break;
+                            case 0:
+                            {
+                                obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y);
+                                break;
+                            }
+                            case 1:
+                            {
+                                obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y);
+                                break;
+                            }
                         }
-                        case 2:
+                    }
+                    else
+                    {
+                        switch (LastMove)
                         {
-                            obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y + 0.9375f);
-                            break;
-                        }
-                        case 3:
-                        {
-                            obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y + 0.9375f);
-                            break;
+                            case Movement.Left:
+                            {
+                                switch (i)
+                                {
+                                    case 0:
+                                    {
+                                        obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y);
+                                        break;
+                                    }
+                                    case 1:
+                                    {
+                                        obstacle = level.GetObstacle(Get32Position().X, Get32Position().Y + 0.9375f);
+                                        break;
+                                    }
+                                }
+                                    break;
+                            }
+                            case Movement.Right:
+                            {
+                                switch (i)
+                                {
+                                    case 0:
+                                    {
+                                        obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y);
+                                        break;
+                                    }
+                                    case 1:
+                                    {
+                                        obstacle = level.GetObstacle(Get32Position().X + 0.9375f, Get32Position().Y + 0.9375f);
+                                        break;
+                                    }
+                                }
+                                    break;
+                            }
                         }
                     }
 
@@ -185,7 +234,6 @@ namespace ChendiAdventures
                     }
                 }
 
-
                 foreach (var wizard in level.Wizards)
                     if (GetBoundingBox().Intersects(wizard.GetBoundingBox()))
                     {
@@ -281,6 +329,5 @@ namespace ChendiAdventures
         private readonly Animation _animUp;
         private readonly MainCharacter _character;
         private readonly float _frameTime;
-
     }
 }

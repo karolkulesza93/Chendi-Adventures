@@ -4,9 +4,9 @@
     {
         None = 0,
 
-        //blocks 
-        Dirt = 1,
-        Brick = 2,
+        //blocks
+        Brick = 1,
+        Dirt = 2,
         TransparentBrick = 3,
         BrokenBrick = 4,
         Illusion = 5,

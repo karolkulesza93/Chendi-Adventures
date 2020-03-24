@@ -57,6 +57,9 @@
         SmallTree = 46,
         Bush = 47,
         Rock = 48,
-        Stalactite = 49
+        Stalactite = 49,
+
+        //others
+        DestroyedStone
     }
 }

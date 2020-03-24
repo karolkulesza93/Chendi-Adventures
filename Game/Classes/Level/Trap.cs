@@ -308,11 +308,11 @@ namespace ChendiAdventures
             {
                 case TrapType.BlowTorchLeft:
                 {
-                    return new FloatRect(X - 32, Y + 4, 60, 24);
+                    return new FloatRect(X-32, Y+2, 64, 28);
                 }
                 case TrapType.BlowTorchRight:
                 {
-                    return new FloatRect(X, Y + 4, 60, 24);
+                    return new FloatRect(X, Y+2, 64, 28);
                 }
                 case TrapType.Crusher:
                 {
@@ -324,11 +324,11 @@ namespace ChendiAdventures
                 }
                 case TrapType.BlowerRight:
                 {
-                    return new FloatRect(X, Y - 10, 52,52);
+                    return new FloatRect(X, Y, 32,32);
                 }
                 case TrapType.BlowerLeft:
                 {
-                    return new FloatRect(X - 10, Y - 10, 52, 52);
+                    return new FloatRect(X, Y, 32, 32);
                     }
                 default: 
                 {

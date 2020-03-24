@@ -6,16 +6,15 @@ using System.Windows.Forms;
  Temat: Realizacja dwuwymiarowej gry platformowej z użyciem biblioteki SFML
  Promotor: dr Piotr Jastrzębski
 
-
 PROPOZYCJE DO ZROBIENIA:
 - generowanie poziomu***
 - jak sie uda to shadery/swiatlo ogarnac aby ladnie wygladalo**
-- po smierci resp kilka sekund przed*
 
 DO ZROBIENIA:
 - levele
 - scenka na poczatek i koniec
 - async
+- nerf ilosci manasow albo ogolnie nerf manasow
 
 */
 

@@ -15,8 +15,8 @@ namespace ChendiAdventures
             _reward.SetOutlineThickness(1);
             _rnd = new Random(432);
             _loss = 0;
-            _click = new Sound(new SoundBuffer(@"sfx/click.wav"));
-            _click.Volume = 30;
+            Click = new Sound(new SoundBuffer(@"sfx/click.wav"));
+            Click.Volume = 30;
             LootedReward = Reward.Nothing;
             _view = view;
         }
@@ -33,7 +33,7 @@ namespace ChendiAdventures
             Item.Y = Y + 16;
 
             _loss = _rnd.Next(300);
-            _click.Play();
+            Click.Play();
 
             if (_loss >= 0 && _loss <= 49)
                 LootedReward = Reward.Coins10;
@@ -240,7 +240,7 @@ namespace ChendiAdventures
 
         private readonly Random _rnd;
         private readonly View _view;
-        private readonly Sound _click;
+        public static Sound Click;
         private int _loss;
         private readonly TextLine _reward;
     }

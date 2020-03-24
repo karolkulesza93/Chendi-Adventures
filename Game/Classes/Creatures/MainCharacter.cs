@@ -182,7 +182,7 @@ namespace ChendiAdventures
             {
                 //jump
                 if ((Keyboard.IsKeyPressed(KeyJUMP) || Joystick.IsButtonPressed(0, 0)) && !IsShooting && !IsAttacking && !IsJumping) Jump();
-                IsJumping = Keyboard.IsKeyPressed(KeyJUMP);
+                IsJumping = Keyboard.IsKeyPressed(KeyJUMP) || Joystick.IsButtonPressed(0, 0);
                 //attack
                 if ((Keyboard.IsKeyPressed(KeyATTACK) || Joystick.IsButtonPressed(0, 2)) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 &&
                     IsVulnerable && !IsAttacking && !IsShooting)
@@ -573,7 +573,7 @@ namespace ChendiAdventures
 
             Set32Position(NewX, NewY);
 
-            if (!IsDead && IsVulnerable) ObstaclesCollision(level);
+            if (!IsDead) ObstaclesCollision(level);
         }
 
         public void ObstaclesCollision(Level level)
@@ -783,7 +783,8 @@ namespace ChendiAdventures
                     }
                     case BlockType.Trampoline:
                     {
-                        if (SpeedY > 4f && !IsDead)
+                        if (SpeedY > 4f && !IsDead &&
+                            (!Keyboard.IsKeyPressed(KeyDOWN) && Joystick.GetAxisPosition(0, Joystick.Axis.Y) < 50 && Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > -5))
                         {
                             SetPosition(X, obstacle.Y - Height);
                             IsDownAttacking = false;
@@ -953,13 +954,9 @@ namespace ChendiAdventures
                 IsDownAttacking = false;
                 IsUpAttacking = false;
 
-                this.Lives--;
+                //Lives--;
 
                 level.isShopOpened = false;
-
-                HasSilverKey = false;
-                HasGoldenKey = false;
-                HasCrystalKey = false;
 
                 if (Lives <= 0)
                 {

@@ -804,8 +804,9 @@ namespace ChendiAdventures
                                 {
                                     ShowHint(obstacle,
                                         "STOMPING ON STONES WILL CAUSE\n" +
-                                        "TO CRUMBLE AFTER FEW SECONDS."
-                                        , -90, -18);
+                                        "TO CRUMBLE AFTER FEW SECONDS.\n" +
+                                        "THEY RESPAWN LATER ON."
+                                        , -90, -26);
                                     break;
                                 }
                             case 8:
@@ -923,10 +924,12 @@ namespace ChendiAdventures
                                         tmp = MainCharacter.KeyJUMP.ToString().ToUpper();
                                     }
                                     ShowHint(obstacle,
-                                        $"TO JUMP HIGHER,\n" +
-                                        $"USE TRAMPOLINES.\n" +
-                                        $"HOLD '{tmp}' TO JUMP HIGHER."
-                                        , -40, -26);
+                                        "TO JUMP HIGHER,\n" +
+                                        "USE TRAMPOLINES.\n" +
+                                        $"HOLD '{tmp}' TO JUMP HIGHER.\n" +
+                                        $"OR HOLD '{MainCharacter.KeyDOWN.ToString().ToUpper()}' IF YOU\n" +
+                                        "DON'T NEED TO BOUNCE."
+                                        ,-50, -42);
                                     break;
                                 }
                         }

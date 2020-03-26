@@ -62,6 +62,9 @@ namespace LevelManager
             List<List<char>> level = new List<List<char>>();
             Random rnd = new Random();
 
+            width *= 8;
+            height *= 8;
+
             for (int i = 0; i < height; i++)
             {
                 level.Add(new List<char>());
@@ -69,7 +72,7 @@ namespace LevelManager
                 {
                     for (int j = 0; j < width; j++)
                     {
-                        level[i].Add('W');
+                        level[i].Add('D');
                     }
                 }
                 else
@@ -78,11 +81,11 @@ namespace LevelManager
                     {
                         if (j == 0 || j == width - 1)
                         {
-                            level[i].Add('W');
+                            level[i].Add('D');
                         }
                         else
                         {
-                            level[i].Add('o');
+                            level[i].Add('.');
                         }
                     }
                 }

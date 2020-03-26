@@ -8,6 +8,9 @@
     <Setting Name="Difficulty" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2</Value>
     </Setting>
+    <Setting Name="Camera" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
     <Setting Name="Jump" Type="System.Char" Scope="User">
       <Value Profile="(Default)">Z</Value>
     </Setting>

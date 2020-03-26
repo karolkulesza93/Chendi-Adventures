@@ -932,6 +932,16 @@ namespace ChendiAdventures
                     golem.Boulder.ResetBoulder(level);
                 }
             }
+
+            foreach (var walker in level.Walkers)
+            {
+                if (GetBoundingBox().Intersects(walker.GetBoundingBox())) Die(level);
+                if (GetBoundingBox().Intersects(walker.Laser.GetBoundingBox()))
+                {
+                    Die(level);
+                    walker.Laser.DeleteArrow();
+                }
+            }
         }
 
         public void Die(Level level)

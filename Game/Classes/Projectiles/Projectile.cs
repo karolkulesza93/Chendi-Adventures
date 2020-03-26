@@ -13,8 +13,10 @@ namespace ChendiAdventures
 
         public Projectile(float x, float y, Texture texture, Movement dir) : base(x, y, texture)
         {
-            SpeedX = 13f;
+            SpeedX = 15f;
             _direction = dir;
+
+            ApplyDifficulty();
         }
 
         public float SpeedX { get; set; }
@@ -52,6 +54,28 @@ namespace ChendiAdventures
             sHit.Play();
             X = -100;
             Y = 400;
+        }
+
+        public void ApplyDifficulty()
+        {
+            switch (MainGameWindow.GameDifficulty)
+            {
+                case Difficulty.Easy:
+                {
+                    SpeedX = 12f;
+                    break;
+                }
+                case Difficulty.Medium:
+                {
+                    SpeedX = 15f;
+                    break;
+                }
+                case Difficulty.Hard:
+                {
+                    SpeedX = 17f;
+                    break;
+                }
+            }
         }
 
         private readonly Movement _direction;

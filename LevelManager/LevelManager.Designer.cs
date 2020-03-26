@@ -39,6 +39,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.pGenerateLevel = new System.Windows.Forms.Panel();
+            this.label4 = new System.Windows.Forms.Label();
             this.tbName = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.trampolinesAvailable = new System.Windows.Forms.CheckBox();
@@ -64,6 +65,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.bShow = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudHeight)).BeginInit();
             this.pGenerateTemplate.SuspendLayout();
@@ -229,6 +231,8 @@
             // pGenerateLevel
             // 
             this.pGenerateLevel.BackColor = System.Drawing.Color.Transparent;
+            this.pGenerateLevel.Controls.Add(this.bShow);
+            this.pGenerateLevel.Controls.Add(this.label4);
             this.pGenerateLevel.Controls.Add(this.tbName);
             this.pGenerateLevel.Controls.Add(this.label11);
             this.pGenerateLevel.Controls.Add(this.trampolinesAvailable);
@@ -256,13 +260,25 @@
             this.pGenerateLevel.Controls.Add(this.label7);
             this.pGenerateLevel.Location = new System.Drawing.Point(10, 71);
             this.pGenerateLevel.Name = "pGenerateLevel";
-            this.pGenerateLevel.Size = new System.Drawing.Size(474, 205);
+            this.pGenerateLevel.Size = new System.Drawing.Size(474, 223);
             this.pGenerateLevel.TabIndex = 7;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(5, 56);
+            this.label4.Margin = new System.Windows.Forms.Padding(5);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(137, 13);
+            this.label4.TabIndex = 25;
+            this.label4.Text = "8x8 CHUNKS";
             // 
             // tbName
             // 
             this.tbName.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbName.Location = new System.Drawing.Point(76, 53);
+            this.tbName.Location = new System.Drawing.Point(76, 78);
             this.tbName.Name = "tbName";
             this.tbName.Size = new System.Drawing.Size(395, 20);
             this.tbName.TabIndex = 24;
@@ -274,7 +290,7 @@
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label11.ForeColor = System.Drawing.Color.White;
-            this.label11.Location = new System.Drawing.Point(5, 56);
+            this.label11.Location = new System.Drawing.Point(5, 81);
             this.label11.Margin = new System.Windows.Forms.Padding(5);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(72, 13);
@@ -286,7 +302,7 @@
             this.trampolinesAvailable.AutoSize = true;
             this.trampolinesAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.trampolinesAvailable.ForeColor = System.Drawing.Color.White;
-            this.trampolinesAvailable.Location = new System.Drawing.Point(305, 183);
+            this.trampolinesAvailable.Location = new System.Drawing.Point(305, 201);
             this.trampolinesAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.trampolinesAvailable.Name = "trampolinesAvailable";
             this.trampolinesAvailable.Size = new System.Drawing.Size(169, 17);
@@ -299,7 +315,7 @@
             this.spikeballsAvailable.AutoSize = true;
             this.spikeballsAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.spikeballsAvailable.ForeColor = System.Drawing.Color.White;
-            this.spikeballsAvailable.Location = new System.Drawing.Point(305, 168);
+            this.spikeballsAvailable.Location = new System.Drawing.Point(305, 186);
             this.spikeballsAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.spikeballsAvailable.Name = "spikeballsAvailable";
             this.spikeballsAvailable.Size = new System.Drawing.Size(156, 17);
@@ -312,7 +328,7 @@
             this.shopAvailable.AutoSize = true;
             this.shopAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.shopAvailable.ForeColor = System.Drawing.Color.White;
-            this.shopAvailable.Location = new System.Drawing.Point(305, 153);
+            this.shopAvailable.Location = new System.Drawing.Point(305, 171);
             this.shopAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.shopAvailable.Name = "shopAvailable";
             this.shopAvailable.Size = new System.Drawing.Size(78, 17);
@@ -325,7 +341,7 @@
             this.teleportsAvailable.AutoSize = true;
             this.teleportsAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.teleportsAvailable.ForeColor = System.Drawing.Color.White;
-            this.teleportsAvailable.Location = new System.Drawing.Point(305, 138);
+            this.teleportsAvailable.Location = new System.Drawing.Point(305, 156);
             this.teleportsAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.teleportsAvailable.Name = "teleportsAvailable";
             this.teleportsAvailable.Size = new System.Drawing.Size(143, 17);
@@ -338,7 +354,7 @@
             this.goldenDoorAvailable.AutoSize = true;
             this.goldenDoorAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.goldenDoorAvailable.ForeColor = System.Drawing.Color.White;
-            this.goldenDoorAvailable.Location = new System.Drawing.Point(305, 123);
+            this.goldenDoorAvailable.Location = new System.Drawing.Point(305, 141);
             this.goldenDoorAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.goldenDoorAvailable.Name = "goldenDoorAvailable";
             this.goldenDoorAvailable.Size = new System.Drawing.Size(169, 17);
@@ -351,7 +367,7 @@
             this.silverDoorAvailable.AutoSize = true;
             this.silverDoorAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.silverDoorAvailable.ForeColor = System.Drawing.Color.White;
-            this.silverDoorAvailable.Location = new System.Drawing.Point(305, 108);
+            this.silverDoorAvailable.Location = new System.Drawing.Point(305, 126);
             this.silverDoorAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.silverDoorAvailable.Name = "silverDoorAvailable";
             this.silverDoorAvailable.Size = new System.Drawing.Size(169, 17);
@@ -364,7 +380,7 @@
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label10.ForeColor = System.Drawing.Color.White;
-            this.label10.Location = new System.Drawing.Point(302, 87);
+            this.label10.Location = new System.Drawing.Point(302, 105);
             this.label10.Margin = new System.Windows.Forms.Padding(5);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(124, 13);
@@ -376,7 +392,7 @@
             this.blowtorchersAvailable.AutoSize = true;
             this.blowtorchersAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.blowtorchersAvailable.ForeColor = System.Drawing.Color.White;
-            this.blowtorchersAvailable.Location = new System.Drawing.Point(133, 140);
+            this.blowtorchersAvailable.Location = new System.Drawing.Point(133, 158);
             this.blowtorchersAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.blowtorchersAvailable.Name = "blowtorchersAvailable";
             this.blowtorchersAvailable.Size = new System.Drawing.Size(169, 17);
@@ -389,7 +405,7 @@
             this.spikesAvailable.AutoSize = true;
             this.spikesAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.spikesAvailable.ForeColor = System.Drawing.Color.White;
-            this.spikesAvailable.Location = new System.Drawing.Point(133, 125);
+            this.spikesAvailable.Location = new System.Drawing.Point(133, 143);
             this.spikesAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.spikesAvailable.Name = "spikesAvailable";
             this.spikesAvailable.Size = new System.Drawing.Size(104, 17);
@@ -402,7 +418,7 @@
             this.crushersAvailable.AutoSize = true;
             this.crushersAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.crushersAvailable.ForeColor = System.Drawing.Color.White;
-            this.crushersAvailable.Location = new System.Drawing.Point(133, 110);
+            this.crushersAvailable.Location = new System.Drawing.Point(133, 128);
             this.crushersAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.crushersAvailable.Name = "crushersAvailable";
             this.crushersAvailable.Size = new System.Drawing.Size(130, 17);
@@ -415,7 +431,7 @@
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.Color.White;
-            this.label9.Location = new System.Drawing.Point(130, 89);
+            this.label9.Location = new System.Drawing.Point(130, 107);
             this.label9.Margin = new System.Windows.Forms.Padding(5);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(85, 13);
@@ -427,7 +443,7 @@
             this.wizardsAvailable.AutoSize = true;
             this.wizardsAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.wizardsAvailable.ForeColor = System.Drawing.Color.White;
-            this.wizardsAvailable.Location = new System.Drawing.Point(8, 155);
+            this.wizardsAvailable.Location = new System.Drawing.Point(8, 173);
             this.wizardsAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.wizardsAvailable.Name = "wizardsAvailable";
             this.wizardsAvailable.Size = new System.Drawing.Size(117, 17);
@@ -440,7 +456,7 @@
             this.ghostsAvailable.AutoSize = true;
             this.ghostsAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ghostsAvailable.ForeColor = System.Drawing.Color.White;
-            this.ghostsAvailable.Location = new System.Drawing.Point(8, 140);
+            this.ghostsAvailable.Location = new System.Drawing.Point(8, 158);
             this.ghostsAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.ghostsAvailable.Name = "ghostsAvailable";
             this.ghostsAvailable.Size = new System.Drawing.Size(104, 17);
@@ -453,7 +469,7 @@
             this.archersAvailable.AutoSize = true;
             this.archersAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.archersAvailable.ForeColor = System.Drawing.Color.White;
-            this.archersAvailable.Location = new System.Drawing.Point(8, 125);
+            this.archersAvailable.Location = new System.Drawing.Point(8, 143);
             this.archersAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.archersAvailable.Name = "archersAvailable";
             this.archersAvailable.Size = new System.Drawing.Size(117, 17);
@@ -466,7 +482,7 @@
             this.knightsAvailable.AutoSize = true;
             this.knightsAvailable.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.knightsAvailable.ForeColor = System.Drawing.Color.White;
-            this.knightsAvailable.Location = new System.Drawing.Point(8, 110);
+            this.knightsAvailable.Location = new System.Drawing.Point(8, 128);
             this.knightsAvailable.Margin = new System.Windows.Forms.Padding(5);
             this.knightsAvailable.Name = "knightsAvailable";
             this.knightsAvailable.Size = new System.Drawing.Size(117, 17);
@@ -479,7 +495,7 @@
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.White;
-            this.label8.Location = new System.Drawing.Point(5, 89);
+            this.label8.Location = new System.Drawing.Point(5, 107);
             this.label8.Margin = new System.Windows.Forms.Padding(5);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(124, 13);
@@ -520,12 +536,12 @@
             this.nudLevelHeight.Location = new System.Drawing.Point(151, 26);
             this.nudLevelHeight.Margin = new System.Windows.Forms.Padding(5);
             this.nudLevelHeight.Maximum = new decimal(new int[] {
-            255,
+            12,
             0,
             0,
             0});
             this.nudLevelHeight.Minimum = new decimal(new int[] {
-            17,
+            3,
             0,
             0,
             0});
@@ -536,7 +552,7 @@
             this.nudLevelHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nudLevelHeight.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
             this.nudLevelHeight.Value = new decimal(new int[] {
-            17,
+            3,
             0,
             0,
             0});
@@ -551,12 +567,12 @@
             this.nudLevelWidth.Location = new System.Drawing.Point(37, 26);
             this.nudLevelWidth.Margin = new System.Windows.Forms.Padding(5);
             this.nudLevelWidth.Maximum = new decimal(new int[] {
-            127,
+            12,
             0,
             0,
             0});
             this.nudLevelWidth.Minimum = new decimal(new int[] {
-            30,
+            4,
             0,
             0,
             0});
@@ -567,7 +583,7 @@
             this.nudLevelWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nudLevelWidth.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
             this.nudLevelWidth.Value = new decimal(new int[] {
-            31,
+            4,
             0,
             0,
             0});
@@ -609,13 +625,26 @@
             this.label7.TabIndex = 0;
             this.label7.Text = "GENERATE LEVEL";
             // 
+            // bShow
+            // 
+            this.bShow.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.bShow.Font = new System.Drawing.Font("Nintendo NES Font", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bShow.Location = new System.Drawing.Point(241, 49);
+            this.bShow.Name = "bShow";
+            this.bShow.Size = new System.Drawing.Size(230, 20);
+            this.bShow.TabIndex = 26;
+            this.bShow.Text = "SHOW LEVEL";
+            this.bShow.UseVisualStyleBackColor = true;
+            this.bShow.Visible = false;
+            this.bShow.Click += new System.EventHandler(this.bShow_Click);
+            // 
             // LevelManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Highlight;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(496, 284);
+            this.ClientSize = new System.Drawing.Size(496, 301);
             this.Controls.Add(this.pGenerateLevel);
             this.Controls.Add(this.pGenerateTemplate);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -674,6 +703,8 @@
         private System.Windows.Forms.TextBox tbName;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox cbEdit;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button bShow;
     }
 }
 

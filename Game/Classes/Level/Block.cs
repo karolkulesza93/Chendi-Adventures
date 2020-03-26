@@ -118,6 +118,17 @@ namespace ChendiAdventures
                         SetTextureRectangle(64, 64);
                         break;
                     }
+                case BlockType.SpectralCrystal:
+                    {
+                        BlockAnimation = new Animation(this, 0.05f,
+                            new Vector2i(0, 320),
+                            new Vector2i(32, 320),
+                            new Vector2i(64, 320),
+                            new Vector2i(96, 320)
+                        );
+                        SetTextureRectangle(0, 320);
+                        break;
+                    }
                 case BlockType.BrokenBrick:
                     {
                         SetTextureRectangle(0, 288);

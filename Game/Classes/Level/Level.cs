@@ -21,15 +21,15 @@ namespace ChendiAdventures
             BlockType.Arrow, BlockType.TripleArrow, BlockType.Score1000, BlockType.Mana, BlockType.Torch,
             BlockType.TripleMana, BlockType.SackOfGold, BlockType.Exit, BlockType.Teleport1, BlockType.Teleport2,
             BlockType.Purifier, BlockType.Teleport3, BlockType.Teleport4, BlockType.EnergyBall, BlockType.CrystalKey,
-            BlockType.CrystalDoor, BlockType.EvilEyes
+            BlockType.CrystalDoor, BlockType.EvilEyes, BlockType.SpectralCrystal
         };
 
         public readonly List<Archer> Archers;
         public readonly List<Ghost> Ghosts;
         public readonly List<Golem> Golems;
-
+        public readonly List<Walker> Walkers;
         public readonly List<Block> LevelObstacles;
-        public readonly List<Monster> Monsters;
+        public readonly List<Knight> Monsters;
         public readonly List<ParticleEffect> Particles;
         public readonly List<ScoreAdditionEffect> ScoreAdditionEffects;
         public readonly List<Trap> Traps;
@@ -52,11 +52,12 @@ namespace ChendiAdventures
             LevelObstacles = new List<Block>();
             Traps = new List<Trap>();
 
-            Monsters = new List<Monster>();
+            Monsters = new List<Knight>();
             Archers = new List<Archer>();
             Ghosts = new List<Ghost>();
             Wizards = new List<Wizard>();
             Golems = new List<Golem>();
+            Walkers = new List<Walker>();
 
             LevelTime = new Clock();
 
@@ -116,6 +117,7 @@ namespace ChendiAdventures
             foreach (var i in Ghosts) target.Draw(i);
             foreach (var i in Wizards) target.Draw(i);
             foreach (var i in Golems) target.Draw(i);
+            foreach (var i in Walkers) target.Draw(i);
             //
 
             foreach (var i in Particles) target.Draw(i);
@@ -129,8 +131,9 @@ namespace ChendiAdventures
             Levers.Clear();
             SteelGates.Clear();
 
-            if (LevelNumber >= 40) LevelColor = Color.Magenta;
-            else if (LevelNumber >= 30) LevelColor = Color.Red;
+            if (LevelNumber >= 50) LevelColor = Color.Magenta;
+            else if (LevelNumber >= 40) LevelColor = Color.Red;
+            else if (LevelNumber >= 30) LevelColor = new Color(75, 75, 75);
             else if (LevelNumber >= 20) LevelColor = Color.Cyan;
             else if (LevelNumber >= 10) LevelColor = Color.Yellow;
             else LevelColor = Color.White;
@@ -147,12 +150,13 @@ namespace ChendiAdventures
             Ghosts.Clear();
             Wizards.Clear();
             Golems.Clear();
+            Walkers.Clear();
 
             UnableToPassl = new List<BlockType>
             {
                 BlockType.Dirt, BlockType.Brick, BlockType.Wood, BlockType.Stone, BlockType.GoldDoor, BlockType.SilverDoor,
                 BlockType.CrystalDoor,
-                BlockType.TransparentBrick, BlockType.HardBlock, BlockType.SteelGate, BlockType.EnergyBall, BlockType.BrokenBrick
+                BlockType.TransparentBrick, BlockType.HardBlock, BlockType.SteelGate, BlockType.EnergyBall, BlockType.BrokenBrick, BlockType.SpectralCrystal
             };
 
             isShopOpened = false;
@@ -195,359 +199,376 @@ namespace ChendiAdventures
                 {
                     //standard blocks
                     case 'D':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Dirt));
-                        break;
-                    }
-                    case 'W':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Brick));
-                        break;
-                    }
-                    case '#':
-                    {
-                        MonsterCount++;
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Spike));
-                        break;
-                    }
-                    case 'x':
-                    {
-                        MonsterCount++;
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.WoodenSpike));
-                        break;
-                    }
-                    case 'X':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Stone));
-                        break;
-                    }
-                    case 'T':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Trampoline));
-                        break;
-                    }
-                    case 'R':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Wood));
-                        break;
-                    }
-                    case '=':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Illusion));
-                        break;
-                    }
-                    case '~':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.BrokenBrick));
-                        break;
-                    }
-                    case '|':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Purifier));
-                        break;
-                    }
-                    case 'w':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.TransparentBrick));
-                        break;
-                    }
-                    case 'Z':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.HardBlock));
-                        break;
-                    }
-                    case '8':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.SteelGate));
-                        break;
-                    }
-                    case 'l':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Lever));
-                        break;
-                    }
-                    case 'E':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.EnergyBall));
-                        break;
-                    }
-                    //traps
-                    case 'H':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.Crusher));
-                        break;
-                    }
-                    case '_':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.Spikes));
-                        break;
-                    }
-                    case ']':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.BlowTorchRight));
-                        break;
-                    }
-                    case '[':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.BlowTorchLeft));
-                        break;
-                    }
-                    case '{':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.BlowerLeft));
-                        break;
-                    }
-                    case '}':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.BlowerRight));
-                        break;
-                    }
-                    //teleports
-                    case '1':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Teleport1));
-                        tp1Position = new Vector2f(32 * X, 32 * Y);
-                        break;
-                    }
-                    case '2':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Teleport2));
-                        tp2Position = new Vector2f(32 * X, 32 * Y);
-                        break;
-                    }
-                    case '3':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Teleport3));
-                        tp3Position = new Vector2f(32 * X, 32 * Y);
-                        break;
-                    }
-                    case '4':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Teleport4));
-                        tp4Position = new Vector2f(32 * X, 32 * Y);
-                        break;
-                    }
-                    //drzwi i klucze
-                    case 'S':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.SilverDoor));
-                        break;
-                    }
-                    case 's':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.SilverKey));
-                        break;
-                    }
-                    case 'G':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.GoldDoor));
-                        break;
-                    }
-                    case 'g':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.GoldenKey));
-                        break;
-                    }
-                    case 'C':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.CrystalDoor));
-                        break;
-                    }
-                    case 'c':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.CrystalKey));
-                        break;
-                    }
-                    // Monsters
-                    case '@':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        Monsters.Add(new Monster(32 * X, 32 * Y, Entity.KnightTexture));
-                        break;
-                    }
-                    case '>':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        Archers.Add(new Archer(32 * X, 32 * Y, Entity.ArcherTexture, Movement.Right));
-                        break;
-                    }
-                    case '<':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        Archers.Add(new Archer(32 * X, 32 * Y, Entity.ArcherTexture, Movement.Left));
-                        break;
-                    }
-                    case 'f':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        Ghosts.Add(new Ghost(32 * X, 32 * Y, Entity.GhostTexture));
-                        break;
-                    }
-                    case '%':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        Wizards.Add(new Wizard(32 * X, 32 * Y, Entity.WizardTexture));
-                        break;
-                    }
-                    case 'B':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        Golems.Add(new Golem(32 * X, 32 * Y, Entity.GolemTexture));
-                        break;
-                    }
-                    // coins
-                    case 'o':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Coin));
-                        break;
-                    }
-                    case '$':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.SackOfGold));
-                        break;
-                    }
-                    // life
-                    case 'L':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Life));
-                        break;
-                    }
-                    // score
-                    case '0':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Score1000));
-                        break;
-                    }
-                    case '5':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Score5000));
-                        break;
-                    }
-                    //arrows
-                    case 'a':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Arrow));
-                        break;
-                    }
-                    case 'A':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.TripleArrow));
-                        break;
-                    }
-                    //mana
-                    case 'm':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Mana));
-                        break;
-                    }
-                    case 'M':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.TripleMana));
-                        break;
-                    }
-                    //details
-                    case '!':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Warning));
-                        break;
-                    }
-                    case '?':
-                    {
-                        hintNumber++;
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Hint,
-                            hintNumber));
-                        break;
-                    }
-                    case '*':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Torch));
-                        break;
-                    }
-                    case ',':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.EvilEyes));
-                        break;
-                    }
-                    case '\\':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.RSpiderweb));
-                        break;
-                    }
-                    case '/':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.LSpiderweb));
-                        break;
-                    }
-                    case '-':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Grass1));
-                        break;
-                    }
-                    case 'r':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Grass2));
-                        break;
-                    }
-                    case 'Y':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.SmallTree));
-                        break;
-                    }
-                    case 'O':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Rock));
-                        break;
-                    }
-                    case 'b':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Bush));
-                        break;
-                    }
-                    case 'V':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Stalactite));
-                        break;
-                    }
-                    //shop
-                    case '+':
-                    {
-                        var chance = rnd.Next(3) + 1;
-
-                        if (LevelNumber == 20)
-                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
-                        else if (chance == 2)
-                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
-                        else
-                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
-                        break;
-                    }
-                    //enterance
-                    case 'v':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Enterance));
-                        EnterancePosition = new Vector2f(32 * X, 32 * Y);
-                        break;
-                    }
-                    //exit
-                    case '^':
-                    {
-                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Exit));
-                        ExitPosition = new Vector2f(32 * X, 32 * Y);
-                        break;
-                    }
-                    default:
-                    {
                         {
-                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Dirt));
                             break;
                         }
-                    }
+                    case 'W':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Brick));
+                            break;
+                        }
+                    case '#':
+                        {
+                            MonsterCount++;
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Spike));
+                            break;
+                        }
+                    case 'x':
+                        {
+                            MonsterCount++;
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.WoodenSpike));
+                            break;
+                        }
+                    case 'X':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Stone));
+                            break;
+                        }
+                    case 'T':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Trampoline));
+                            break;
+                        }
+                    case 'R':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Wood));
+                            break;
+                        }
+                    case '=':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Illusion));
+                            break;
+                        }
+                    case '~':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.BrokenBrick));
+                            break;
+                        }
+                    case '|':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Purifier));
+                            break;
+                        }
+                    case 'w':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.TransparentBrick));
+                            break;
+                        }
+                    case 'Z':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.HardBlock));
+                            break;
+                        }
+                    case '8':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.SteelGate));
+                            break;
+                        }
+                    case 'l':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Lever));
+                            break;
+                        }
+                    case 'E':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.EnergyBall));
+                            break;
+                        }
+                    case 'F':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.SpectralCrystal));
+                            break;
+                        }
+                    //traps
+                    case 'H':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.Crusher));
+                            break;
+                        }
+                    case '_':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.Spikes));
+                            break;
+                        }
+                    case ']':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.BlowTorchRight));
+                            break;
+                        }
+                    case '[':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.BlowTorchLeft));
+                            break;
+                        }
+                    case '{':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.BlowerLeft));
+                            break;
+                        }
+                    case '}':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Traps.Add(new Trap(32 * X, 32 * Y, Entity.TrapsTexture, TrapType.BlowerRight));
+                            break;
+                        }
+                    //teleports
+                    case '1':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Teleport1));
+                            tp1Position = new Vector2f(32 * X, 32 * Y);
+                            break;
+                        }
+                    case '2':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Teleport2));
+                            tp2Position = new Vector2f(32 * X, 32 * Y);
+                            break;
+                        }
+                    case '3':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Teleport3));
+                            tp3Position = new Vector2f(32 * X, 32 * Y);
+                            break;
+                        }
+                    case '4':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Teleport4));
+                            tp4Position = new Vector2f(32 * X, 32 * Y);
+                            break;
+                        }
+                    //drzwi i klucze
+                    case 'S':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.SilverDoor));
+                            break;
+                        }
+                    case 's':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.SilverKey));
+                            break;
+                        }
+                    case 'G':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.GoldDoor));
+                            break;
+                        }
+                    case 'g':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.GoldenKey));
+                            break;
+                        }
+                    case 'C':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.CrystalDoor));
+                            break;
+                        }
+                    case 'c':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.CrystalKey));
+                            break;
+                        }
+                    // Monsters
+                    case '@':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Monsters.Add(new Knight(32 * X, 32 * Y, Entity.KnightTexture));
+                            break;
+                        }
+                    case '>':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Archers.Add(new Archer(32 * X, 32 * Y, Entity.ArcherTexture, Movement.Right));
+                            break;
+                        }
+                    case '<':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Archers.Add(new Archer(32 * X, 32 * Y, Entity.ArcherTexture, Movement.Left));
+                            break;
+                        }
+                    case 'f':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Ghosts.Add(new Ghost(32 * X, 32 * Y, Entity.GhostTexture));
+                            break;
+                        }
+                    case '%':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Wizards.Add(new Wizard(32 * X, 32 * Y, Entity.WizardTexture));
+                            break;
+                        }
+                    case 'B':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Golems.Add(new Golem(32 * X, 32 * Y, Entity.GolemTexture));
+                            break;
+                        }
+                    case '(':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Walkers.Add(new Walker(32 * X, 32 * Y, Entity.WalkerTexture, Movement.Left));
+                            break;
+                        }
+                    case ')':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            Walkers.Add(new Walker(32 * X, 32 * Y, Entity.WalkerTexture, Movement.Right));
+                            break;
+                        }
+                    // coins
+                    case 'o':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Coin));
+                            break;
+                        }
+                    case '$':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.SackOfGold));
+                            break;
+                        }
+                    // life
+                    case 'L':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Life));
+                            break;
+                        }
+                    // score
+                    case '0':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Score1000));
+                            break;
+                        }
+                    case '5':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Score5000));
+                            break;
+                        }
+                    //arrows
+                    case 'a':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Arrow));
+                            break;
+                        }
+                    case 'A':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.TripleArrow));
+                            break;
+                        }
+                    //mana
+                    case 'm':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Mana));
+                            break;
+                        }
+                    case 'M':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.TripleMana));
+                            break;
+                        }
+                    //details
+                    case '!':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Warning));
+                            break;
+                        }
+                    case '?':
+                        {
+                            hintNumber++;
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Hint,
+                                hintNumber));
+                            break;
+                        }
+                    case '*':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Torch));
+                            break;
+                        }
+                    case ',':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.EvilEyes));
+                            break;
+                        }
+                    case '\\':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.RSpiderweb));
+                            break;
+                        }
+                    case '/':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.LSpiderweb));
+                            break;
+                        }
+                    case '-':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Grass1));
+                            break;
+                        }
+                    case 'r':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Grass2));
+                            break;
+                        }
+                    case 'Y':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.SmallTree));
+                            break;
+                        }
+                    case 'O':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Rock));
+                            break;
+                        }
+                    case 'b':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Bush));
+                            break;
+                        }
+                    case 'V':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.DetailsTexture, BlockType.Stalactite));
+                            break;
+                        }
+                    //shop
+                    case '+':
+                        {
+                            var chance = rnd.Next(3) + 1;
+
+                            if (LevelNumber == 20)
+                                LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
+                            else if (chance == 2)
+                                LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
+                            else
+                                LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            break;
+                        }
+                    //enterance
+                    case 'v':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Enterance));
+                            EnterancePosition = new Vector2f(32 * X, 32 * Y);
+                            break;
+                        }
+                    //exit
+                    case '^':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Exit));
+                            ExitPosition = new Vector2f(32 * X, 32 * Y);
+                            break;
+                        }
+                    default:
+                        {
+                            {
+                                LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                                break;
+                            }
+                        }
                 }
 
                 X++;
@@ -557,7 +578,7 @@ namespace ChendiAdventures
             LevelWidth = LevelLenght - 1;
             _background.TextureRect = new IntRect(new Vector2i(0, 0), new Vector2i(LevelWidth * 32, LevelHeight * 32));
             MonsterCount = Traps.Count * 2 + Monsters.Count * 3 + Archers.Count * 4 + Ghosts.Count * 5 +
-                           Wizards.Count * 6;
+                           Wizards.Count * 6 + Golems.Count * 7 + Walkers.Count * 8;
 
             _mainCharacter.SetStartingPosition(this);
             _mainCharacter.SafePosition = EnterancePosition;
@@ -577,6 +598,7 @@ namespace ChendiAdventures
             foreach (var ghost in Ghosts) ghost.DefaultClock.Restart();
             foreach (var wizard in Wizards) wizard.DefaultClock.Restart();
             foreach (var golem in Golems) golem.DefaultClock.Restart();
+            foreach (var walker in Walkers) walker.DefaultClock.Restart();
             foreach (var trap in Traps) trap.DefaultTimer.Restart();
 
             LevelTime.Restart();
@@ -586,7 +608,7 @@ namespace ChendiAdventures
         {
             try
             {
-                return LevelObstacles[(int) y * LevelLenght + (int) x];
+                return LevelObstacles[(int)y * LevelLenght + (int)x];
             }
             catch (Exception)
             {
@@ -630,6 +652,7 @@ namespace ChendiAdventures
                 foreach (var ghost in Ghosts) ghost.UpdateCreature(this, _mainCharacter);
                 foreach (var wizard in Wizards) wizard.UpdateCreature(_mainCharacter, this);
                 foreach (var golem in Golems) golem.UpdateCreature(_mainCharacter, this);
+                foreach (var walker in Walkers) walker.UpdateCreature(_mainCharacter, this);
             }
 
             //details
@@ -683,28 +706,28 @@ namespace ChendiAdventures
         public int GetBonusForTime(double time)
         {
             var value = 0f;
-            var points = 100 * (int) ((LevelWidth * LevelWidth + MonsterCount) / time);
+            var points = 100 * (int)((LevelWidth * LevelWidth + MonsterCount) / time);
 
             switch (MainGameWindow.GameDifficulty)
             {
                 case Difficulty.Easy:
-                {
-                    value = 0.8f;
-                    break;
-                }
+                    {
+                        value = 0.8f;
+                        break;
+                    }
                 case Difficulty.Medium:
-                {
-                    value = 1f;
-                    break;
-                }
+                    {
+                        value = 1f;
+                        break;
+                    }
                 case Difficulty.Hard:
-                {
-                    value = 1.2f;
-                    break;
-                }
+                    {
+                        value = 1.2f;
+                        break;
+                    }
             }
 
-            points = (int) (points * value);
+            points = (int)(points * value);
             return points < 0 ? 0 : points - points % 10;
         }
 
@@ -726,8 +749,8 @@ namespace ChendiAdventures
                                     break;
                                 }
                             case 2:
-                            {
-                                string tmp;
+                                {
+                                    string tmp;
                                     if (MainGameWindow.IsControllerConnected)
                                     {
                                         tmp = "B";
@@ -929,7 +952,7 @@ namespace ChendiAdventures
                                         $"HOLD '{tmp}' TO JUMP HIGHER.\n" +
                                         $"OR HOLD '{MainCharacter.KeyDOWN.ToString().ToUpper()}' IF YOU\n" +
                                         "DON'T NEED TO BOUNCE."
-                                        ,-50, -42);
+                                        , -50, -42);
                                     break;
                                 }
                         }
@@ -1141,47 +1164,62 @@ namespace ChendiAdventures
                         monsterFlag = true;
                     }
 
+                foreach (var i in Walkers)
+                    if (i.Get32Position().X == tile && i.Get32Position().Y == y)
+                    {
+                        if (i.Direction == Movement.Left)
+                        {
+                            level.Append("(");
+                            monsterFlag = true;
+                        }
+                        else
+                        {
+                            level.Append(")");
+                            monsterFlag = true;
+                        }
+                    }
+
                 //traps
                 foreach (var i in Traps)
                     if (i.Get32Position().X == tile && i.Get32Position().Y == y)
                         switch (i.Type)
                         {
                             case TrapType.Crusher:
-                            {
-                                level.Append("H");
-                                monsterFlag = true;
-                                break;
-                            }
+                                {
+                                    level.Append("H");
+                                    monsterFlag = true;
+                                    break;
+                                }
                             case TrapType.Spikes:
-                            {
-                                level.Append("_");
-                                monsterFlag = true;
-                                break;
-                            }
+                                {
+                                    level.Append("_");
+                                    monsterFlag = true;
+                                    break;
+                                }
                             case TrapType.BlowTorchLeft:
-                            {
-                                level.Append("[");
-                                monsterFlag = true;
-                                break;
-                            }
+                                {
+                                    level.Append("[");
+                                    monsterFlag = true;
+                                    break;
+                                }
                             case TrapType.BlowTorchRight:
-                            {
-                                level.Append("]");
-                                monsterFlag = true;
-                                break;
-                            }
+                                {
+                                    level.Append("]");
+                                    monsterFlag = true;
+                                    break;
+                                }
                             case TrapType.BlowerLeft:
-                            {
-                                level.Append("{");
-                                monsterFlag = true;
-                                break;
-                            }
+                                {
+                                    level.Append("{");
+                                    monsterFlag = true;
+                                    break;
+                                }
                             case TrapType.BlowerRight:
-                            {
-                                level.Append("}");
-                                monsterFlag = true;
-                                break;
-                            }
+                                {
+                                    level.Append("}");
+                                    monsterFlag = true;
+                                    break;
+                                }
                         }
 
                 if (monsterFlag)
@@ -1202,256 +1240,261 @@ namespace ChendiAdventures
                 switch (type)
                 {
                     case BlockType.Dirt:
-                    {
-                        level.Append("D");
-                        break;
-                    }
+                        {
+                            level.Append("D");
+                            break;
+                        }
                     case BlockType.Brick:
-                    {
-                        level.Append("W");
-                        break;
-                    }
+                        {
+                            level.Append("W");
+                            break;
+                        }
                     case BlockType.TransparentBrick:
-                    {
-                        level.Append("w");
-                        break;
-                    }
+                        {
+                            level.Append("w");
+                            break;
+                        }
                     case BlockType.Spike:
-                    {
-                        level.Append("#");
-                        break;
-                    }
+                        {
+                            level.Append("#");
+                            break;
+                        }
                     case BlockType.WoodenSpike:
-                    {
-                        level.Append("x");
-                        break;
-                    }
+                        {
+                            level.Append("x");
+                            break;
+                        }
                     case BlockType.HardBlock:
-                    {
-                        level.Append("Z");
-                        break;
-                    }
+                        {
+                            level.Append("Z");
+                            break;
+                        }
                     case BlockType.EnergyBall:
-                    {
-                        level.Append("E");
-                        break;
-                    }
+                        {
+                            level.Append("E");
+                            break;
+                        }
+                    case BlockType.SpectralCrystal:
+                        {
+                            level.Append("F");
+                            break;
+                        }
                     case BlockType.Enterance:
-                    {
-                        level.Append("v");
-                        break;
-                    }
+                        {
+                            level.Append("v");
+                            break;
+                        }
                     case BlockType.Shop:
-                    {
-                        level.Append("+");
-                        break;
-                    }
+                        {
+                            level.Append("+");
+                            break;
+                        }
                     case BlockType.Coin:
-                    {
-                        level.Append("o");
-                        break;
-                    }
+                        {
+                            level.Append("o");
+                            break;
+                        }
                     case BlockType.Life:
-                    {
-                        level.Append("L");
-                        break;
-                    }
+                        {
+                            level.Append("L");
+                            break;
+                        }
                     case BlockType.Arrow:
-                    {
-                        level.Append("a");
-                        break;
-                    }
+                        {
+                            level.Append("a");
+                            break;
+                        }
                     case BlockType.TripleArrow:
-                    {
-                        level.Append("A");
-                        break;
-                    }
+                        {
+                            level.Append("A");
+                            break;
+                        }
                     case BlockType.TripleMana:
-                    {
-                        level.Append("M");
-                        break;
-                    }
+                        {
+                            level.Append("M");
+                            break;
+                        }
                     case BlockType.Score1000:
-                    {
-                        level.Append("0");
-                        break;
-                    }
+                        {
+                            level.Append("0");
+                            break;
+                        }
                     case BlockType.Mana:
-                    {
-                        level.Append("m");
-                        break;
-                    }
+                        {
+                            level.Append("m");
+                            break;
+                        }
                     case BlockType.Score5000:
-                    {
-                        level.Append("5");
-                        break;
-                    }
+                        {
+                            level.Append("5");
+                            break;
+                        }
                     case BlockType.Stone:
-                    {
-                        level.Append("X");
-                        break;
-                    }
+                        {
+                            level.Append("X");
+                            break;
+                        }
                     case BlockType.Illusion:
-                    {
-                        level.Append("=");
-                        break;
-                    }
+                        {
+                            level.Append("=");
+                            break;
+                        }
                     case BlockType.BrokenBrick:
-                    {
-                        level.Append("~");
-                        break;
-                    }
+                        {
+                            level.Append("~");
+                            break;
+                        }
                     case BlockType.Purifier:
-                    {
-                        level.Append('|');
-                        break;
-                    }
+                        {
+                            level.Append('|');
+                            break;
+                        }
                     case BlockType.SteelGate:
-                    {
-                        level.Append('8');
-                        break;
-                    }
+                        {
+                            level.Append('8');
+                            break;
+                        }
                     case BlockType.Lever:
-                    {
-                        level.Append('l');
-                        break;
-                    }
+                        {
+                            level.Append('l');
+                            break;
+                        }
                     case BlockType.Wood:
-                    {
-                        level.Append("R");
-                        break;
-                    }
+                        {
+                            level.Append("R");
+                            break;
+                        }
                     case BlockType.Trampoline:
-                    {
-                        level.Append("T");
-                        break;
-                    }
+                        {
+                            level.Append("T");
+                            break;
+                        }
                     case BlockType.Exit:
-                    {
-                        level.Append("^");
-                        break;
-                    }
+                        {
+                            level.Append("^");
+                            break;
+                        }
                     case BlockType.SilverDoor:
-                    {
-                        level.Append("S");
-                        break;
-                    }
+                        {
+                            level.Append("S");
+                            break;
+                        }
                     case BlockType.SilverKey:
-                    {
-                        level.Append("s");
-                        break;
-                    }
+                        {
+                            level.Append("s");
+                            break;
+                        }
                     case BlockType.GoldDoor:
-                    {
-                        level.Append("G");
-                        break;
-                    }
+                        {
+                            level.Append("G");
+                            break;
+                        }
                     case BlockType.GoldenKey:
-                    {
-                        level.Append("g");
-                        break;
-                    }
+                        {
+                            level.Append("g");
+                            break;
+                        }
                     case BlockType.CrystalDoor:
-                    {
-                        level.Append("C");
-                        break;
-                    }
+                        {
+                            level.Append("C");
+                            break;
+                        }
                     case BlockType.CrystalKey:
-                    {
-                        level.Append("c");
-                        break;
-                    }
+                        {
+                            level.Append("c");
+                            break;
+                        }
                     case BlockType.SackOfGold:
-                    {
-                        level.Append("$");
-                        break;
-                    }
+                        {
+                            level.Append("$");
+                            break;
+                        }
                     //teleports
                     case BlockType.Teleport1:
-                    {
-                        level.Append("1");
-                        break;
-                    }
+                        {
+                            level.Append("1");
+                            break;
+                        }
                     case BlockType.Teleport2:
-                    {
-                        level.Append("2");
-                        break;
-                    }
+                        {
+                            level.Append("2");
+                            break;
+                        }
                     case BlockType.Teleport3:
-                    {
-                        level.Append("3");
-                        break;
-                    }
+                        {
+                            level.Append("3");
+                            break;
+                        }
                     case BlockType.Teleport4:
-                    {
-                        level.Append("4");
-                        break;
-                    }
+                        {
+                            level.Append("4");
+                            break;
+                        }
                     case BlockType.Warning:
-                    {
-                        level.Append("!");
-                        break;
-                    }
+                        {
+                            level.Append("!");
+                            break;
+                        }
                     case BlockType.Hint:
-                    {
-                        level.Append("?");
-                        break;
-                    }
+                        {
+                            level.Append("?");
+                            break;
+                        }
                     case BlockType.LSpiderweb:
-                    {
-                        level.Append("/");
-                        break;
-                    }
+                        {
+                            level.Append("/");
+                            break;
+                        }
                     case BlockType.RSpiderweb:
-                    {
-                        level.Append("\\");
-                        break;
-                    }
+                        {
+                            level.Append("\\");
+                            break;
+                        }
                     case BlockType.Grass1:
-                    {
-                        level.Append('-');
-                        break;
-                    }
+                        {
+                            level.Append('-');
+                            break;
+                        }
                     case BlockType.Grass2:
-                    {
-                        level.Append("r");
-                        break;
-                    }
+                        {
+                            level.Append("r");
+                            break;
+                        }
                     case BlockType.Torch:
-                    {
-                        level.Append("*");
-                        break;
-                    }
+                        {
+                            level.Append("*");
+                            break;
+                        }
                     case BlockType.EvilEyes:
-                    {
-                        level.Append(",");
-                        break;
-                    }
+                        {
+                            level.Append(",");
+                            break;
+                        }
                     case BlockType.SmallTree:
-                    {
-                        level.Append("Y");
-                        break;
-                    }
+                        {
+                            level.Append("Y");
+                            break;
+                        }
                     case BlockType.Rock:
-                    {
-                        level.Append("O");
-                        break;
-                    }
+                        {
+                            level.Append("O");
+                            break;
+                        }
                     case BlockType.Bush:
-                    {
-                        level.Append("b");
-                        break;
-                    }
+                        {
+                            level.Append("b");
+                            break;
+                        }
                     case BlockType.Stalactite:
-                    {
-                        level.Append("V");
-                        break;
-                    }
+                        {
+                            level.Append("V");
+                            break;
+                        }
                     case BlockType.None:
-                    {
-                        level.Append(".");
-                        break;
-                    }
+                        {
+                            level.Append(".");
+                            break;
+                        }
                 }
 
                 tile++;

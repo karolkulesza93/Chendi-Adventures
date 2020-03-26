@@ -13,6 +13,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
     <PublishUrl>C:\Users\Karol Kulesza\Desktop\Chendi\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -31,7 +32,6 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="Classes\Creatures\Boss.cs" />
     <Compile Include="Classes\Creatures\Golem.cs" />
+    <Compile Include="Classes\Creatures\Walker.cs" />
     <Compile Include="Classes\Details\Animation.cs" />
     <Compile Include="Classes\Creatures\Archer.cs" />
     <Compile Include="Classes\Details\ScreenChange.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Classes\Level\BlockType.cs" />
     <Compile Include="Classes\Creatures\Creature.cs" />
     <Compile Include="Classes\Projectiles\Boulder.cs" />
+    <Compile Include="Classes\Projectiles\Laser.cs" />
     <Compile Include="Classes\Settings\Difficulty.cs" />
     <Compile Include="Classes\Projectiles\EnemyArrow.cs" />
     <Compile Include="Classes\Projectiles\EnergyBall.cs" />
@@ -116,7 +118,7 @@
     <Compile Include="Classes\Creatures\MainCharacter.cs" />
     <Compile Include="Classes\Details\MainCharacterUI.cs" />
     <Compile Include="Classes\Basics\MainGameWindow.cs" />
-    <Compile Include="Classes\Creatures\Monster.cs" />
+    <Compile Include="Classes\Creatures\Knight.cs" />
     <Compile Include="Classes\Creatures\Movement.cs" />
     <Compile Include="Classes\Details\Particle.cs" />
     <Compile Include="Classes\Details\ParticleEffect.cs" />

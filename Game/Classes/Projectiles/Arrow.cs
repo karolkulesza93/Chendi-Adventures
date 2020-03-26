@@ -9,6 +9,7 @@ namespace ChendiAdventures
         {
             isEnergized = false;
             LastMove = Movement.Right;
+            SpeedX = 13f;
         }
 
         public bool isEnergized { get; set; }
@@ -19,17 +20,22 @@ namespace ChendiAdventures
             switch (LastMove)
             {
                 case Movement.Left:
-                {
-                    TipPosition = new Vector2f(X, Y + Height / 2);
-                    break;
-                }
+                    {
+                        TipPosition = new Vector2f(X, Y + Height / 2);
+                        break;
+                    }
                 case Movement.Right:
-                {
-                    TipPosition = new Vector2f(X + Width, Y + Height / 2);
-                    break;
-                }
+                    {
+                        TipPosition = new Vector2f(X + Width, Y + Height / 2);
+                        break;
+                    }
             }
 
+            ArrowCollisionCheck(level, character);
+        }
+
+        public void ArrowCollisionCheck(Level level, MainCharacter character)
+        {
             Block obstacle = level.GetObstacle(TipPosition.X / 32, TipPosition.Y / 32);
             if (TipPosition.X > 0 && TipPosition.X < level.LevelWidth * 32 &&
                 TipPosition.Y > 0 && TipPosition.Y < level.LevelHeight * 32)
@@ -90,6 +96,25 @@ namespace ChendiAdventures
                     }
                 }
 
+            foreach (var walker in level.Walkers)
+            {
+                if (GetBoundingBox().Intersects(walker.GetBoundingBox()))
+                {
+                    if (!isEnergized)
+                    {
+                        walker.Health--;
+                        DeleteArrow();
+                    }
+                    else
+                    {
+                        walker.Health = 0;
+                        sEnergyHit.Play();
+                        DeleteArrow();
+                    }
+                }
+            }
+
+
             if (isEnergized)
                 foreach (var ghost in level.Ghosts)
                     if (GetBoundingBox().Intersects(ghost.GetBoundingBox()))
@@ -106,19 +131,19 @@ namespace ChendiAdventures
             switch (LastMove)
             {
                 case Movement.Left:
-                {
-                    TipPosition = new Vector2f(X, Y + Height / 2);
-                    SpeedX = -13f;
-                    SetTextureRectangle(0, !isEnergized ? 0 : 28, 32, 7);
-                    break;
-                }
+                    {
+                        TipPosition = new Vector2f(X, Y + Height / 2);
+                        SpeedX = -13f;
+                        SetTextureRectangle(0, !isEnergized ? 0 : 28, 32, 7);
+                        break;
+                    }
                 case Movement.Right:
-                {
-                    TipPosition = new Vector2f(X + Width, Y + Height / 2);
-                    SpeedX = 13f;
-                    SetTextureRectangle(0, !isEnergized ? 7 : 35, 32, 7);
-                    break;
-                }
+                    {
+                        TipPosition = new Vector2f(X + Width, Y + Height / 2);
+                        SpeedX = 13f;
+                        SetTextureRectangle(0, !isEnergized ? 7 : 35, 32, 7);
+                        break;
+                    }
             }
         }
     }

@@ -57,6 +57,41 @@ namespace ChendiAdventures
 
                 X += SpeedX;
                 Y += SpeedY;
+
+                Block obstacle = null;
+                for (var i = 0; i < 4; i++)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.1f, Get32Position().Y + 0.1f);
+                            break;
+                        }
+                        case 1:
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.9f, Get32Position().Y + 0.1f);
+                            break;
+                        }
+                        case 2:
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.9f, Get32Position().Y + 0.9f);
+                            break;
+                        }
+                        case 3:
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.1f, Get32Position().Y + 0.9f);
+                            break;
+                        }
+                    }
+
+                    if (obstacle.Type == BlockType.SpectralCrystal)
+                    {
+                        level.Particles.Add(new ParticleEffect(obstacle.X, obstacle.Y, Color.Magenta,15));
+                        obstacle.DeleteObstacle();
+                        Die(level);
+                    }
+                }
             }
 
             if (!IsDead && DefaultClock.ElapsedTime.AsSeconds() > 10)

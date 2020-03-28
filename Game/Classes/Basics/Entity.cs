@@ -22,7 +22,7 @@ namespace ChendiAdventures
         public static Texture WalkerTexture = new Texture(@"img/walker.png");
         public static Texture GameMachineTexture = new Texture(@"img/machine.png");
         public static Texture RewardsTexture = new Texture(@"img/rewards.png");
-        public static Texture ShopTexture = new Texture(@"img/merchant.png");
+        public static Texture ShopTexture = new Texture(@"img/art/merchant.png");
 
         public Entity(float x = 0, float y = 0, Texture texture = null)
         {

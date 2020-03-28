@@ -944,7 +944,7 @@ namespace ChendiAdventures
             }
         }
 
-        public void Die(Level level)
+        public override void Die(Level level)
         {
             if (!IsDead && IsVulnerable && !GotExit)
             {
@@ -964,7 +964,7 @@ namespace ChendiAdventures
                 IsDownAttacking = false;
                 IsUpAttacking = false;
 
-                //Lives--;
+                Lives--;
 
                 level.isShopOpened = false;
 

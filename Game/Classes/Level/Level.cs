@@ -11,6 +11,9 @@ namespace ChendiAdventures
     {
         public static List<Block> SteelGates = new List<Block>();
         public static List<Block> Levers = new List<Block>();
+        public static GameMode LevelGameMode;
+        public static string ChallengeName;
+
         public static int LeverInterval = 10;
         public static bool IsUnderground = true;
         public static Color LevelColor { get; set; }
@@ -131,12 +134,29 @@ namespace ChendiAdventures
             Levers.Clear();
             SteelGates.Clear();
 
-            if (LevelNumber >= 50) LevelColor = Color.Magenta;
-            else if (LevelNumber >= 40) LevelColor = Color.Red;
-            else if (LevelNumber >= 30) LevelColor = new Color(75, 75, 75);
-            else if (LevelNumber >= 20) LevelColor = Color.Cyan;
-            else if (LevelNumber >= 10) LevelColor = Color.Yellow;
-            else LevelColor = Color.White;
+            switch (LevelGameMode)
+            {
+                case GameMode.Adventure:
+                    {
+                        if (LevelNumber >= 50) LevelColor = Color.Magenta;
+                        else if (LevelNumber >= 40) LevelColor = Color.Red;
+                        else if (LevelNumber >= 30) LevelColor = new Color(75, 75, 75);
+                        else if (LevelNumber >= 20) LevelColor = Color.Cyan;
+                        else if (LevelNumber >= 10) LevelColor = Color.Yellow;
+                        else LevelColor = Color.White;
+                        break;
+                    }
+                case GameMode.Challenge:
+                    {
+                        LevelColor = new Color((byte)(MainGameWindow.Randomizer.Next(200) + 50), (byte)(MainGameWindow.Randomizer.Next(200) + 50), (byte)(MainGameWindow.Randomizer.Next(200) + 50));
+                        break;
+                    }
+                default:
+                {
+                    LevelColor = Color.White;
+                    break;
+                }
+            }
             _background.Color = LevelColor;
 
             ScoreAdditionEffects.Clear();
@@ -170,7 +190,24 @@ namespace ChendiAdventures
 
             try
             {
-                Content = File.ReadAllText(@"levels/" + level + @".dat");
+                switch (LevelGameMode)
+                {
+                    case GameMode.Adventure:
+                        {
+                            Content = File.ReadAllText(@"levels/" + level + @".dat");
+                            break;
+                        }
+                    case GameMode.Challenge:
+                        {
+                            Content = File.ReadAllText(@"levels/challenges/" + ChallengeName + @".dat");
+                            break;
+                        }
+                    default:
+                        {
+                            Content = File.ReadAllText(@"levels/" + level + @".dat");
+                            break;
+                        }
+                }
             }
             catch (Exception)
             {
@@ -538,14 +575,7 @@ namespace ChendiAdventures
                     //shop
                     case '+':
                         {
-                            var chance = rnd.Next(3) + 1;
-
-                            if (LevelNumber == 20)
-                                LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
-                            else if (chance == 2)
-                                LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
-                            else
-                                LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture));
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.TilesTexture, BlockType.Shop));
                             break;
                         }
                     //enterance
@@ -592,7 +622,25 @@ namespace ChendiAdventures
             _mainCharacter.HasGoldenKey = false;
 
             _levelDescription.MoveText(_view.Center.X - _view.Size.X / 2 - 1000, _view.Center.Y - 100);
-            _levelDescription.EditText($"LEVEL {LevelNumber}");
+
+            switch (LevelGameMode)
+            {
+                case GameMode.Adventure:
+                    {
+                        _levelDescription.EditText($"LEVEL {LevelNumber}");
+                        break;
+                    }
+                case GameMode.Challenge:
+                    {
+                        _levelDescription.EditText($"CHALLENGE");
+                        break;
+                    }
+                default:
+                    {
+                        _levelDescription.EditText($"LEVEL {LevelNumber}");
+                        break;
+                    }
+            }
 
             foreach (var archer in Archers) archer.DefaultClock.Restart();
             foreach (var ghost in Ghosts) ghost.DefaultClock.Restart();
@@ -1106,7 +1154,7 @@ namespace ChendiAdventures
             Particles.Add(effect);
         }
 
-        public void SaveLevel()
+        public void SaveLevel(bool saveChall = false)
         {
             BlockType type;
             var level = new StringBuilder();
@@ -1507,9 +1555,19 @@ namespace ChendiAdventures
                 }
             }
 
+
+
+
+
             File.WriteAllText("levels/edit.dat", level.ToString());
-            File.WriteAllText("levels/lvl0.dat", level.ToString());
-            LevelNumber = 0;
+            var number = 0;
+            var name = "CHALLENGE " + number;
+            while (File.Exists(@"levels/challenges/" + name + ".dat"))
+            {
+                number++;
+                name = "CHALLENGE " + number;
+            }
+            if (saveChall == true) File.WriteAllText("levels/challenges/" + name + ".dat", level.ToString());
         }
 
         private Sprite _background;

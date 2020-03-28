@@ -66,5 +66,10 @@ namespace ChendiAdventures
         {
             _text.OutlineColor = color;
         }
+
+        public override string ToString()
+        {
+            return _text.DisplayedString;
+        }
     }
 }

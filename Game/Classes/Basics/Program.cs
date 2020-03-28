@@ -24,19 +24,19 @@ namespace ChendiAdventures
     {
         private static void Main(string[] args)
         {
-            try
+            //try
             {
                 MainGameWindow.Instance.GameStart();
             }
-            catch (Exception e)
-            {
-                string message = $"ERROR: {e.Message}\nSource: {e.Source}\nStack:\n{e.StackTrace}\nIt is advised to contact developer."; 
-                MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                MainGameWindow.Instance.Close();
-            }
+            //catch (Exception e)
+            //{
+            //    string message = $"ERROR: {e.Message}\nSource: {e.Source}\nStack:\n{e.StackTrace}\nIt is advised to contact developer."; 
+            //    MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+            //finally
+            //{
+            //    MainGameWindow.Instance.Close();
+            //}
         }
     }
 }

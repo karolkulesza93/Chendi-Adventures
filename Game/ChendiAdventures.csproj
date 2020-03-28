@@ -124,6 +124,7 @@
     <Compile Include="Classes\Details\ParticleEffect.cs" />
     <Compile Include="Classes\Basics\Program.cs" />
     <Compile Include="Classes\Projectiles\Projectile.cs" />
+    <Compile Include="Classes\Settings\GameMode.cs" />
     <Compile Include="Classes\Special\GameMachine.cs" />
     <Compile Include="Classes\Special\Merchant.cs" />
     <Compile Include="Classes\Special\Rewards.cs" />

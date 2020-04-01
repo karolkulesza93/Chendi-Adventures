@@ -10,6 +10,7 @@ namespace ChendiAdventures
         public float BounceSpeed { get; set; }
         public Sound sBroke = new Sound(new SoundBuffer(@"sfx/broke.wav"));
         public Sound sWood = new Sound(new SoundBuffer(@"sfx/wood.wav")) { Volume = 50 };
+        public bool IsEnergized { get; set; }
 
         public Sword(MainCharacter character) : base(-400, -400, SwordTexture)
         {
@@ -17,6 +18,9 @@ namespace ChendiAdventures
             LastMove = Movement.Right;
             _frameTime = 0.05f;
             BounceSpeed = -3f;
+            IsEnergized = false;
+
+            //SetColor(new Color(255,255,100));
 
             _animLeft = new Animation(this, _frameTime,
                 new Vector2i(0, 30),
@@ -44,7 +48,7 @@ namespace ChendiAdventures
             );
         }
 
-        public void SwordCollisionCheck(Level level)
+        public void SwordCollisionCheck(Level level, MainCharacter character)
         {
             if (_character.IsAttacking)
             {
@@ -158,16 +162,27 @@ namespace ChendiAdventures
                             {
                                 level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
                                     new Color(57, 65, 81), 1));
-                                obstacle.HitHardblock(_character);
-                                if (obstacle.Health <= 0)
+                                if (IsEnergized)
                                 {
                                     obstacle.DeleteObstacle();
                                     Block.sDestroy.Play();
                                     level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
                                         new Color(57, 65, 81)));
                                     _character.AddToScore(level, 100, obstacle.X, obstacle.Y);
+                                    if (_character.IsDownAttacking) _character.SpeedY -= 1.2f;
                                 }
-
+                                else
+                                {
+                                    obstacle.HitHardblock(_character);
+                                    if (obstacle.Health <= 0)
+                                    {
+                                        obstacle.DeleteObstacle();
+                                        Block.sDestroy.Play();
+                                        level.Particles.Add(new ParticleEffect(obstacle.OriginalPos.X, obstacle.OriginalPos.Y,
+                                            new Color(57, 65, 81)));
+                                        _character.AddToScore(level, 100, obstacle.X, obstacle.Y);
+                                    }
+                                }
                                 break;
                             }
                         case BlockType.EnergyBall:
@@ -189,6 +204,11 @@ namespace ChendiAdventures
                                 }
 
                                 Reset();
+                                if (IsEnergized)
+                                {
+                                    Disenergize();
+                                    obstacle.Shatter();
+                                }
                                 _character.IsAttacking = false;
                                 Block.sHard.Play();
                                 break;
@@ -235,6 +255,7 @@ namespace ChendiAdventures
                 }
 
                 foreach (var wizard in level.Wizards)
+                {
                     if (GetBoundingBox().Intersects(wizard.GetBoundingBox()))
                     {
                         _character.AddToScore(level, wizard.Points, wizard.X, wizard.Y);
@@ -247,12 +268,42 @@ namespace ChendiAdventures
                             _character.IsAttacking = false;
                         }
                     }
+                    if (IsEnergized)
+                    {
+                        if (GetBoundingBox().Intersects(wizard.EnergyBall.GetBoundingBox()))
+                        {
+                            wizard.EnergyBall.ResetEnergyBall(level);
+                            Block.sShatter.Play();
+                            Disenergize();
+                        }
+                    }
+                }
+                    
+
+                if (IsEnergized)
+                {
+                    foreach (var ghost in level.Ghosts)
+                    {
+                        if (GetBoundingBox().Intersects(ghost.GetBoundingBox()))
+                        {
+                            character.AddToScore(level, ghost.Points, ghost.X, ghost.Y);
+                            ghost.Die(level);
+                            Disenergize();
+                        }
+                    }
+                }
+
 
                 foreach (var golem in level.Golems)
                 {
                     if (GetBoundingBox().Intersects(golem.GetBoundingBox()))
                     {
                         golem.Health--;
+                        if (IsEnergized)
+                        {
+                            golem.Health -= 4;
+                            Disenergize();
+                        }
                         level.Particles.Add(new ParticleEffect(golem.X, golem.Y,
                             new Color(100, 100, 100), 10));
 
@@ -291,6 +342,12 @@ namespace ChendiAdventures
                         {
                             _character.SpeedY = BounceSpeed * 2.5f;
                             _character.IsDownAttacking = false;
+                        }
+
+                        if (IsEnergized)
+                        {
+                            walker.Die(level);
+                            Disenergize();
                         }
 
                         _character.IsAttacking = false;
@@ -343,6 +400,18 @@ namespace ChendiAdventures
         public int AnimRightFrameNumber()
         {
             return _animRight.Frame;
+        }
+
+        public void Energize()
+        {
+            IsEnergized = true;
+            SetNewTexture(Entity.EnchantedSwordTexture);
+        }
+
+        public void Disenergize()
+        {
+            IsEnergized = false;
+            SetNewTexture(Entity.SwordTexture);
         }
 
         private readonly Animation _animDown;

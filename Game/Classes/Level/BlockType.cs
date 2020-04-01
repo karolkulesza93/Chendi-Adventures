@@ -45,20 +45,21 @@
         SilverKey = 36,
         GoldenKey = 37,
         CrystalKey = 38,
+        SwordEnchant = 39,
 
         //details
-        Warning = 39,
-        Hint = 40,
-        Torch = 41,
-        LSpiderweb = 42,
-        RSpiderweb = 43,
-        EvilEyes = 44,
-        Grass1 = 45,
-        Grass2 = 46,
-        SmallTree = 47,
-        Bush = 48,
-        Rock = 49,
-        Stalactite = 50,
+        Warning = 40,
+        Hint = 41,
+        Torch = 42,
+        LSpiderweb = 43,
+        RSpiderweb = 44,
+        EvilEyes = 45,
+        Grass1 = 46,
+        Grass2 = 47,
+        SmallTree = 48,
+        Bush = 49,
+        Rock = 50,
+        Stalactite = 51,
 
         //others
         DestroyedStone

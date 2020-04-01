@@ -40,6 +40,8 @@ namespace ChendiAdventures
                 new Sprite(new Texture(@"img/mana.png", new IntRect(new Vector2i(0, 0), new Vector2i(20, 20))));
             Coins3 = new Sprite(new Texture(@"img/coins.png"));
             Coins3.Scale = new Vector2f(0.8f, 0.8f);
+            Sword = new Sprite(new Texture(@"img/esword.png"));
+            Sword.Scale = new Vector2f(1.2f, 1.2f);
         }
 
         public TextLine LivesCount { get; }
@@ -55,6 +57,7 @@ namespace ChendiAdventures
         public Sprite Arrow { get; }
         public Sprite ManaBottle { get; }
         public Sprite Coins3 { get; }
+        public Sprite Sword { get; }
 
         public void Draw(RenderTarget target, RenderStates states)
         {
@@ -65,6 +68,7 @@ namespace ChendiAdventures
             target.Draw(Arrows);
             target.Draw(Mana);
             target.Draw(Coins);
+            if (_character.Sword.IsEnergized) target.Draw(Sword);
 
             if (_character.HasSilverKey) target.Draw(SilverKey);
             if (_character.HasGoldenKey) target.Draw(GoldenKey);
@@ -133,6 +137,8 @@ namespace ChendiAdventures
                 new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 40);
             CrystalKey.Position =
                 new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 60);
+            Sword.Position = new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 90);
+
             Arrow.Position = new Vector2f(_view.Center.X + _view.Size.X / 2 - 342,
                 _view.Center.Y - _view.Size.Y / 2 + 9);
             ManaBottle.Position = new Vector2f(_view.Center.X + _view.Size.X / 2 - 430,
@@ -156,6 +162,7 @@ namespace ChendiAdventures
             Arrow.Position = new Vector2f(-100, -100);
             ManaBottle.Position = new Vector2f(-100, -100);
             Coins3.Position = new Vector2f(-100, -100);
+            Sword.Position = new Vector2f(-100, -100);
         }
     }
 }

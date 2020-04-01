@@ -24,7 +24,7 @@ namespace ChendiAdventures
             BlockType.Arrow, BlockType.TripleArrow, BlockType.Score1000, BlockType.Mana, BlockType.Torch,
             BlockType.TripleMana, BlockType.SackOfGold, BlockType.Exit, BlockType.Teleport1, BlockType.Teleport2,
             BlockType.Purifier, BlockType.Teleport3, BlockType.Teleport4, BlockType.EnergyBall, BlockType.CrystalKey,
-            BlockType.CrystalDoor, BlockType.EvilEyes, BlockType.SpectralCrystal
+            BlockType.CrystalDoor, BlockType.EvilEyes, BlockType.SpectralCrystal, BlockType.SwordEnchant
         };
 
         public readonly List<Archer> Archers;
@@ -152,10 +152,10 @@ namespace ChendiAdventures
                         break;
                     }
                 default:
-                {
-                    LevelColor = Color.White;
-                    break;
-                }
+                    {
+                        LevelColor = Color.White;
+                        break;
+                    }
             }
             _background.Color = LevelColor;
 
@@ -507,6 +507,12 @@ namespace ChendiAdventures
                     case 'M':
                         {
                             LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.TripleMana));
+                            break;
+                        }
+                    //sword enchant
+                    case 'n':
+                        {
+                            LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.SwordEnchant));
                             break;
                         }
                     //details
@@ -1077,12 +1083,28 @@ namespace ChendiAdventures
                     }
                 case 25:
                     {
-                        ShowHint(obstacle,
-                            "WHAT ARE THOSE STRANGE\n" +
-                            "PORTALS... NO ONE KNOWS\n" +
-                            "WHAT WAITS FOR YOU\n" +
-                            "ON THE OTHER SIDE."
-                            , -60, -34);
+                        switch (obstacle.HintNumber)
+                        {
+                            case 1:
+                            {
+                                ShowHint(obstacle,
+                                    "ANOTHER SOURCE OF\n" +
+                                    "STRONG MAGIC! GREAT NEWS!\n" +
+                                    "AND MORE POSSIBILITIES..."
+                                    , -60, -26);
+                                break;
+                            }
+                            case 2:
+                            {
+                                ShowHint(obstacle,
+                                    "WHAT ARE THOSE STRANGE\n" +
+                                    "PORTALS... NO ONE KNOWS\n" +
+                                    "WHAT WAITS FOR YOU\n" +
+                                    "ON THE OTHER SIDE."
+                                    , -60, -34);
+                                break;
+                            }
+                        }
                         break;
                     }
                 case 30:
@@ -1344,6 +1366,11 @@ namespace ChendiAdventures
                     case BlockType.Life:
                         {
                             level.Append("L");
+                            break;
+                        }
+                    case BlockType.SwordEnchant:
+                        {
+                            level.Append("n");
                             break;
                         }
                     case BlockType.Arrow:

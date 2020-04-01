@@ -1536,10 +1536,10 @@ namespace ChendiAdventures
             var t2 = 26;
             //pickups
             var p1 = 27;
-            var p2 = 38;
+            var p2 = 39;
             //details
-            var d1 = 39;
-            var d2 = 50;
+            var d1 = 40;
+            var d2 = 51;
 
             while (_window.IsOpen)
             {

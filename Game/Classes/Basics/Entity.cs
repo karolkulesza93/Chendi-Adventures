@@ -16,6 +16,7 @@ namespace ChendiAdventures
         public static Texture MainCharacterTexture = new Texture(@"img/MainCharacter.png");
         public static Texture PickupsTexture = new Texture(@"img/pickups.png");
         public static Texture SwordTexture = new Texture(@"img/sword.png");
+        public static Texture EnchantedSwordTexture = new Texture(@"img/gsword.png");
         public static Texture TilesTexture = new Texture(@"img/tiles.png");
         public static Texture TrapsTexture = new Texture(@"img/traps.png");
         public static Texture WizardTexture = new Texture(@"img/wizard.png");
@@ -111,6 +112,11 @@ namespace ChendiAdventures
         private void SetTexture()
         {
             _entitySprite.TextureRect = _textureRectangle;
+        }
+
+        public void SetNewTexture(Texture texture)
+        {
+            _entitySprite.Texture = texture;
         }
 
         private readonly Sprite _entitySprite; //głowny obiekt na ekranie

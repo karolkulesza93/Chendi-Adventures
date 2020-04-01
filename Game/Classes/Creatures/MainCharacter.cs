@@ -17,7 +17,7 @@ namespace ChendiAdventures
         public static Keyboard.Key KeyARROW = Keyboard.Key.C;
         public static Keyboard.Key KeyTHUNDER = Keyboard.Key.D;
         public static Keyboard.Key KeyIMMORTALITY = Keyboard.Key.S;
-        
+
         public readonly Clock DefaultClock;
 
         public MainCharacter(float x, float y, Texture texture) : base(x, y, texture)
@@ -37,7 +37,7 @@ namespace ChendiAdventures
             dX = 0.4f;
             GravityForce = 0.5f;
 
-            SafePosition = new Vector2f(x,y);
+            SafePosition = new Vector2f(x, y);
             SafePositionClock = new Clock();
             JustRespawned = false;
 
@@ -125,18 +125,18 @@ namespace ChendiAdventures
             //
 
             sJump = new Sound(new SoundBuffer(@"sfx/jump.wav"));
-            sStep = new Sound(new SoundBuffer(@"sfx/step.wav")) {Volume = 15};
-            sLand = new Sound(new SoundBuffer(@"sfx/land.wav")) {Volume = 30};
+            sStep = new Sound(new SoundBuffer(@"sfx/step.wav")) { Volume = 15 };
+            sLand = new Sound(new SoundBuffer(@"sfx/land.wav")) { Volume = 30 };
             sTramp = new Sound(new SoundBuffer(@"sfx/trampoline.wav"));
-            sCoin = new Sound(new SoundBuffer(@"sfx/coin.wav")) {Volume = 40};
+            sCoin = new Sound(new SoundBuffer(@"sfx/coin.wav")) { Volume = 40 };
             sAtk = new Sound(new SoundBuffer(@"sfx/sword.wav"));
             sDie = new Sound(new SoundBuffer(@"sfx/death.wav"));
             sTp = new Sound(new SoundBuffer(@"sfx/teleport.wav"));
             sKey = new Sound(new SoundBuffer(@"sfx/key.wav"));
             sLife = new Sound(new SoundBuffer(@"sfx/life.wav"));
             sPickup = new Sound(new SoundBuffer(@"sfx/pickup.wav"));
-            sImmortality = new Sound(new SoundBuffer(@"sfx/immortality.wav")) {Volume = 30, Loop = true};
-            sError = new Sound(new SoundBuffer(@"sfx/error.wav")) {Volume = 10};
+            sImmortality = new Sound(new SoundBuffer(@"sfx/immortality.wav")) { Volume = 30, Loop = true };
+            sError = new Sound(new SoundBuffer(@"sfx/error.wav")) { Volume = 10 };
         }
 
         public Sword Sword { get; }
@@ -270,7 +270,7 @@ namespace ChendiAdventures
                         _lastMove = Movement.Left;
                     }
                 }
-                else if ((Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) <  -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) && 
+                else if ((Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) &&
                          !(Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) && !IsAttacking && !IsShooting)
                 {
                     MoveLeft();
@@ -287,7 +287,7 @@ namespace ChendiAdventures
                 }
 
                 //movement right
-                if ((Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) && 
+                if ((Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) &&
                     !(Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) && !IsStandingOnBlocks && !IsDownAttacking)
                 {
                     MoveRight();
@@ -334,7 +334,7 @@ namespace ChendiAdventures
             SpeedY += GravityForce;
 
             Arrow.ArrowUpdate(this, level);
-            Sword.SwordCollisionCheck(level);
+            Sword.SwordCollisionCheck(level, this);
 
             if (GotExit)
             {
@@ -342,7 +342,7 @@ namespace ChendiAdventures
                 IsAttacking = false;
                 IsVulnerable = true;
                 sImmortality.Stop();
-                
+
                 SpeedX = 0f;
                 SpeedY = 0f;
             }
@@ -584,289 +584,297 @@ namespace ChendiAdventures
                 switch (i)
                 {
                     case 0:
-                    {
-                        obstacle = level.GetObstacle(Get32Position().X + 0.1f, Get32Position().Y + 0.1f);
-                        break;
-                    }
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.1f, Get32Position().Y + 0.1f);
+                            break;
+                        }
                     case 1:
-                    {
-                        obstacle = level.GetObstacle(Get32Position().X + 0.9f, Get32Position().Y + 0.1f);
-                        break;
-                    }
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.9f, Get32Position().Y + 0.1f);
+                            break;
+                        }
                     case 2:
-                    {
-                        obstacle = level.GetObstacle(Get32Position().X + 0.9f, Get32Position().Y + 0.9f);
-                        break;
-                    }
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.9f, Get32Position().Y + 0.9f);
+                            break;
+                        }
                     case 3:
-                    {
-                        obstacle = level.GetObstacle(Get32Position().X + 0.1f, Get32Position().Y + 0.9f);
-                        break;
-                    }
+                        {
+                            obstacle = level.GetObstacle(Get32Position().X + 0.1f, Get32Position().Y + 0.9f);
+                            break;
+                        }
                 }
 
                 switch (obstacle.Type)
                 {
                     case BlockType.Exit:
-                    {
-                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
                         {
-                            SpeedX = 0;
-                            SetTextureRectangle(128, 64);
-                            GotExit = true;
-                        }
+                            if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
+                            {
+                                SpeedX = 0;
+                                SetTextureRectangle(128, 64);
+                                GotExit = true;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case BlockType.Shop:
-                    {
-                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
-                            level.isShopOpened = true;
+                        {
+                            if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
+                                level.isShopOpened = true;
 
-                        break;
-                    }
+                            break;
+                        }
                     case BlockType.Lever:
-                    {
-                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
-                            Block.FlipLever();
-                        break;
-                    }
+                        {
+                            if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && IsStandingOnBlocks && !IsDead && SpeedX == 0)
+                                Block.FlipLever();
+                            break;
+                        }
                     case BlockType.Purifier:
-                    {
-                        if (Mana > 0 || ArrowAmount > 0 || !IsVulnerable)
                         {
-                            Block.sPurify.Play();
-                            level.AddParticleEffect(new ParticleEffect(obstacle.X, obstacle.Y, Color.Magenta));
-                            ArrowAmount = 0;
-                            Mana = 0;
-                            IsVulnerable = true;
-                        }
+                            if (Mana > 0 || ArrowAmount > 0 || !IsVulnerable)
+                            {
+                                Block.sPurify.Play();
+                                level.AddParticleEffect(new ParticleEffect(obstacle.X, obstacle.Y, Color.Magenta));
+                                ArrowAmount = 0;
+                                Mana = 0;
+                                IsVulnerable = true;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case BlockType.Coin:
-                    {
-                        AddToScore(level, 30, obstacle.X, obstacle.Y);
-                        sCoin.Play();
-                        Coins++;
-                        obstacle.DeletePickup();
-                        break;
-                    }
+                        {
+                            AddToScore(level, 30, obstacle.X, obstacle.Y);
+                            sCoin.Play();
+                            Coins++;
+                            obstacle.DeletePickup();
+                            break;
+                        }
                     case BlockType.SackOfGold:
-                    {
-                        AddToScore(level, 300, obstacle.X, obstacle.Y);
-                        sCoin.Play();
-                        Coins += MainGameWindow.Randomizer.Next(30) + 11;
-                        obstacle.DeletePickup();
-                        break;
-                    }
+                        {
+                            AddToScore(level, 300, obstacle.X, obstacle.Y);
+                            sCoin.Play();
+                            Coins += MainGameWindow.Randomizer.Next(30) + 11;
+                            obstacle.DeletePickup();
+                            break;
+                        }
                     case BlockType.Life:
-                    {
-                        AddToScore(level, 500, obstacle.X, obstacle.Y);
-                        Lives++;
-                        sLife.Play();
-                        obstacle.DeletePickup();
-                        break;
-                    }
+                        {
+                            AddToScore(level, 500, obstacle.X, obstacle.Y);
+                            Lives++;
+                            sLife.Play();
+                            obstacle.DeletePickup();
+                            break;
+                        }
                     case BlockType.Mana:
-                    {
-                        AddToScore(level, 300, obstacle.X, obstacle.Y);
-                        Mana++;
-                        sPickup.Play();
-                        obstacle.DeletePickup();
-                        break;
-                    }
+                        {
+                            AddToScore(level, 300, obstacle.X, obstacle.Y);
+                            Mana++;
+                            sPickup.Play();
+                            obstacle.DeletePickup();
+                            break;
+                        }
                     case BlockType.TripleMana:
-                    {
-                        AddToScore(level, 900, obstacle.X, obstacle.Y);
-                        Mana += 3;
-                        sPickup.Play();
-                        obstacle.DeletePickup();
-                        break;
-                    }
+                        {
+                            AddToScore(level, 900, obstacle.X, obstacle.Y);
+                            Mana += 3;
+                            sPickup.Play();
+                            obstacle.DeletePickup();
+                            break;
+                        }
                     case BlockType.Score1000:
-                    {
-                        AddToScore(level, 1000, obstacle.X, obstacle.Y);
-                        sPickup.Play();
-                        obstacle.DeletePickup();
-                        break;
-                    }
+                        {
+                            AddToScore(level, 1000, obstacle.X, obstacle.Y);
+                            sPickup.Play();
+                            obstacle.DeletePickup();
+                            break;
+                        }
                     case BlockType.Score5000:
-                    {
-                        AddToScore(level, 5000, obstacle.X, obstacle.Y);
-                        sPickup.Play();
-                        obstacle.DeletePickup();
-                        break;
-                    }
+                        {
+                            AddToScore(level, 5000, obstacle.X, obstacle.Y);
+                            sPickup.Play();
+                            obstacle.DeletePickup();
+                            break;
+                        }
                     case BlockType.Arrow:
-                    {
-                        AddToScore(level, 100, obstacle.X, obstacle.Y);
-                        ArrowAmount++;
-                        sPickup.Play();
-                        obstacle.DeletePickup();
-                        break;
-                    }
+                        {
+                            AddToScore(level, 100, obstacle.X, obstacle.Y);
+                            ArrowAmount++;
+                            sPickup.Play();
+                            obstacle.DeletePickup();
+                            break;
+                        }
                     case BlockType.TripleArrow:
-                    {
-                        AddToScore(level, 300, obstacle.X, obstacle.Y);
-                        ArrowAmount += 3;
-                        sPickup.Play();
-                        obstacle.DeletePickup();
-                        break;
-                    }
+                        {
+                            AddToScore(level, 300, obstacle.X, obstacle.Y);
+                            ArrowAmount += 3;
+                            sPickup.Play();
+                            obstacle.DeletePickup();
+                            break;
+                        }
+                    case BlockType.SwordEnchant:
+                        {
+                            AddToScore(level, 150, obstacle.X, obstacle.Y);
+                            sPickup.Play();
+                            obstacle.DeletePickup();
+                            Sword.Energize();
+                            break;
+                        }
                     case BlockType.SilverKey:
-                    {
-                        HasSilverKey = true;
-                        level.UnableToPassl.Remove(BlockType.SilverDoor);
-                        AddToScore(level, 250, obstacle.X, obstacle.Y);
-                        sKey.Play();
-                        obstacle.DeletePickup();
-                        break;
-                    }
+                        {
+                            HasSilverKey = true;
+                            level.UnableToPassl.Remove(BlockType.SilverDoor);
+                            AddToScore(level, 250, obstacle.X, obstacle.Y);
+                            sKey.Play();
+                            obstacle.DeletePickup();
+                            break;
+                        }
                     case BlockType.GoldenKey:
-                    {
-                        HasGoldenKey = true;
-                        level.UnableToPassl.Remove(BlockType.GoldDoor);
-                        AddToScore(level, 500, obstacle.X, obstacle.Y);
-                        sKey.Play();
-                        obstacle.DeletePickup();
-                        break;
-                    }
+                        {
+                            HasGoldenKey = true;
+                            level.UnableToPassl.Remove(BlockType.GoldDoor);
+                            AddToScore(level, 500, obstacle.X, obstacle.Y);
+                            sKey.Play();
+                            obstacle.DeletePickup();
+                            break;
+                        }
                     case BlockType.CrystalKey:
-                    {
-                        HasCrystalKey = true;
-                        level.UnableToPassl.Remove(BlockType.CrystalDoor);
-                        AddToScore(level, 1000, obstacle.X, obstacle.Y);
-                        sKey.Play();
-                        obstacle.DeletePickup();
-                        break;
-                    }
+                        {
+                            HasCrystalKey = true;
+                            level.UnableToPassl.Remove(BlockType.CrystalDoor);
+                            AddToScore(level, 1000, obstacle.X, obstacle.Y);
+                            sKey.Play();
+                            obstacle.DeletePickup();
+                            break;
+                        }
                     case BlockType.SilverDoor:
-                    {
-                        if (HasSilverKey)
                         {
-                            obstacle.DeleteObstacle();
-                            sKey.Play();
-                        }
+                            if (HasSilverKey)
+                            {
+                                obstacle.DeleteObstacle();
+                                sKey.Play();
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case BlockType.GoldDoor:
-                    {
-                        if (HasGoldenKey)
                         {
-                            obstacle.DeleteObstacle();
-                            sKey.Play();
-                        }
+                            if (HasGoldenKey)
+                            {
+                                obstacle.DeleteObstacle();
+                                sKey.Play();
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case BlockType.CrystalDoor:
-                    {
-                        if (HasCrystalKey)
                         {
-                            obstacle.DeleteObstacle();
-                            sKey.Play();
-                        }
+                            if (HasCrystalKey)
+                            {
+                                obstacle.DeleteObstacle();
+                                sKey.Play();
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case BlockType.Spike:
-                    {
-                        Die(level);
-                        break;
-                    }
-                    case BlockType.WoodenSpike:
-                    {
-                        Die(level);
-                        break;
-                    }
-                    case BlockType.Trampoline:
-                    {
-                        if (SpeedY > 4f && !IsDead &&
-                            (!Keyboard.IsKeyPressed(KeyDOWN) && Joystick.GetAxisPosition(0, Joystick.Axis.Y) < 50 && Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > -5))
                         {
-                            SetPosition(X, obstacle.Y - Height);
-                            IsDownAttacking = false;
-                            IsAttacking = false;
-                            obstacle.SetTextureRectangle(96, 32);
-                            obstacle.DefaultTimer.Restart();
-
-                            if (Keyboard.IsKeyPressed(KeyJUMP) || Joystick.IsButtonPressed(0, 0))
-                            {
-                                SpeedY *= -1.2f;
-                                if (SpeedY > -1 * MaxSpeedY - 1.5f) 
-                                    SpeedY = -1 * MaxSpeedY - 1.5f;
-                                sJump.Play();
-                            }
-                            else
-                            {
-                                SpeedY = -1 * MaxSpeedY - 1.5f;
-                            }
-
-                            if (SpeedY < -17.3f) SpeedY = -17.3f;
-
-                            sTramp.Play();
+                            Die(level);
+                            break;
                         }
+                    case BlockType.WoodenSpike:
+                        {
+                            Die(level);
+                            break;
+                        }
+                    case BlockType.Trampoline:
+                        {
+                            if (SpeedY > 4f && !IsDead &&
+                                (!Keyboard.IsKeyPressed(KeyDOWN) && Joystick.GetAxisPosition(0, Joystick.Axis.Y) < 50 && Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > -5))
+                            {
+                                SetPosition(X, obstacle.Y - Height);
+                                IsDownAttacking = false;
+                                IsAttacking = false;
+                                obstacle.SetTextureRectangle(96, 32);
+                                obstacle.DefaultTimer.Restart();
 
-                        break;
-                    }
+                                if (Keyboard.IsKeyPressed(KeyJUMP) || Joystick.IsButtonPressed(0, 0))
+                                {
+                                    SpeedY *= -1.2f;
+                                    if (SpeedY > -1 * MaxSpeedY - 1.5f)
+                                        SpeedY = -1 * MaxSpeedY - 1.5f;
+                                    sJump.Play();
+                                }
+                                else
+                                {
+                                    SpeedY = -1 * MaxSpeedY - 1.5f;
+                                }
+
+                                if (SpeedY < -17.3f) SpeedY = -17.3f;
+
+                                sTramp.Play();
+                            }
+
+                            break;
+                        }
                     //teleports/////////////////
                     case BlockType.Teleport1:
-                    {
-                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
-                            IsStandingOnBlocks && !IsDead && SpeedX == 0)
                         {
-                            sTp.Play();
-                            SetPosition(level.tp2Position.X, level.tp2Position.Y);
-                            DefaultClock.Restart();
-                        }
+                            if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
+                                IsStandingOnBlocks && !IsDead && SpeedX == 0)
+                            {
+                                sTp.Play();
+                                SetPosition(level.tp2Position.X, level.tp2Position.Y);
+                                DefaultClock.Restart();
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case BlockType.Teleport2:
-                    {
-                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
-                            IsStandingOnBlocks && !IsDead && SpeedX == 0)
                         {
-                            sTp.Play();
-                            SetPosition(level.tp1Position.X, level.tp1Position.Y);
-                            DefaultClock.Restart();
-                        }
+                            if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
+                                IsStandingOnBlocks && !IsDead && SpeedX == 0)
+                            {
+                                sTp.Play();
+                                SetPosition(level.tp1Position.X, level.tp1Position.Y);
+                                DefaultClock.Restart();
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     //
                     case BlockType.Teleport3:
-                    {
-                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
-                            IsStandingOnBlocks && !IsDead && SpeedX == 0)
                         {
-                            sTp.Play();
-                            SetPosition(level.tp4Position.X, level.tp4Position.Y);
-                            DefaultClock.Restart();
-                        }
+                            if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
+                                IsStandingOnBlocks && !IsDead && SpeedX == 0)
+                            {
+                                sTp.Play();
+                                SetPosition(level.tp4Position.X, level.tp4Position.Y);
+                                DefaultClock.Restart();
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case BlockType.Teleport4:
-                    {
-                        if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
-                            IsStandingOnBlocks && !IsDead && SpeedX == 0)
                         {
-                            sTp.Play();
-                            SetPosition(level.tp3Position.X, level.tp3Position.Y);
-                            DefaultClock.Restart();
-                        }
+                            if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && DefaultClock.ElapsedTime.AsSeconds() > 1 &&
+                                IsStandingOnBlocks && !IsDead && SpeedX == 0)
+                            {
+                                sTp.Play();
+                                SetPosition(level.tp3Position.X, level.tp3Position.Y);
+                                DefaultClock.Restart();
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     //////////////////
                     case BlockType.Hint:
-                    {
-                        level.SetHints(obstacle);
-                        break;
-                    }
+                        {
+                            level.SetHints(obstacle);
+                            break;
+                        }
                 }
             }
 
@@ -892,7 +900,7 @@ namespace ChendiAdventures
                         if (trap.IsBlowing)
                         {
                             SpeedY = -5f;
-                            SpeedX = 25f; 
+                            SpeedX = 25f;
                         }
                     }
                 }
@@ -966,7 +974,7 @@ namespace ChendiAdventures
 
                 Lives--;
 
-                level.isShopOpened = false;
+                Sword.Disenergize();
 
                 if (Lives <= 0)
                 {

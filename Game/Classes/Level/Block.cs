@@ -299,6 +299,29 @@ namespace ChendiAdventures
                         SetTextureRectangle(64, 256);
                         break;
                     }
+                case BlockType.SwordEnchant:
+                    {
+                        BlockAnimation = new Animation(this, 0.05f,
+                            new Vector2i(64, 384),
+                            new Vector2i(32, 384),
+                            new Vector2i(0, 384),
+                            new Vector2i(0, 384),
+                            new Vector2i(0, 384),
+                            new Vector2i(0, 384),
+                            new Vector2i(0, 384),
+                            new Vector2i(32, 384),
+                            new Vector2i(64, 384),
+                            new Vector2i(96, 192),
+                            new Vector2i(96, 160),
+                            new Vector2i(96, 128),
+                            new Vector2i(96, 96),
+                            new Vector2i(96, 128),
+                            new Vector2i(96, 160),
+                            new Vector2i(96, 192)
+                        );
+                        SetTextureRectangle(64, 384);
+                        break;
+                    }
                 case BlockType.Score5000:
                     {
                         BlockAnimation = new Animation(this, 0.05f,

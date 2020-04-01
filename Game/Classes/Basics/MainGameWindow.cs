@@ -22,7 +22,7 @@ namespace ChendiAdventures
                 //..
             }
         }
-
+        //asdasdsadasd
         public static readonly Random Randomizer = new Random();
         public static Sound Victory = new Sound(new SoundBuffer(@"sfx/victory.wav"));
         public static Sound sChoice = new Sound(new SoundBuffer(@"sfx/choice.wav"));

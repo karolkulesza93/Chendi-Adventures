@@ -1162,7 +1162,6 @@ namespace ChendiAdventures
             var y = 0;
             var monsterFlag = false;
 
-
             foreach (var obstacle in LevelObstacles)
             {
                 type = obstacle.Type;
@@ -1555,17 +1554,13 @@ namespace ChendiAdventures
                 }
             }
 
-
-
-
-
             File.WriteAllText("levels/edit.dat", level.ToString());
             var number = 0;
-            var name = "CHALLENGE " + number;
+            var name = "DUNGEON " + number;
             while (File.Exists(@"levels/challenges/" + name + ".dat"))
             {
                 number++;
-                name = "CHALLENGE " + number;
+                name = "DUNGEON " + number;
             }
             if (saveChall == true) File.WriteAllText("levels/challenges/" + name + ".dat", level.ToString());
         }

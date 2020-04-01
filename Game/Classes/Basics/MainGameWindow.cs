@@ -169,43 +169,215 @@ namespace ChendiAdventures
 
         private void ProductionInfoLoop()
         {
+            Music sceneMusic = new Music(@"sfx/scene.wav") { Volume = 60 };
+            sceneMusic.Loop = true;
+
+            List<Sprite> artList = new List<Sprite>();
+            for (int i = 1; i <= 6; i++)
+            {
+                artList.Add(new Sprite(new Texture(@"img/art/scene/" + i + ".png")));
+            }
+
+            for (int i = 0; i < artList.Count; i++)
+            {
+                artList[i].Position = new Vector2f(_windowWidth - 1024 - 10,  -artList[i].Texture.Size.Y);
+            }
+
+            var castle = new Sprite(new Texture(@"img/art/castle.png"));
+            castle.Scale = new Vector2f((float)_windowWidth / (float)castle.Texture.Size.X, (float)_windowHeight / (float)castle.Texture.Size.Y);
+            castle.Position = new Vector2f(0, _windowHeight);
+
+            var line = new TextLine(
+                
+                "TUTAJ WSTAWIC HISTORIE\n"+
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" +
+                "TUTAJ WSTAWIC HISTORIE\n" 
+
+                , 50, 50, _windowHeight + 10, Color.White);
+            line.SetOutlineThickness(3);
+
             var author = new TextLine("CREATED BY KAROL KULESZA", 50, MainView.Center.X - 600, MainView.Center.Y - 50,
                 Color.White);
+
+            var sfml = new Sprite(new Texture(@"img/pegi/sfml.png")) {Scale = new Vector2f(0.5f, 0.5f)};
+            sfml.Position = new Vector2f(MainView.Center.X - sfml.Texture.Size.X / 4, MainView.Center.Y + 50);
+
+            var pegi = new Sprite(new Texture(@"img/pegi/pegi.jpg"));
+            pegi.Position = new Vector2f(MainView.Center.X - pegi.Texture.Size.X / 2, MainView.Center.Y - pegi.Texture.Size.Y / 2);
+
+            var violence = new Sprite(new Texture(@"img/pegi/violence.jpg"));
+            violence.Position = new Vector2f(MainView.Center.X - violence.Texture.Size.X / 2, MainView.Center.Y - violence.Texture.Size.Y / 2);
+
+            var gambling = new Sprite(new Texture(@"img/pegi/gambling.jpg"));
+            gambling.Position = new Vector2f(MainView.Center.X - gambling.Texture.Size.X / 2, MainView.Center.Y - gambling.Texture.Size.Y / 2);
+
             var timer = new Clock();
+            var slideTime = 3;
+            var artTime = 7;
+
             while (_window.IsOpen)
             {
                 ResetWindow();
 
-                if (timer.ElapsedTime.AsSeconds() > 6)
+                if (timer.ElapsedTime.AsSeconds() > slideTime * 4)
+                {
+                    _window.Clear(new Color(184, 226, 242));
+                    if (timer.ElapsedTime.AsSeconds() < slideTime * 4 + 1) _screenChange.AppearIn();
+                    _window.Draw(castle);
+                    if (sceneMusic.Status != SoundStatus.Playing)
+                    {
+                        sceneMusic.Play();
+                    }
+                    if (castle.Position.Y > 0)
+                    {
+                        castle.Position = new Vector2f(castle.Position.X, castle.Position.Y - 0.5f);
+                    }
+                    line.MoveText(line.X, line.Y - 1);
+                }
+
+                for (int i = 0; i < artList.Count; i++)
+                {
+                    if (timer.ElapsedTime.AsSeconds() > 4 * slideTime + i * artTime + 1)
+                    {
+                        if (artList[i].Position.X < _windowWidth + 10)
+                        {
+                            artList[i].Position = new Vector2f(artList[i].Position.X + 1, artList[i].Position.Y + 1);
+                        }
+                    }
+                }
+
+
+
+                if (timer.ElapsedTime.AsSeconds() > 4 * slideTime + 45)
+                {
+                    sceneMusic.Volume -= 0.5f;
+                    _screenChange.BlackOut();
+                }
+                if (timer.ElapsedTime.AsSeconds() > 4 * slideTime + 47)
                 {
                     break;
                 }
 
-                if (timer.ElapsedTime.AsSeconds() > 5)
-                {
-                    _screenChange.BlackOut();
 
-                }
-                else
+
+                if (timer.ElapsedTime.AsSeconds() < 1)
                 {
                     _screenChange.AppearIn();
+                    _window.Draw(author);
+                    _window.Draw(sfml);
+                }
+                else if (timer.ElapsedTime.AsSeconds() < slideTime - 1)
+                {
+                    _window.Draw(author);
+                    _window.Draw(sfml);
+                }
+                else if (timer.ElapsedTime.AsSeconds() < slideTime)
+                {
+                    _window.Draw(author);
+                    _window.Draw(sfml);
+                    _screenChange.BlackOut();
                 }
 
+                else if (timer.ElapsedTime.AsSeconds() < slideTime + 1)
+                {
+                    _screenChange.AppearIn();
+                    _window.Draw(pegi);
+                }
+                else if (timer.ElapsedTime.AsSeconds() < slideTime*2 -1)
+                {
+                    _window.Draw(pegi);
+                }
+                else if (timer.ElapsedTime.AsSeconds() < slideTime * 2)
+                {
+                    _screenChange.BlackOut();
+                    _window.Draw(pegi);
+                }
+
+                else if (timer.ElapsedTime.AsSeconds() < slideTime*2+1)
+                {
+                    _screenChange.AppearIn();
+                    _window.Draw(violence);
+                }
+                else if (timer.ElapsedTime.AsSeconds() < slideTime * 3 -1)
+                {
+                    _window.Draw(violence);
+                }
+                else if (timer.ElapsedTime.AsSeconds() < slideTime * 3)
+                {
+                    _screenChange.BlackOut();
+                    _window.Draw(violence);
+                }
+
+                else if (timer.ElapsedTime.AsSeconds() < slideTime*3 + 1)
+                {
+                    _screenChange.AppearIn();
+                    _window.Draw(gambling);
+                }
+                else if (timer.ElapsedTime.AsSeconds() < slideTime * 4 - 1)
+                {
+                    _window.Draw(gambling);
+                }
+                else if (timer.ElapsedTime.AsSeconds() < slideTime * 4)
+                {
+                    _screenChange.BlackOut();
+                    _window.Draw(gambling);
+                }
+
+                
+
+
+
+
+
+
+
+
+
+
                 if (Keyboard.IsKeyPressed(Keyboard.Key.Space) || Keyboard.IsKeyPressed(Keyboard.Key.Escape) ||
-                    Keyboard.IsKeyPressed(Keyboard.Key.Return) || Keyboard.IsKeyPressed(Keyboard.Key.Z) ||
-                    Joystick.IsButtonPressed(0, 7) || Joystick.IsButtonPressed(0, 0))
+                Keyboard.IsKeyPressed(Keyboard.Key.Return) || Keyboard.IsKeyPressed(Keyboard.Key.Z) ||
+                Joystick.IsButtonPressed(0, 7) || Joystick.IsButtonPressed(0, 0))
                 {
                     _chendi.sPickup.Play();
                     break;
                 }
 
-
-                _window.Draw(author);
+                foreach (var art in artList)
+                {
+                    _window.Draw(art);
+                }
+                _window.Draw(line);
                 _window.Draw(_screenChange);
                 _window.Display();
             }
+            
+            sceneMusic.Stop();
             DrawLoadingScreen();
             Thread.Sleep(100);
+        }
+
+        private void GameEndingLoop()
+        {
+
         }
 
         private void LicenceCheck()
@@ -353,7 +525,6 @@ namespace ChendiAdventures
 
             _restartLevel = new TextLine("RESTART LEVEL", 25, 0, 0, Color.White); _restartLevel.SetOutlineThickness(2.5f);
             _gotoMenu = new TextLine("MAIN MENU", 25, 0, 0, Color.White); _gotoMenu.SetOutlineThickness(2.5f);
-            _quitGame = new TextLine("QUIT GAME", 25, 0, 0, Color.White); _quitGame.SetOutlineThickness(2.5f);
             _resume = new TextLine("RESUME", 25, 0, 0, Color.White); _resume.SetOutlineThickness(2.5f);
             _yes = new TextLine("YES", 25, 0, 0, Color.White); _yes.SetOutlineThickness(2.5f);
             _no = new TextLine("NO", 25, 0, 0, Color.White); _no.SetOutlineThickness(2.5f);
@@ -720,7 +891,7 @@ namespace ChendiAdventures
             _genericGame = new TextLine("ENDLESS MODE", 50, -600, MainView.Center.Y + MainView.Size.Y / 2 - 340, Color.White);
             _genericGame.SetOutlineThickness(5);
 
-            _challengeGame = new TextLine("CHALLENGE MODE", 50, -700, MainView.Center.Y + MainView.Size.Y / 2 - 280, Color.White);
+            _challengeGame = new TextLine("WORKSHOP", 50, -700, MainView.Center.Y + MainView.Size.Y / 2 - 280, Color.White);
             _challengeGame.SetOutlineThickness(5);
 
             _highscores = new TextLine("HIGHSCORES", 50, -800, MainView.Center.Y + MainView.Size.Y / 2 - 220, Color.White); //850
@@ -762,7 +933,7 @@ namespace ChendiAdventures
                     Keyboard.IsKeyPressed(Keyboard.Key.LAlt) &&
                     Keyboard.IsKeyPressed(Keyboard.Key.L))
                 {
-                    Level.LevelGameMode = GameMode.Adventure;   
+                    Level.LevelGameMode = GameMode.Adventure;
                     _chendi.sPickup.Play();
                     flag = true;
                     LevelEditor();
@@ -1312,14 +1483,6 @@ namespace ChendiAdventures
             if (_background.Position.X < -32 && _background.Position.Y < -32)
                 _background.Position = new Vector2f(0, 0);
             else _background.Position = new Vector2f(_background.Position.X - 0.2f, _background.Position.Y - 0.2f);
-        }
-
-        private void BegginingScene()
-        {
-            //music
-            //textures
-            //skip button
-            //clear draw display
         }
 
         private void LevelEditor()
@@ -1961,10 +2124,9 @@ namespace ChendiAdventures
                 var flag = true;
                 var delay = 0;
 
-                _resume.MoveText(MainView.Center.X - MainView.Size.X / 2 - 450, MainView.Center.Y + MainView.Size.Y / 2 - 140);
-                _restartLevel.MoveText(MainView.Center.X - MainView.Size.X / 2 - 500, MainView.Center.Y + MainView.Size.Y / 2 - 110);
-                _gotoMenu.MoveText(MainView.Center.X - MainView.Size.X / 2 - 550, MainView.Center.Y + MainView.Size.Y / 2 - 80);
-                _quitGame.MoveText(MainView.Center.X - MainView.Size.X / 2 - 600, MainView.Center.Y + MainView.Size.Y / 2 - 50);
+                _resume.MoveText(MainView.Center.X - MainView.Size.X / 2 - 450, MainView.Center.Y + MainView.Size.Y / 2 - 110);
+                _restartLevel.MoveText(MainView.Center.X - MainView.Size.X / 2 - 500, MainView.Center.Y + MainView.Size.Y / 2 - 80);
+                _gotoMenu.MoveText(MainView.Center.X - MainView.Size.X / 2 - 550, MainView.Center.Y + MainView.Size.Y / 2 - 50);
 
                 while (_window.IsOpen && _isGame && isQuitMenu)
                 {
@@ -1974,7 +2136,6 @@ namespace ChendiAdventures
                     if (_resume.X < MainView.Center.X - MainView.Size.X / 2 + 25) _resume.MoveText(_resume.X + 25, _resume.Y);
                     if (_restartLevel.X < MainView.Center.X - MainView.Size.X / 2 + 25) _restartLevel.MoveText(_restartLevel.X + 25, _restartLevel.Y);
                     if (_gotoMenu.X < MainView.Center.X - MainView.Size.X / 2 + 25) _gotoMenu.MoveText(_gotoMenu.X + 25, _gotoMenu.Y);
-                    if (_quitGame.X < MainView.Center.X - MainView.Size.X / 2 + 25) _quitGame.MoveText(_quitGame.X + 25, _quitGame.Y);
 
                     _yes.MoveText(-100, 0);
                     _no.MoveText(-100, 0);
@@ -1984,7 +2145,6 @@ namespace ChendiAdventures
                         _resume.ChangeColor(Color.White);
                         _restartLevel.ChangeColor(Color.White);
                         _gotoMenu.ChangeColor(Color.White);
-                        _quitGame.ChangeColor(Color.White);
                         _yes.ChangeColor(Color.White);
                         _no.ChangeColor(Color.White);
 
@@ -2003,11 +2163,6 @@ namespace ChendiAdventures
                             case 3:
                                 {
                                     _gotoMenu.ChangeColor(new Color(0, 138, 198));
-                                    break;
-                                }
-                            case 4:
-                                {
-                                    _quitGame.ChangeColor(new Color(0, 138, 198));
                                     break;
                                 }
                         }
@@ -2039,8 +2194,8 @@ namespace ChendiAdventures
                             flag = false;
                         }
 
-                        if (choice == 5) choice = 1;
-                        else if (choice == 0) choice = 4;
+                        if (choice == 4) choice = 1;
+                        else if (choice == 0) choice = 3;
                     }
                     else
                     {
@@ -2059,36 +2214,23 @@ namespace ChendiAdventures
                                 }
                             case 2:
                                 {
-                                    _yes.MoveText(MainView.Center.X - MainView.Size.X / 2 + 455, MainView.Center.Y + MainView.Size.Y / 2 - 110);
-                                    _no.MoveText(MainView.Center.X - MainView.Size.X / 2 + 390, MainView.Center.Y + MainView.Size.Y / 2 - 110);
-
-                                    _resume.ChangeColor(new Color(100, 100, 100));
-                                    _restartLevel.ChangeColor(new Color(0, 38, 98));
-                                    _gotoMenu.ChangeColor(new Color(100, 100, 100));
-                                    _quitGame.ChangeColor(new Color(100, 100, 100));
-
-                                    break;
-                                }
-                            case 3:
-                                {
                                     _yes.MoveText(MainView.Center.X - MainView.Size.X / 2 + 455, MainView.Center.Y + MainView.Size.Y / 2 - 80);
                                     _no.MoveText(MainView.Center.X - MainView.Size.X / 2 + 390, MainView.Center.Y + MainView.Size.Y / 2 - 80);
 
                                     _resume.ChangeColor(new Color(100, 100, 100));
-                                    _restartLevel.ChangeColor(new Color(100, 100, 100));
-                                    _gotoMenu.ChangeColor(new Color(0, 38, 98));
-                                    _quitGame.ChangeColor(new Color(100, 100, 100));
+                                    _restartLevel.ChangeColor(new Color(0, 38, 98));
+                                    _gotoMenu.ChangeColor(new Color(100, 100, 100));
+
                                     break;
                                 }
-                            case 4:
+                            case 3:
                                 {
                                     _yes.MoveText(MainView.Center.X - MainView.Size.X / 2 + 455, MainView.Center.Y + MainView.Size.Y / 2 - 50);
                                     _no.MoveText(MainView.Center.X - MainView.Size.X / 2 + 390, MainView.Center.Y + MainView.Size.Y / 2 - 50);
 
                                     _resume.ChangeColor(new Color(100, 100, 100));
                                     _restartLevel.ChangeColor(new Color(100, 100, 100));
-                                    _gotoMenu.ChangeColor(new Color(100, 100, 100));
-                                    _quitGame.ChangeColor(new Color(0, 38, 98));
+                                    _gotoMenu.ChangeColor(new Color(0, 38, 98));
                                     break;
                                 }
                         }
@@ -2138,19 +2280,6 @@ namespace ChendiAdventures
                                             _isMenu = true;
                                             break;
                                         }
-                                    case 4:
-                                        {
-                                            _highscoreValues.AddNewRecord(new HighscoreRecord(_chendi.Score, Level.LevelNumber,
-                                                GameDifficulty.ToString().ToUpper()));
-                                            if (Level.LevelNumber > Settings.Default.HighestLevel)
-                                            {
-                                                Settings.Default.HighestLevel = Level.LevelNumber;
-                                                Settings.Default.Save();
-                                            }
-
-                                            _isGame = false;
-                                            break;
-                                        }
                                 }
                             }
                             else
@@ -2178,7 +2307,6 @@ namespace ChendiAdventures
                     _window.Draw(_resume);
                     _window.Draw(_restartLevel);
                     _window.Draw(_gotoMenu);
-                    _window.Draw(_quitGame);
 
                     _window.Draw(_yes);
                     _window.Draw(_no);
@@ -2486,7 +2614,6 @@ namespace ChendiAdventures
 
         private TextLine _yes;
         private TextLine _no;
-        private TextLine _quitGame;
         private TextLine _restartLevel;
         private TextLine _gotoMenu;
         private TextLine _resume;

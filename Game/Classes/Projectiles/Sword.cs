@@ -331,6 +331,8 @@ namespace ChendiAdventures
                 {
                     if (GetBoundingBox().Intersects(walker.GetBoundingBox()))
                     {
+                        walker.Health--;
+                        level.Particles.Add(new ParticleEffect(X, Y, Color.Yellow, 10));
                         if (!_character.IsDownAttacking)
                         {
                             _character.SpeedX = walker.GetCenterPosition().X - _character.GetCenterPosition().X < 0

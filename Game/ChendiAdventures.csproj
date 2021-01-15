@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{13F93A45-3010-4FD2-945B-4C5F32BC91F8}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>Game</RootNamespace>
     <AssemblyName>Chendi Adventures</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>

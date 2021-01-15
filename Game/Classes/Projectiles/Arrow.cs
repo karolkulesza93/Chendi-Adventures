@@ -102,6 +102,7 @@ namespace ChendiAdventures
                 {
                     if (!isEnergized)
                     {
+                        level.Particles.Add(new ParticleEffect(X, Y, Color.Yellow, 10));
                         walker.Health--;
                         DeleteArrow();
                     }

@@ -148,7 +148,10 @@ namespace ChendiAdventures
                     }
                 case GameMode.Challenge:
                     {
-                        LevelColor = new Color((byte)(MainGameWindow.Randomizer.Next(200) + 50), (byte)(MainGameWindow.Randomizer.Next(200) + 50), (byte)(MainGameWindow.Randomizer.Next(200) + 50));
+                        LevelColor = new Color(
+                            (byte)(MainGameWindow.Randomizer.Next(150) + 100), 
+                            (byte)(MainGameWindow.Randomizer.Next(150) + 100), 
+                            (byte)(MainGameWindow.Randomizer.Next(150) + 100));
                         break;
                     }
                 default:
@@ -1582,6 +1585,7 @@ namespace ChendiAdventures
             }
 
             File.WriteAllText("levels/edit.dat", level.ToString());
+            File.WriteAllText("levels/challenges/EDIT.dat", level.ToString());
             var number = 0;
             var name = "DUNGEON " + number;
             while (File.Exists(@"levels/challenges/" + name + ".dat"))

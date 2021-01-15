@@ -26,6 +26,8 @@ namespace ChendiAdventures
         public static readonly Random Randomizer = new Random();
         public static Sound Victory = new Sound(new SoundBuffer(@"sfx/victory.wav"));
         public static Sound sChoice = new Sound(new SoundBuffer(@"sfx/choice.wav"));
+        public static bool IsControllerConnected;
+        public static View MainView;
 
         private MainGameWindow()
         {
@@ -75,6 +77,8 @@ namespace ChendiAdventures
             _window.KeyPressed += OnKeyPress;
             _window.JoystickConnected += OnControllerConnection;
             _window.JoystickDisconnected += OnControllerDisconnection;
+            //_window.LostFocus +=
+            //_window.GainedFocus +=
             //
 
             _window.SetMouseCursorVisible(false);
@@ -133,13 +137,13 @@ namespace ChendiAdventures
         private void OnControllerConnection(object sender, EventArgs e)
         {
             IsControllerConnected = true;
-            sChoice.Play();
+            _chendi.sLife.Play();
         }
 
         private void OnControllerDisconnection(object sender, EventArgs e)
         {
             IsControllerConnected = false;
-            sChoice.Play();
+            _chendi.sError.Play();
         }
 
         public void GameStart()
@@ -189,29 +193,26 @@ namespace ChendiAdventures
 
             var line = new TextLine(
                 
-                "TUTAJ WSTAWIC HISTORIE\n"+
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" +
-                "TUTAJ WSTAWIC HISTORIE\n" 
-
+                "JUST BEFORE THE WEDDING,\n"+
+                "CHENDI HAS LOST HIS BELOVED\n" +
+                "PRINCESS. A POWERFUL EARTHQUAKE\n" +
+                "DEVIDED THE GREADOUND\n" +
+                "BELOW THEM AND PRINCESS\n" +
+                "FELT INTO THE ABYSS.\n" +
+                "NO ONE COULD HAVE\n" +
+                "PREDICTED THIS WOULD\n" +
+                "HAPPEN. BUT OUT BRAVE\n" +
+                "HERO STARTED HIS RESQUE\n" +
+                "MISSION IMMIDIATELY.\n" +
+                "HE JUMPED INTO THE ABYSS.\n" +
+                "CHENDI WAS FALLING FOR MANY\n" +
+                "HOURS, UNTIL LANDED SAFELY.\n" +
+                "AS SOON AS HE LANDED,\n" +
+                "CHENDI NOTICED A STRANGE\n" +
+                "TEMPLE RUINS.MAYBE THERE \n" +
+                "IS A CHANCE TO SAVE\n" +
+                "MY LOVE?\n"
+                
                 , 50, 50, _windowHeight + 10, Color.White);
             line.SetOutlineThickness(3);
 
@@ -556,7 +557,6 @@ namespace ChendiAdventures
             }
 
             _window.Close();
-            Console.Clear();
             Environment.Exit(0);
         }
 
@@ -1069,6 +1069,9 @@ namespace ChendiAdventures
 
         private void LevelSelectionLoop()
         {
+            //Settings.Default.HighestLevel = 0;
+            //Settings.Default.Save();
+
             var maxLevel = Settings.Default.HighestLevel;
             var levels = new List<TextLine>();
 
@@ -2350,6 +2353,11 @@ namespace ChendiAdventures
 
                 DrawGameOver();
                 _chendi.ResetMainCharacter();
+                if (!_window.IsOpen)
+                {
+                    _isGame = false;
+                    _isMenu = false;
+                }
                 DrawLoadingScreen();
             }
         }
@@ -2573,8 +2581,6 @@ namespace ChendiAdventures
         private static MainGameWindow _instance;
         private static readonly object Padlock = new object();
 
-        public static bool IsControllerConnected;
-        public static View MainView;
         private readonly RenderWindow _window;
         private Sprite _background;
         private MainCharacter _chendi;

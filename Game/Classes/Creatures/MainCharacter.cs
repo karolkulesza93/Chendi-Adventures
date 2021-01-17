@@ -13,10 +13,11 @@ namespace ChendiAdventures
         public static Keyboard.Key KeyLEFT = Keyboard.Key.Left;
         public static Keyboard.Key KeyRIGHT = Keyboard.Key.Right;
         public static Keyboard.Key KeyJUMP = Keyboard.Key.Z;
+        public static Keyboard.Key KeyDASH = Keyboard.Key.C;
         public static Keyboard.Key KeyATTACK = Keyboard.Key.X;
-        public static Keyboard.Key KeyARROW = Keyboard.Key.C;
-        public static Keyboard.Key KeyTHUNDER = Keyboard.Key.D;
-        public static Keyboard.Key KeyIMMORTALITY = Keyboard.Key.S;
+        public static Keyboard.Key KeyARROW = Keyboard.Key.D;
+        public static Keyboard.Key KeyTHUNDER = Keyboard.Key.S;
+        public static Keyboard.Key KeyIMMORTALITY = Keyboard.Key.A;
 
         public readonly Clock DefaultClock;
 
@@ -50,6 +51,12 @@ namespace ChendiAdventures
             IsUpAttacking = false;
             IsShooting = false;
             IsVulnerable = true;
+            IsDashing = false;
+            IsAbleToDash = true;
+            IsOnWall = false;
+            WallToTheLeft = false;
+            WallToTheRight = false;
+
             _immortalityAnimationCounter = 0;
             _immortalityAnimationFlag = false;
 
@@ -137,6 +144,7 @@ namespace ChendiAdventures
             sPickup = new Sound(new SoundBuffer(@"sfx/pickup.wav"));
             sImmortality = new Sound(new SoundBuffer(@"sfx/immortality.wav")) { Volume = 30, Loop = true };
             sError = new Sound(new SoundBuffer(@"sfx/error.wav")) { Volume = 10 };
+            sDash = new Sound(new SoundBuffer(@"sfx/dash.wav")) { Volume = 40 }; ;
         }
 
         public Sword Sword { get; }
@@ -163,7 +171,6 @@ namespace ChendiAdventures
         public Vector2f SafePosition { get; set; }
         public Clock SafePositionClock { get; }
 
-
         //sounds
         public Sound sTramp { get; }
         public Sound sAtk { get; }
@@ -175,21 +182,25 @@ namespace ChendiAdventures
         public Sound sImmortality { get; }
         public Sound sPickup { get; }
         public Sound sError { get; }
+        public Sound sDash { get; }
 
         public void MainCharacterSteering(Level level)
         {
             if (!IsDead && !GotExit)
             {
+                //dash
+                if ((Keyboard.IsKeyPressed(KeyDASH) || Joystick.IsButtonPressed(0, 1)) && IsAbleToDash && MovementDirection != Movement.None && DefaultClock.ElapsedTime.AsMilliseconds() > 300) Dash(level);
                 //jump
-                if ((Keyboard.IsKeyPressed(KeyJUMP) || Joystick.IsButtonPressed(0, 0)) && !IsShooting && !IsAttacking && !IsJumping) Jump();
+                if ((Keyboard.IsKeyPressed(KeyJUMP) || Joystick.IsButtonPressed(0, 0)) && !IsShooting && !IsAttacking && !IsJumping) Jump(level);
                 IsJumping = Keyboard.IsKeyPressed(KeyJUMP) || Joystick.IsButtonPressed(0, 0);
                 //attack
                 if ((Keyboard.IsKeyPressed(KeyATTACK) || Joystick.IsButtonPressed(0, 2)) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 &&
-                    IsVulnerable && !IsAttacking && !IsShooting)
+                    IsVulnerable && !IsAttacking && !IsShooting && !IsOnWall)
                 {
                     if (sAtk.Status != SoundStatus.Playing) sAtk.Play();
                     Sword.LastMove = _lastMove;
                     IsAttacking = true;
+                    IsDashing = false;
                     sJump.Stop();
                     if ((Keyboard.IsKeyPressed(Keyboard.Key.Up) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) > 5) && !IsDownAttacking) IsUpAttacking = true;
                     else if ((Keyboard.IsKeyPressed(KeyDOWN) || Joystick.GetAxisPosition(0, Joystick.Axis.Y) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovY) < -5) && !IsUpAttacking && !IsStandingOnBlocks && SpeedY >= -5f)
@@ -218,7 +229,7 @@ namespace ChendiAdventures
                 }
 
                 //energized arrow
-                if ((Keyboard.IsKeyPressed(KeyTHUNDER) || Joystick.IsButtonPressed(0, 1)) && DefaultClock.ElapsedTime.AsMilliseconds() > 1200 &&
+                if ((Keyboard.IsKeyPressed(KeyTHUNDER) || Joystick.IsButtonPressed(0, 5)) && DefaultClock.ElapsedTime.AsMilliseconds() > 1200 &&
                     ArrowAmount > 0 && Mana > 0 && IsVulnerable && IsStandingOnBlocks)
                 {
                     IsShooting = true;
@@ -230,7 +241,7 @@ namespace ChendiAdventures
                     DefaultClock.Restart();
                     Arrow.SetPosition(X, Y + 12);
                 }
-                else if ((Keyboard.IsKeyPressed(KeyTHUNDER) || Joystick.IsButtonPressed(0, 1)) && DefaultClock.ElapsedTime.AsMilliseconds() > 1200 &&
+                else if ((Keyboard.IsKeyPressed(KeyTHUNDER) || Joystick.IsButtonPressed(0, 5)) && DefaultClock.ElapsedTime.AsMilliseconds() > 1200 &&
                          IsStandingOnBlocks && !IsShooting && !IsAttacking && !JustRespawned && IsVulnerable)
                 {
                     if (Mana == 0 && ArrowAmount == 0)
@@ -245,7 +256,7 @@ namespace ChendiAdventures
                 }
 
                 //immortality
-                if ((Keyboard.IsKeyPressed(KeyIMMORTALITY) || Joystick.IsButtonPressed(0, 5) || Joystick.IsButtonPressed(0, 4)) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 &&
+                if ((Keyboard.IsKeyPressed(KeyIMMORTALITY) || Joystick.IsButtonPressed(0, 4)) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 &&
                     Mana >= 3 && IsVulnerable)
                 {
                     Mana -= 3;
@@ -253,7 +264,7 @@ namespace ChendiAdventures
                     IsVulnerable = false;
                     sImmortality.Play();
                 }
-                else if ((Keyboard.IsKeyPressed(KeyIMMORTALITY) || Joystick.IsButtonPressed(0, 5) || Joystick.IsButtonPressed(0, 4)) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 && IsVulnerable && !JustRespawned)
+                else if ((Keyboard.IsKeyPressed(KeyIMMORTALITY) || Joystick.IsButtonPressed(0, 4)) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 && IsVulnerable && !JustRespawned)
                 {
                     level.ScoreAdditionEffects.Add(new ScoreAdditionEffect(0, X, Y, "MORE POTIONS NEEDED"));
                     DefaultClock.Restart();
@@ -261,7 +272,7 @@ namespace ChendiAdventures
                 }
 
                 //movement left
-                if ((Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) &&
+                if (!IsDashing && (Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) &&
                     !(Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) && !IsStandingOnBlocks && !IsDownAttacking)
                 {
                     MoveLeft();
@@ -270,7 +281,7 @@ namespace ChendiAdventures
                         _lastMove = Movement.Left;
                     }
                 }
-                else if ((Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) &&
+                else if (!IsDashing && (Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) &&
                          !(Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) && !IsAttacking && !IsShooting)
                 {
                     MoveLeft();
@@ -287,7 +298,7 @@ namespace ChendiAdventures
                 }
 
                 //movement right
-                if ((Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) &&
+                if (!IsDashing && (Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) &&
                     !(Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) && !IsStandingOnBlocks && !IsDownAttacking)
                 {
                     MoveRight();
@@ -296,7 +307,7 @@ namespace ChendiAdventures
                         _lastMove = Movement.Right;
                     }
                 }
-                else if ((Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) &&
+                else if (!IsDashing && (Keyboard.IsKeyPressed(KeyRIGHT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) > 50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) > 5) &&
                          !(Keyboard.IsKeyPressed(KeyLEFT) || Joystick.GetAxisPosition(0, Joystick.Axis.X) < -50 || Joystick.GetAxisPosition(0, Joystick.Axis.PovX) < -5) && !IsAttacking && !IsShooting)
                 {
                     MoveRight();
@@ -331,7 +342,16 @@ namespace ChendiAdventures
         {
             MainCharacterSteering(level);
 
-            SpeedY += GravityForce;
+            if (IsDashing)
+            {
+                SpeedY = 0.0f;
+                if (DefaultClock.ElapsedTime.AsMilliseconds() > 200) IsDashing = false;
+            }
+            else if (IsOnWall && SpeedY > 0.7f)
+            {
+                SpeedY = 0.7f;
+            }
+            else SpeedY += GravityForce;
 
             Arrow.ArrowUpdate(this, level);
             Sword.SwordCollisionCheck(level, this);
@@ -351,7 +371,7 @@ namespace ChendiAdventures
 
             CollisionDependence(level);
 
-            if (SpeedX != 0 && IsStandingOnBlocks && sStep.Status != SoundStatus.Playing) sStep.Play();
+            if (!IsDead && SpeedX != 0 && IsStandingOnBlocks && sStep.Status != SoundStatus.Playing) sStep.Play();
 
             if (!IsVulnerable)
             {
@@ -424,7 +444,14 @@ namespace ChendiAdventures
 
             if (IsStandingOnBlocks)
             {
-                if (IsShooting)
+                if (IsDashing)
+                {
+                    if (SpeedX > 0)
+                        SetTextureRectangle(0, 256);
+                    else if (SpeedX < 0)
+                        SetTextureRectangle(32, 256);
+                }
+                else if (IsShooting)
                 {
                     if (_lastMove == Movement.Left)
                         SetTextureRectangle(64, 32);
@@ -448,7 +475,21 @@ namespace ChendiAdventures
             }
             else
             {
-                if (IsAttacking)
+                if (IsOnWall)
+                {
+                    if (WallToTheRight)
+                        SetTextureRectangle(96, 256);
+                    else if (WallToTheLeft)
+                        SetTextureRectangle(64, 256);
+                }
+                else if (IsDashing)
+                {
+                    if (SpeedX > 0)
+                        SetTextureRectangle(0, 256);
+                    else if(SpeedX < 0)
+                        SetTextureRectangle(32, 256);
+                }
+                else if (IsAttacking)
                 {
                     if (IsUpAttacking)
                         SetTextureRectangle(64, 64);
@@ -502,6 +543,10 @@ namespace ChendiAdventures
             Block obstacle;
 
             // HORIZONTAL
+            IsOnWall = false;
+            WallToTheLeft = false;
+            WallToTheRight = false;
+
             if (SpeedX < 0) // moving left
             {
                 if (level.UnpassableContains(
@@ -511,7 +556,12 @@ namespace ChendiAdventures
                         level.GetObstacle(Get32NextPosition().X + 0.01f, Get32Position().Y + 0.85f)).Type))
                 {
                     NewX = (int)Get32NextPosition().X + 1;
+                    if (SpeedX < -1.0f) sLand.Play();
                     SpeedX = 0;
+                    IsOnWall = true;
+                    WallToTheLeft = true;
+                    IsDashing = false;
+                    IsAbleToDash = true;
                     //Console.WriteLine("from RIGHT side");
                 }
             }
@@ -524,7 +574,12 @@ namespace ChendiAdventures
                         level.GetObstacle(Get32NextPosition().X + 0.99f, Get32Position().Y + 0.85f)).Type))
                 {
                     NewX = (int)Get32NextPosition().X;
+                    if (SpeedX > 1.0f) sLand.Play();
                     SpeedX = 0;
+                    IsOnWall = true;
+                    WallToTheRight = true;
+                    IsDashing = false;
+                    IsAbleToDash = true;
                     //Console.WriteLine("from LEFT side");
                 }
             }
@@ -559,6 +614,8 @@ namespace ChendiAdventures
                         obstacle.Stomp();
                     NewY = (int)Get32NextPosition().Y;
                     IsStandingOnBlocks = true;
+                    IsAbleToDash = true;
+                    IsOnWall = false;
 
                     if (SafePositionClock.ElapsedTime.AsSeconds() > 5 && (obstacle.Type == BlockType.Brick || obstacle.Type == BlockType.Dirt) && !IsDead && IsVulnerable)
                     {
@@ -566,7 +623,11 @@ namespace ChendiAdventures
                         SafePositionClock.Restart();
                     }
 
-                    if (SpeedY > 1f) sLand.Play();
+                    if (SpeedY > 1f)
+                    {
+                        sLand.Play();
+                        level.AddParticleEffect(new ParticleEffect(X, Y, new Color(50, 50, 50), 10));
+                    }
                     SpeedY = 0;
                 }
             }
@@ -972,6 +1033,10 @@ namespace ChendiAdventures
                 IsDownAttacking = false;
                 IsUpAttacking = false;
 
+                IsDashing = false;
+                IsAbleToDash = false;
+                IsOnWall = false;
+
                 Lives--;
 
                 Sword.Disenergize();
@@ -981,6 +1046,55 @@ namespace ChendiAdventures
                     OutOfLives = true;
                     Lives = 0;
                 }
+            }
+        }
+
+        public void Jump(Level level)
+        {
+            if (IsStandingOnBlocks)
+            {
+                sJump.Play();
+                SpeedY = -1 * MaxSpeedY;
+                IsStandingOnBlocks = false;
+            }
+
+            if (IsOnWall)
+            {
+                sJump.Play();
+                if (WallToTheRight)
+                {
+                    SpeedX = -7.0f;
+                    MovementDirection = Movement.Left;
+                }
+                else if (WallToTheLeft)
+                {
+                    SpeedX = 7.0f;
+                    MovementDirection = Movement.Right;
+                }
+                SpeedY = -1 * MaxSpeedY;
+                IsStandingOnBlocks = false;
+                level.AddParticleEffect(new ParticleEffect(X, Y, new Color(50, 50, 50), 10));
+            }
+        }
+
+        public void Dash(Level level)
+        {
+            IsDashing = true;
+            IsAbleToDash = false;
+            DefaultClock.Restart();
+
+            if (IsStandingOnBlocks)
+                level.AddParticleEffect(new ParticleEffect(X, Y, new Color(50, 50, 50)));
+
+            if (MovementDirection == Movement.Left)
+            {
+                SpeedX = -12.0f;
+                sDash.Play();
+            }
+            else if (MovementDirection == Movement.Right)
+            {
+                SpeedX = 12.0f;
+                sDash.Play();
             }
         }
 
@@ -1005,6 +1119,8 @@ namespace ChendiAdventures
             IsDead = false;
             IsVulnerable = false;
             JustRespawned = true;
+            IsAbleToDash = true;
+
             ApplySafePosition();
             DefaultClock.Restart();
         }

@@ -33,6 +33,11 @@ namespace ChendiAdventures
         public float dX { get; set; }
         public float GravityForce { get; set; } //szybkosc grawitacji
         public bool IsStandingOnBlocks { get; set; }
+        public bool IsDashing { get; set; }
+        public bool IsAbleToDash { get; set; }
+        public bool IsOnWall { get; set; }
+        public bool WallToTheLeft { get; set; }
+        public bool WallToTheRight { get; set; }
         public bool IsDead { get; set; }
         public Movement MovementDirection { get; set; }
 
@@ -55,15 +60,7 @@ namespace ChendiAdventures
             else SpeedX = MaxSpeedX;
         }
 
-        public void Jump()
-        {
-            if (IsStandingOnBlocks)
-            {
-                sJump.Play();
-                SpeedY = -1 * MaxSpeedY;
-                IsStandingOnBlocks = false;
-            }
-        }
+        
 
         public virtual void Die(Level level)
         {

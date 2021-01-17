@@ -8,6 +8,12 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
+/// <summary>
+/// do zrobienia:
+/// - poprawic sterowanie kotrolerem bo dodany dash
+/// - potem poprawic w hintach 
+/// </summary>
+
 namespace ChendiAdventures
 {
     public sealed class MainGameWindow

@@ -829,7 +829,7 @@ namespace ChendiAdventures
                                     string tmp;
                                     if (MainGameWindow.IsControllerConnected)
                                     {
-                                        tmp = "L1 OR R1";
+                                        tmp = "LB1";
                                     }
                                     else
                                     {
@@ -936,10 +936,20 @@ namespace ChendiAdventures
                                 }
                             case 12:
                                 {
+                                    string tmp;
+                                    if (MainGameWindow.IsControllerConnected)
+                                    {
+                                        tmp = "RB1";
+                                    }
+                                    else
+                                    {
+                                        tmp = MainCharacter.KeyDASH.ToString().ToUpper();
+                                    }
                                     ShowHint(obstacle,
                                         "WELCOME TO THE GAME!\n" +
-                                        $"PRESS '{MainCharacter.KeyLEFT.ToString().ToUpper()}' OR '{MainCharacter.KeyRIGHT.ToString().ToUpper()}' TO MOVE."
-                                        , -80, -18);
+                                        $"PRESS '{MainCharacter.KeyLEFT.ToString().ToUpper()}' OR '{MainCharacter.KeyRIGHT.ToString().ToUpper()}' TO MOVE.\n"+
+                                        $"TO MOVE FASTER PRESS '{tmp}' TO PERFORM A DASH."
+                                        , -80, -27);
                                     break;
                                 }
                             case 13:
@@ -1008,8 +1018,9 @@ namespace ChendiAdventures
                                         "USE TRAMPOLINES.\n" +
                                         $"HOLD '{tmp}' TO JUMP HIGHER.\n" +
                                         $"OR HOLD '{MainCharacter.KeyDOWN.ToString().ToUpper()}' IF YOU\n" +
-                                        "DON'T NEED TO BOUNCE."
-                                        , -50, -42);
+                                        "DON'T NEED TO BOUNCE.\n"+
+                                        "YOU CAN USE WALL JUMP INSTEAD."
+                                        , -40, -63);
                                     break;
                                 }
                         }

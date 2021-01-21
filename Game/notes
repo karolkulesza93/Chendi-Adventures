@@ -49,7 +49,7 @@ _ :spikes trap
 ] :blowtorch blowing right
 [ :blowtorch blowing left
 
-Mechanics queue: kurwa musze pomyslec XD
+Mechanics queue:
 1	Movement
 1	Pickups
 1	Exit
@@ -59,7 +59,7 @@ Mechanics queue: kurwa musze pomyslec XD
 1	Trampoline
 1	Illusions
 
-3	Hard Blocks
+5	Hard Blocks
 10	Energy fields
 15	Keys
 20	Shop
@@ -75,4 +75,4 @@ Monsters introduction:
 30  Wizards
 40	Golems
 50  Walkers
-60  Boss Argoth
+60  Boss Argoth - opcjonalnie

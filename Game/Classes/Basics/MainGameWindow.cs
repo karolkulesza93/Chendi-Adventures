@@ -806,7 +806,7 @@ namespace ChendiAdventures
 
         private void KeyBindingConfig()
         {
-            var keys = new TextLine("", 50, -1000, MainView.Center.Y + MainView.Size.Y / 2 - 430, new Color(150, 150, 150));
+            var keys = new TextLine("", 50, -1000, MainView.Center.Y + MainView.Size.Y / 2 - 490, new Color(150, 150, 150));
             keys.SetOutlineThickness(5);
 
             var str = new StringBuilder();
@@ -817,10 +817,11 @@ namespace ChendiAdventures
                 str.Append($"'{MainCharacter.KeyRIGHT.ToString().ToUpper()}' : MOVE RIGHT\n");
                 str.Append($"'{MainCharacter.KeyUP.ToString().ToUpper()}' : ACTION OR LOOK UP\n");
                 str.Append("'A' : JUMP\n");
+                str.Append("'B' : DASH\n");
                 str.Append($"'X' : SWORD ATTACK\n");
                 str.Append($"'Y' : SHOOT AN ARROW\n");
-                str.Append($"'B' : SHOOT AN ENERGIZED ARROW\n");
-                str.Append($"'L1' OR 'R1' : BECOME IMMORTAL\n");
+                str.Append($"'R1' : SHOOT AN ENERGIZED ARROW\n");
+                str.Append($"'L1' : BECOME IMMORTAL\n");
             }
             else
             {
@@ -828,6 +829,7 @@ namespace ChendiAdventures
                 str.Append($"'{MainCharacter.KeyRIGHT.ToString().ToUpper()}' : MOVE RIGHT\n");
                 str.Append($"'{MainCharacter.KeyUP.ToString().ToUpper()}' : ACTION OR LOOK UP\n");
                 str.Append($"'{MainCharacter.KeyJUMP.ToString().ToUpper()}' : JUMP\n");
+                str.Append($"'{MainCharacter.KeyDASH.ToString().ToUpper()}' : DASH\n");
                 str.Append($"'{MainCharacter.KeyATTACK.ToString().ToUpper()}' : SWORD ATTACK\n");
                 str.Append($"'{MainCharacter.KeyARROW.ToString().ToUpper()}' : SHOOT AN ARROW\n");
                 str.Append($"'{MainCharacter.KeyTHUNDER.ToString().ToUpper()}' : SHOOT AN ENERGIZED ARROW\n");
@@ -1545,10 +1547,10 @@ namespace ChendiAdventures
             var t2 = 26;
             //pickups
             var p1 = 27;
-            var p2 = 39;
+            var p2 = 40;
             //details
-            var d1 = 40;
-            var d2 = 51;
+            var d1 = 41;
+            var d2 = 52;
 
             while (_window.IsOpen)
             {
@@ -2336,6 +2338,7 @@ namespace ChendiAdventures
             _chendi.Score = _level.StartScore;
             _chendi.Coins = _level.StartCoins;
             _chendi.ArrowAmount = _level.StartArrow;
+            _chendi.Hearts = _level.StartHeart;
             _chendi.Mana = _level.StartMana;
             _chendi.SetColor(Color.White);
 

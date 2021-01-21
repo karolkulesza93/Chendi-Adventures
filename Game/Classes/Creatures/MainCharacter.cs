@@ -25,6 +25,7 @@ namespace ChendiAdventures
         {
             SetTextureRectangle(32, 64);
             Lives = 3;
+            Hearts = 3;
             Continues = 2;
             OutOfLives = false;
             DefaultClock = new Clock();
@@ -41,6 +42,7 @@ namespace ChendiAdventures
             SafePosition = new Vector2f(x, y);
             SafePositionClock = new Clock();
             JustRespawned = false;
+            JustHurt = false;
 
             Sword = new Sword(this);
             Arrow = new Arrow(-100, -100, ArrowTexture, Movement.Right);
@@ -144,7 +146,8 @@ namespace ChendiAdventures
             sPickup = new Sound(new SoundBuffer(@"sfx/pickup.wav"));
             sImmortality = new Sound(new SoundBuffer(@"sfx/immortality.wav")) { Volume = 30, Loop = true };
             sError = new Sound(new SoundBuffer(@"sfx/error.wav")) { Volume = 10 };
-            sDash = new Sound(new SoundBuffer(@"sfx/dash.wav")) { Volume = 40 }; ;
+            sDash = new Sound(new SoundBuffer(@"sfx/dash.wav")) { Volume = 40 };
+            sHurt = new Sound(new SoundBuffer(@"sfx/hurt.wav")); //{ Volume = 40 };
         }
 
         public Sword Sword { get; }
@@ -154,6 +157,7 @@ namespace ChendiAdventures
         public int ArrowAmount { get; set; }
         public int Mana { get; set; }
         public int Lives { get; set; }
+        public int Hearts { get; set; }
         public int Continues { get; set; }
         public int Score { get; set; }
         public bool IsJumping { get; private set; }
@@ -162,6 +166,7 @@ namespace ChendiAdventures
         public bool IsDownAttacking { get; set; }
         public bool IsShooting { get; private set; }
         public bool IsVulnerable { get; private set; }
+        public bool JustHurt { get; set; }
         public bool HasSilverKey { get; set; }
         public bool HasGoldenKey { get; set; }
         public bool HasCrystalKey { get; set; }
@@ -175,6 +180,7 @@ namespace ChendiAdventures
         public Sound sTramp { get; }
         public Sound sAtk { get; }
         public Sound sDie { get; }
+        public Sound sHurt { get; }
         public Sound sCoin { get; }
         public Sound sTp { get; }
         public Sound sKey { get; }
@@ -365,6 +371,7 @@ namespace ChendiAdventures
                 sImmortality.Stop();
                 IsAttacking = false;
                 IsVulnerable = true;
+                JustHurt = false;
                 sImmortality.Stop();
 
                 SpeedX = 0f;
@@ -383,6 +390,12 @@ namespace ChendiAdventures
                 {
                     IsVulnerable = true;
                     JustRespawned = false;
+                    SetColor(Color.White);
+                }
+                else if (JustHurt && DefaultClock.ElapsedTime.AsSeconds() > 1)
+                {
+                    IsVulnerable = true;
+                    JustHurt = false;
                     SetColor(Color.White);
                 }
                 else if (DefaultClock.ElapsedTime.AsSeconds() > 6)
@@ -733,6 +746,14 @@ namespace ChendiAdventures
                             obstacle.DeletePickup();
                             break;
                         }
+                    case BlockType.Heart:
+                        {
+                            AddToScore(level, 100, obstacle.X, obstacle.Y);
+                            if (Hearts < 3) Hearts++;
+                            sPickup.Play();
+                            obstacle.DeletePickup();
+                            break;
+                        }
                     case BlockType.Mana:
                         {
                             AddToScore(level, 300, obstacle.X, obstacle.Y);
@@ -1025,7 +1046,19 @@ namespace ChendiAdventures
 
         public override void Die(Level level)
         {
-            if (!IsDead && IsVulnerable && !GotExit)
+            if (Hearts > 1 && IsVulnerable)
+            {
+                sHurt.Play();
+                DefaultClock.Restart();
+                JustHurt = true;
+                IsVulnerable = false;
+                IsDashing = false;
+                SpeedY = -6f;
+                level.AddParticleEffect(new ParticleEffect(X, Y, Color.Red, 10));
+                Hearts--;
+            }
+
+            if (!IsDead && IsVulnerable && !GotExit && Hearts == 1)
             {
                 sJump.Stop();
                 sAtk.Stop();
@@ -1043,12 +1076,14 @@ namespace ChendiAdventures
                 IsAttacking = false;
                 IsDownAttacking = false;
                 IsUpAttacking = false;
+                JustHurt = false;
 
                 IsDashing = false;
                 IsAbleToDash = false;
                 IsOnWall = false;
 
                 Lives--;
+                Hearts = 0;
 
                 Sword.Disenergize();
 
@@ -1113,15 +1148,15 @@ namespace ChendiAdventures
         {
             if (_immortalityAnimationFlag)
             {
-                if (_immortalityAnimationCounter > 255) _immortalityAnimationFlag = false;
-                _immortalityAnimationCounter += 20;
-                SetColor(new Color(255, 255, 255, _immortalityAnimationCounter));
+                if (_immortalityAnimationCounter >= 2) _immortalityAnimationFlag = false;
+                _immortalityAnimationCounter++;
+                SetColor(new Color(255, 255, 255, 0));
             }
             else
             {
-                if (_immortalityAnimationCounter < 0) _immortalityAnimationFlag = true;
-                _immortalityAnimationCounter -= 20;
-                SetColor(new Color(255, 255, 255, _immortalityAnimationCounter));
+                if (_immortalityAnimationCounter <= 0) _immortalityAnimationFlag = true;
+                _immortalityAnimationCounter--;
+                SetColor(new Color(255, 255, 255, 255));
             }
         }
 
@@ -1130,7 +1165,9 @@ namespace ChendiAdventures
             IsDead = false;
             IsVulnerable = false;
             JustRespawned = true;
+            JustHurt = false;
             IsAbleToDash = true;
+            Hearts = 3;
 
             ApplySafePosition();
             DefaultClock.Restart();
@@ -1164,6 +1201,7 @@ namespace ChendiAdventures
             IsVulnerable = true;
             ArrowAmount = 3;
             Lives = 3;
+            Hearts = 3;
             Mana = 1;
             Score = 0;
             LivesGranted = 0;
@@ -1202,7 +1240,7 @@ namespace ChendiAdventures
             return new FloatRect(X + 2, Y + 2, 30, 30);
         }
 
-        private byte _immortalityAnimationCounter;
+        private int _immortalityAnimationCounter;
         private bool _immortalityAnimationFlag;
         private readonly Animation _attackDown;
         private readonly Animation _attackLeft;

@@ -42,6 +42,10 @@ namespace ChendiAdventures
             Coins3.Scale = new Vector2f(0.8f, 0.8f);
             Sword = new Sprite(new Texture(@"img/esword.png"));
             Sword.Scale = new Vector2f(1.2f, 1.2f);
+            Life = new Sprite(new Texture(@"img/life.png"));
+            Heart1 = new Sprite(new Texture(@"img/heart.png"));
+            Heart2 = new Sprite(new Texture(@"img/heart.png"));
+            Heart3 = new Sprite(new Texture(@"img/heart.png"));
         }
 
         public TextLine LivesCount { get; }
@@ -58,6 +62,10 @@ namespace ChendiAdventures
         public Sprite ManaBottle { get; }
         public Sprite Coins3 { get; }
         public Sprite Sword { get; }
+        public Sprite Life { get; }
+        public Sprite Heart1 { get; }
+        public Sprite Heart2 { get; }
+        public Sprite Heart3 { get; }
 
         public void Draw(RenderTarget target, RenderStates states)
         {
@@ -68,6 +76,7 @@ namespace ChendiAdventures
             target.Draw(Arrows);
             target.Draw(Mana);
             target.Draw(Coins);
+            target.Draw(Life);
             if (_character.Sword.IsEnergized) target.Draw(Sword);
 
             if (_character.HasSilverKey) target.Draw(SilverKey);
@@ -76,14 +85,21 @@ namespace ChendiAdventures
             target.Draw(Arrow);
             target.Draw(ManaBottle);
             target.Draw(Coins3);
+
+            if (_character.Hearts > 2)
+                target.Draw(Heart3);
+            if (_character.Hearts > 1)
+                target.Draw(Heart2);
+            if (_character.Hearts > 0)
+                target.Draw(Heart1);
         }
 
         public void UpdateUI()
         {
             if (_character.Lives < 2) LivesCount.ChangeColor(Color.Red);
             else LivesCount.ChangeColor(Color.White);
-            if (_character.Lives < 0) LivesCount.EditText("LIVES: " + 0);
-            else LivesCount.EditText("LIVES: " + _character.Lives);
+            if (_character.Lives < 0) LivesCount.EditText("X " + 0);
+            else LivesCount.EditText("X " + _character.Lives);
 
             Score.EditText("SCORE: " + _character.Score);
             Time.EditText("TIME: " + Math.Round(_level.LevelTime.ElapsedTime.AsSeconds(), 2));
@@ -97,7 +113,7 @@ namespace ChendiAdventures
             else Mana.ChangeColor(Color.White);
 
             LivesCount.MoveText(
-                _view.Center.X + _view.Size.X / 2 - 100,
+                _view.Center.X + _view.Size.X / 2 - 205,
                 _view.Center.Y - _view.Size.Y / 2 + 7
             );
 
@@ -112,7 +128,7 @@ namespace ChendiAdventures
             );
 
             CurrentLevel.MoveText(
-                _view.Center.X + _view.Size.X / 2 - 230,
+                _view.Center.X + _view.Size.X / 2 - 100,
                 _view.Center.Y - _view.Size.Y / 2 + 7
             );
 
@@ -131,19 +147,29 @@ namespace ChendiAdventures
                 _view.Center.Y - _view.Size.Y / 2 + 7
             );
 
+            Heart1.Position=
+                new Vector2f(_view.Center.X - _view.Size.X / 2 + 10, _view.Center.Y - _view.Size.Y / 2 + 25);
+            Heart2.Position =
+                new Vector2f(_view.Center.X - _view.Size.X / 2 + 35, _view.Center.Y - _view.Size.Y / 2 + 25);
+            Heart3.Position =
+                new Vector2f(_view.Center.X - _view.Size.X / 2 + 60, _view.Center.Y - _view.Size.Y / 2 + 25);
+
+
             SilverKey.Position =
-                new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 20);
+                new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 55);
             GoldenKey.Position =
-                new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 40);
+                new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 75);
             CrystalKey.Position =
-                new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 60);
-            Sword.Position = new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 90);
+                new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 98);
+            Sword.Position = new Vector2f(_view.Center.X - _view.Size.X / 2 + 5, _view.Center.Y - _view.Size.Y / 2 + 125);
 
             Arrow.Position = new Vector2f(_view.Center.X + _view.Size.X / 2 - 342,
                 _view.Center.Y - _view.Size.Y / 2 + 9);
             ManaBottle.Position = new Vector2f(_view.Center.X + _view.Size.X / 2 - 430,
                 _view.Center.Y - _view.Size.Y / 2 + 3);
             Coins3.Position = new Vector2f(_view.Center.X + _view.Size.X / 2 - 550,
+                _view.Center.Y - _view.Size.Y / 2 + 3);
+            Life.Position = new Vector2f(_view.Center.X + _view.Size.X / 2 - 240,
                 _view.Center.Y - _view.Size.Y / 2 + 3);
         }
 
@@ -163,6 +189,10 @@ namespace ChendiAdventures
             ManaBottle.Position = new Vector2f(-100, -100);
             Coins3.Position = new Vector2f(-100, -100);
             Sword.Position = new Vector2f(-100, -100);
+            Heart1.Position = new Vector2f(-100, -100);
+            Heart2.Position = new Vector2f(-100, -100);
+            Heart3.Position = new Vector2f(-100, -100);
+            Life.Position = new Vector2f(-100, -100);
         }
     }
 }

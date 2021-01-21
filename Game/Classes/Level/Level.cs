@@ -24,7 +24,7 @@ namespace ChendiAdventures
             BlockType.Arrow, BlockType.TripleArrow, BlockType.Score1000, BlockType.Mana, BlockType.Torch,
             BlockType.TripleMana, BlockType.SackOfGold, BlockType.Exit, BlockType.Teleport1, BlockType.Teleport2,
             BlockType.Purifier, BlockType.Teleport3, BlockType.Teleport4, BlockType.EnergyBall, BlockType.CrystalKey,
-            BlockType.CrystalDoor, BlockType.EvilEyes, BlockType.SpectralCrystal, BlockType.SwordEnchant
+            BlockType.CrystalDoor, BlockType.EvilEyes, BlockType.SpectralCrystal, BlockType.SwordEnchant, BlockType.Heart
         };
 
         public readonly List<Archer> Archers;
@@ -80,6 +80,7 @@ namespace ChendiAdventures
             StartArrow = 0;
             StartCoins = 0;
             StartMana = 0;
+            StartHeart = 0;
 
             isShopOpened = false;
         }
@@ -102,6 +103,7 @@ namespace ChendiAdventures
         public int StartCoins { get; set; }
         public int StartMana { get; set; }
         public int StartArrow { get; set; }
+        public int StartHeart { get; set; }
 
         public void Draw(RenderTarget target, RenderStates states)
         {
@@ -518,6 +520,12 @@ namespace ChendiAdventures
                             LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.SwordEnchant));
                             break;
                         }
+                    //heart
+                    case 'h':
+                        {
+                        LevelObstacles.Add(new Block(32 * X, 32 * Y, Entity.PickupsTexture, BlockType.Heart));
+                        break;
+                        }
                     //details
                     case '!':
                         {
@@ -626,9 +634,12 @@ namespace ChendiAdventures
             StartCoins = _mainCharacter.Coins;
             StartArrow = _mainCharacter.ArrowAmount;
             StartMana = _mainCharacter.Mana;
+            StartHeart = _mainCharacter.Hearts;
 
             _mainCharacter.HasSilverKey = false;
             _mainCharacter.HasGoldenKey = false;
+            _mainCharacter.HasCrystalKey = false;
+            _mainCharacter.Sword.Disenergize();
 
             _levelDescription.MoveText(_view.Center.X - _view.Size.X / 2 - 1000, _view.Center.Y - 100);
 
@@ -1416,6 +1427,11 @@ namespace ChendiAdventures
                         {
                             level.Append("5");
                             break;
+                        }
+                    case BlockType.Heart:
+                        {
+                        level.Append("h");
+                        break;
                         }
                     case BlockType.Stone:
                         {

@@ -189,10 +189,15 @@ namespace ChendiAdventures
             if (!IsDead && !GotExit)
             {
                 //dash
-                if ((Keyboard.IsKeyPressed(KeyDASH) || Joystick.IsButtonPressed(0, 1)) && IsAbleToDash && MovementDirection != Movement.None && DefaultClock.ElapsedTime.AsMilliseconds() > 300) Dash(level);
+                if ((Keyboard.IsKeyPressed(KeyDASH) || Joystick.IsButtonPressed(0, 1)) && IsAbleToDash && IsVulnerable && MovementDirection != Movement.None && DefaultClock.ElapsedTime.AsMilliseconds() > 300) Dash(level);
                 //jump
                 if ((Keyboard.IsKeyPressed(KeyJUMP) || Joystick.IsButtonPressed(0, 0)) && !IsShooting && !IsAttacking && !IsJumping) Jump(level);
                 IsJumping = Keyboard.IsKeyPressed(KeyJUMP) || Joystick.IsButtonPressed(0, 0);
+                if (!IsStandingOnBlocks && (!Keyboard.IsKeyPressed(KeyJUMP) && !Joystick.IsButtonPressed(0, 0)))
+                {
+                    if (SpeedY < -4.0f) SpeedY = -4.0f;
+                }
+
                 //attack
                 if ((Keyboard.IsKeyPressed(KeyATTACK) || Joystick.IsButtonPressed(0, 2)) && DefaultClock.ElapsedTime.AsMilliseconds() > 500 &&
                     IsVulnerable && !IsAttacking && !IsShooting && !IsOnWall)
@@ -207,7 +212,6 @@ namespace ChendiAdventures
                         IsDownAttacking = true;
                     DefaultClock.Restart();
                 }
-
                 //arrow
                 if ((Keyboard.IsKeyPressed(KeyARROW) || Joystick.IsButtonPressed(0, 3)) && DefaultClock.ElapsedTime.AsMilliseconds() > 700 &&
                     ArrowAmount > 0 && IsVulnerable && Arrow.X < 0 && IsStandingOnBlocks && !IsShooting && !IsAttacking)
@@ -850,6 +854,11 @@ namespace ChendiAdventures
                             Die(level);
                             break;
                         }
+                    case BlockType.Illusion:
+                    {
+                        obstacle.Disappear();
+                        break;
+                    }
                     case BlockType.Trampoline:
                         {
                             if (SpeedY > 4f && !IsDead &&
@@ -858,6 +867,7 @@ namespace ChendiAdventures
                                 SetPosition(X, obstacle.Y - Height);
                                 IsDownAttacking = false;
                                 IsAttacking = false;
+                                IsAbleToDash = true;
                                 obstacle.SetTextureRectangle(96, 32);
                                 obstacle.DefaultTimer.Restart();
 
@@ -1028,6 +1038,7 @@ namespace ChendiAdventures
                 DefaultClock.Restart();
                 IsDead = true;
                 SpeedY = -6f;
+                SpeedX = 0.0f;
 
                 IsAttacking = false;
                 IsDownAttacking = false;

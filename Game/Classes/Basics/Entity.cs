@@ -109,6 +109,11 @@ namespace ChendiAdventures
             _entitySprite.Color = color;
         }
 
+        public Color GetColor()
+        {
+            return _entitySprite.Color;
+        }
+
         private void SetTexture()
         {
             _entitySprite.TextureRect = _textureRectangle;

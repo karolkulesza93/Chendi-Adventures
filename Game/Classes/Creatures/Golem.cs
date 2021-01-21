@@ -61,7 +61,7 @@ namespace ChendiAdventures
 
             Boulder.Direction = SpeedX > 0 ? Movement.Right : Movement.Left;
 
-            if (DefaultClock.ElapsedTime.AsSeconds() > HurlInterval && (float) Math.Sqrt(
+            if (!IsDead && DefaultClock.ElapsedTime.AsSeconds() > HurlInterval && (float) Math.Sqrt(
                     Math.Pow(GetCenterPosition().X - character.GetCenterPosition().X, 2) +
                     Math.Pow(GetCenterPosition().Y - character.GetCenterPosition().Y, 2)) <
                 ProcsDistance)

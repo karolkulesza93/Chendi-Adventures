@@ -1,4 +1,5 @@
-﻿using SFML.Audio;
+﻿using System.Runtime.CompilerServices;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 
@@ -716,6 +717,12 @@ namespace ChendiAdventures
                 foreach (var gate in Level.SteelGates) gate.Type = BlockType.SteelGate;
                 foreach (var lever in Level.Levers) lever.SetTextureRectangle(32, 160);
             }
+        }
+
+        public void Disappear()
+        {
+            if (this.GetColor().A > 0)
+                this.SetColor(new Color(GetColor().R, GetColor().G, GetColor().B, (byte)(GetColor().A-15)));
         }
     }
 }

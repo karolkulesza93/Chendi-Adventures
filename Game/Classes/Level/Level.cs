@@ -1019,8 +1019,8 @@ namespace ChendiAdventures
                                         $"HOLD '{tmp}' TO JUMP HIGHER.\n" +
                                         $"OR HOLD '{MainCharacter.KeyDOWN.ToString().ToUpper()}' IF YOU\n" +
                                         "DON'T NEED TO BOUNCE.\n"+
-                                        "YOU CAN USE WALL JUMP INSTEAD."
-                                        , -40, -63);
+                                        "YOU CAN USE\n" + "WALL JUMP INSTEAD."
+                                        , -40, -72);
                                     break;
                                 }
                         }

@@ -27,10 +27,10 @@ namespace ChendiAdventures
 
             ItemsPrices = new Dictionary<Wares, int>
             {
-                {Wares.Arrow, 100},
-                {Wares.Mana, 150},
-                {Wares.Life, 500},
-                {Wares.Score1000, 250}
+                {Wares.Arrow, 25},
+                {Wares.Mana, 40},
+                {Wares.Life, 100},
+                {Wares.Score1000, 10}
             };
 
             ItemsCount = new Dictionary<Wares, int>

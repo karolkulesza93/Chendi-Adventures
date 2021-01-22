@@ -20,10 +20,10 @@ namespace ChendiAdventures
     {
         public void DevManip()
         {
-            bool doThings = false;
+            bool doThings = true;
             if (doThings)
             {
-                Settings.Default.HighestLevel = 25;
+                Settings.Default.HighestLevel = 1;
                 Settings.Default.Save();
                 //..
             }
@@ -2497,7 +2497,7 @@ namespace ChendiAdventures
                         {
                             done = true;
                             gameMachine.GrantReward(_chendi);
-                            _chendiUi.UpdateUI();
+                            //_chendiUi.UpdateUI();
                         }
                     }
 

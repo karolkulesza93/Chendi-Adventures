@@ -717,6 +717,7 @@ namespace ChendiAdventures
                                 level.AddParticleEffect(new ParticleEffect(obstacle.X, obstacle.Y, Color.Magenta));
                                 ArrowAmount = 0;
                                 Mana = 0;
+                                Hearts = 1;
                                 IsVulnerable = true;
                             }
 
@@ -1148,7 +1149,7 @@ namespace ChendiAdventures
         {
             if (_immortalityAnimationFlag)
             {
-                if (_immortalityAnimationCounter >= 2) _immortalityAnimationFlag = false;
+                if (_immortalityAnimationCounter >= 1) _immortalityAnimationFlag = false;
                 _immortalityAnimationCounter++;
                 SetColor(new Color(255, 255, 255, 0));
             }
